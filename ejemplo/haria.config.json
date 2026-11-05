@@ -1,0 +1,14 @@
+{
+  "generation": {
+    "orm": "entityframework",
+    "outputDirectory": "generated",
+    "projectName": "ejemplo",
+    "targetFramework": "net9.0",
+    "database": "sqlite"
+  },
+  "database": {
+    "provider": "sqlite",
+    "name": "ejemploBDD",
+    "file": "ejemploBDD.db"
+  }
+}

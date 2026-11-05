@@ -1,0 +1,962 @@
+[
+{
+  "TimestampUtc": "2026-11-03, 09:40:39",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Infrastructure",
+  "EventId": 10401,
+  "EventName": "Microsoft.EntityFrameworkCore.Infrastructure.ServiceProviderCreated",
+  "Message": "An \u0027IServiceProvider\u0027 was created for internal use by Entity Framework."
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027ResenaVendedor\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "ResenaVendedor",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Usuario\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027} that could be matched with the properties on the other entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Usuario",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}",
+    "inverseNavigations": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Usuario\u0027 to \u0027ResenaVendedor\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027} that could be matched with the properties on the other entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Usuario",
+    "secondEntityType": "ResenaVendedor",
+    "navigationProperties": "{\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}",
+    "inverseNavigations": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:40",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:41",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Usuario\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027} that could be matched with the properties on the other entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Usuario",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}",
+    "inverseNavigations": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Usuario\u0027 to \u0027ResenaVendedor\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027} that could be matched with the properties on the other entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Usuario",
+    "secondEntityType": "ResenaVendedor",
+    "navigationProperties": "{\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}",
+    "inverseNavigations": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ComprasRealizadas\u0027, \u0027VentasPublicadas\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Usuario\u0027 to \u0027ResenaVendedor\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027} that could be matched with the properties on the other entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Usuario",
+    "secondEntityType": "ResenaVendedor",
+    "navigationProperties": "{\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}",
+    "inverseNavigations": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Venta\u0027 to \u0027Transaccion\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027} that could be matched with the properties on the other entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Venta",
+    "secondEntityType": "Transaccion",
+    "navigationProperties": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}",
+    "inverseNavigations": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Transaccion\u0027 to \u0027Venta\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027VentaCobro\u0027, \u0027VentaPago\u0027} that could be matched with the properties on the other entity type - {\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Transaccion",
+    "secondEntityType": "Venta",
+    "navigationProperties": "{\u0027VentaCobro\u0027, \u0027VentaPago\u0027}",
+    "inverseNavigations": "{\u0027TransaccionCobro\u0027, \u0027TransaccionPago\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027Usuario\u0027 to \u0027ResenaVendedor\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027} that could be matched with the properties on the other entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "Usuario",
+    "secondEntityType": "ResenaVendedor",
+    "navigationProperties": "{\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}",
+    "inverseNavigations": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}"
+  }
+},
+{
+  "TimestampUtc": "2026-11-03, 09:40:42",
+  "Level": "Debug",
+  "Category": "Microsoft.EntityFrameworkCore.Model",
+  "EventId": 10607,
+  "EventName": "Microsoft.EntityFrameworkCore.Model.MultipleNavigationProperties",
+  "Message": "No relationship from \u0027ResenaVendedor\u0027 to \u0027Usuario\u0027 has been configured by convention because there are multiple properties on one entity type - {\u0027Comprador\u0027, \u0027Vendedor\u0027} that could be matched with the properties on the other entity type - {\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}. This message can be disregarded if explicit configuration has been specified in \u0027OnModelCreating\u0027.",
+  "Properties": {
+    "firstEntityType": "ResenaVendedor",
+    "secondEntityType": "Usuario",
+    "navigationProperties": "{\u0027Comprador\u0027, \u0027Vendedor\u0027}",
+    "inverseNavigations": "{\u0027ResenasRealizadas\u0027, \u0027ResenasRecibidas\u0027}"
+  }
+}
+]

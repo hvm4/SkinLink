@@ -1,0 +1,236 @@
+@startuml SkinLink
+skinparam packageStyle rectangle
+title SkinLink Domain
+
+package "SkinLink" {
+  enum EstadoCuenta {
+    Activo
+    Suspendido
+  }
+
+  enum Rareza {
+    Extraordinario
+    Raro
+    Especial
+    PocoComun
+    Comun
+  }
+
+  enum Condicion {
+    RecienFabricado
+    DesgasteMinimo
+    AlgoDesgastado
+    BastanteDesgastado
+    Deplorable
+  }
+
+  enum TipoTransaccion {
+    Deposito
+    Retiro
+    CobroVenta
+    PagoVenta
+    CosteCaja
+  }
+
+  enum EstadoVenta {
+    Disponible
+    EnProceso
+    Completada
+    Cancelada
+  }
+
+  class AtributosSkin <<ValueObject>> {
+    -rareza: Rareza
+    -condicion: Condicion
+    -floatVal: double
+    -patron: int
+  }
+
+  class Moneda <<ValueObject>> {
+    -valor: double
+    -divisa: string
+  }
+
+  class Usuario <<User>> {
+    -id: long <<oid>> <<isToken>>
+    -nombreUsuario: string
+    -correo: string
+    -contrasena: string <<password>>
+    -fechaNacimiento: Date
+    -estado: EstadoCuenta
+    -nivel: int
+    -experiencia: int
+    -fechaUltimoLogin: Date
+    -temaModoOscuro: bool
+    -idioma: string
+    --
+    +new(p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado): Usuario <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): Usuario <<ReadOID>>
+    +readAll(): Usuario[*] <<ReadAll>>
+    +login(p_oid: long <<oid>>, p_password: string <<password>>): string <<Login>>
+    +sumarExperiencia(p_oid: long <<oid>>, p_puntos: int): void <<Custom>>
+  }
+
+  class Administrador {
+    -codigoAuditor: string
+    --
+    +new(p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado, p_codigoAuditor: string): Administrador <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado, p_codigoAuditor: string): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): Administrador <<ReadOID>>
+    +readAll(): Administrador[*] <<ReadAll>>
+    +actualizarEstadoKYC(p_oid: long <<oid>>, p_usuario_oid: long <<oid>>, p_nuevoEstado: EstadoCuenta): void <<Custom>>
+  }
+
+  class Monedero {
+    -id: long <<oid>>
+    -saldoDisponible: Moneda
+    -saldoPendiente: Moneda
+    --
+    +new(p_saldoDisponible: Moneda, p_saldoPendiente: Moneda, p_usuario_oid: long <<oid>>): Monedero <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_saldoDisponible: Moneda, p_saldoPendiente: Moneda): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): Monedero <<ReadOID>>
+    +readAll(): Monedero[*] <<ReadAll>>
+    +incrementarSaldo(p_oid: long <<oid>>, p_montoAnadir: Moneda): void <<Custom>>
+    +decrementarSaldo(p_oid: long <<oid>>, p_montoRestar: Moneda): void <<Custom>>
+  }
+
+  class Transaccion {
+    -id: long <<oid>>
+    -tipo: TipoTransaccion
+    -monto: Moneda
+    -fecha: Date
+    -concepto: string
+    --
+    +new(p_tipo: TipoTransaccion, p_monto: Moneda, p_fecha: Date, p_concepto: string, p_monedero_oid: long <<oid>>): Transaccion <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_tipo: TipoTransaccion, p_monto: Moneda, p_fecha: Date, p_concepto: string): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): Transaccion <<ReadOID>>
+    +readAll(): Transaccion[*] <<ReadAll>>
+    +validarSaldoMonedero(p_oid: long <<oid>>, p_monedero_oid: long <<oid>>, p_montoRequerido: Moneda): bool <<Custom>>
+  }
+
+  class InventarioPrivado {
+    -id: long <<oid>>
+    -valorEstimadoTotal: Moneda
+    --
+    +new(p_valorEstimadoTotal: Moneda, p_usuario_oid: long <<oid>>, p_activos: ActivoDigital[*]): InventarioPrivado <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_valorEstimadoTotal: Moneda): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): InventarioPrivado <<ReadOID>>
+    +readAll(): InventarioPrivado[*] <<ReadAll>>
+  }
+
+  class ActivoDigital {
+    -id: long <<oid>>
+    -nombre: string
+    -coleccion: string
+    -precioEstimado: Moneda
+    -atributos: AtributosSkin
+    -enVenta: bool
+    --
+    +new(p_nombre: string, p_coleccion: string, p_precioEstimado: Moneda, p_atributos: AtributosSkin, p_enVenta: bool, p_inventario_oid: long <<oid>>): ActivoDigital <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_nombre: string, p_coleccion: string, p_precioEstimado: Moneda, p_atributos: AtributosSkin, p_enVenta: bool): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): ActivoDigital <<ReadOID>>
+    +readAll(): ActivoDigital[*] <<ReadAll>>
+    +bloquearParaVenta(p_oid: long <<oid>>): void <<Custom>>
+    +desbloquear(p_oid: long <<oid>>): void <<Custom>>
+    +filtrarActivosPorRareza(p_rareza: Rareza): ActivoDigital[*] <<ReadFilter>>
+    +filtrarActivosPorColeccion(p_coleccion: string): ActivoDigital[*] <<ReadFilter>>
+    +filtrarActivosPorCondicion(p_condicion: Condicion): ActivoDigital[*] <<ReadFilter>>
+  }
+
+  class Venta {
+    -id: long <<oid>>
+    -precioVenta: Moneda
+    -fechaPublicacion: Date
+    -estadoVenta: EstadoVenta
+    --
+    +new(p_precioVenta: Moneda, p_fechaPublicacion: Date, p_estadoVenta: EstadoVenta, p_vendedor_oid: long <<oid>>, p_comprador_oid: long <<oid>>, p_activoDigital_oid: long <<oid>>, p_transaccionCobro_oid: long <<oid>>, p_transaccionPago_oid: long <<oid>>): Venta <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_precioVenta: Moneda, p_fechaPublicacion: Date, p_estadoVenta: EstadoVenta, p_activoDigital_oid: long <<oid>>): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): Venta <<ReadOID>>
+    +readAll(): Venta[*] <<ReadAll>>
+    +publicarVenta(p_oid: long <<oid>>, p_activoDigital_oid: long <<oid>>): void <<Custom>>
+    +editarPrecio(p_oid: long <<oid>>, p_nuevoPrecio: Moneda): void <<Custom>>
+    +cancelarVenta(p_oid: long <<oid>>): void <<Custom>>
+    +ejecutarCompra(p_oid: long <<oid>>, p_comprador_oid: long <<oid>>): void <<Custom>>
+  }
+
+  class ResenaVendedor {
+    -id: long <<oid>>
+    -puntuacion: int
+    -comentario: string
+    -fecha: Date
+    -oculta: bool
+    --
+    +new(p_puntuacion: int, p_comentario: string, p_fecha: Date, p_oculta: bool, p_comprador_oid: long <<oid>>, p_vendedor_oid: long <<oid>>): ResenaVendedor <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_puntuacion: int, p_comentario: string, p_fecha: Date, p_oculta: bool): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): ResenaVendedor <<ReadOID>>
+    +readAll(): ResenaVendedor[*] <<ReadAll>>
+    +moderarResena(p_oid: long <<oid>>, p_admin_oid: long <<oid>>): void <<Custom>>
+    +ocultarResena(p_oid: long <<oid>>): void <<Custom>>
+  }
+
+  class CajaMisteriosa {
+    -id: long <<oid>>
+    -nombre: string
+    -precioApertura: Moneda
+    -activa: bool
+    --
+    +new(p_nombre: string, p_precioApertura: Moneda, p_activa: bool, p_probabilidades: ProbabilidadDrop[*]): CajaMisteriosa <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_nombre: string, p_precioApertura: Moneda, p_activa: bool, p_probabilidades: ProbabilidadDrop[*]): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): CajaMisteriosa <<ReadOID>>
+    +readAll(): CajaMisteriosa[*] <<ReadAll>>
+    +simularApertura(p_oid: long <<oid>>): ActivoDigital <<Custom>>
+    +abrirCaja(p_oid: long <<oid>>, p_usuario_oid: long <<oid>>): void <<Custom>>
+  }
+
+  class ProbabilidadDrop {
+    -id: long <<oid>>
+    -porcentajeDrop: double
+    --
+    +new(p_porcentajeDrop: double, p_caja_oid: long <<oid>>, p_activoRecompensa_oid: long <<oid>>): ProbabilidadDrop <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_porcentajeDrop: double, p_activoRecompensa_oid: long <<oid>>): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): ProbabilidadDrop <<ReadOID>>
+    +readAll(): ProbabilidadDrop[*] <<ReadAll>>
+  }
+
+  class RegistroAuditoria {
+    -id: long <<oid>>
+    -accion: string
+    -fecha: Date
+    --
+    +new(p_accion: string, p_fecha: Date, p_administrador_oid: long <<oid>>): RegistroAuditoria <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +readOID(p_oid: long <<oid>>): RegistroAuditoria <<ReadOID>>
+    +readAll(): RegistroAuditoria[*] <<ReadAll>>
+  }
+
+  ' Inheritance
+  Usuario <|-- Administrador
+
+  ' Relationships
+  Usuario "usuario\n1" *-- "monedero\n1" Monedero
+  Usuario "usuario\n1" *-- "inventario\n1" InventarioPrivado
+  InventarioPrivado "inventario\n1" *-- "activos\n0..*" ActivoDigital
+  Monedero "monedero\n1" -- "transacciones\n0..*" Transaccion
+  Usuario "vendedor\n1" -- "ventasPublicadas\n0..*" Venta
+  Usuario "comprador\n0..1" -- "comprasRealizadas\n0..*" Venta
+  Venta "venta\n0..1" -- "activoDigital\n1" ActivoDigital
+  Venta "ventaCobro\n0..1" -- "transaccionCobro\n0..1" Transaccion
+  Venta "ventaPago\n0..1" -- "transaccionPago\n0..1" Transaccion
+  Usuario "comprador\n1" -- "resenasRealizadas\n0..*" ResenaVendedor
+  Usuario "vendedor\n1" -- "resenasRecibidas\n0..*" ResenaVendedor
+  CajaMisteriosa "caja\n1" *-- "probabilidades\n1..*" ProbabilidadDrop
+  ProbabilidadDrop "probabilidad\n0..*" -- "activoRecompensa\n1" ActivoDigital
+  Administrador "administrador\n1" -- "registrosAuditoria\n0..*" RegistroAuditoria
+}
+@enduml

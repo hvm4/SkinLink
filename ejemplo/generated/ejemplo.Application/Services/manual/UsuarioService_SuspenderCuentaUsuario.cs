@@ -1,6 +1,7 @@
 ﻿using ejemplo.Application.Abstractions;
 using ejemplo.Application.Exceptions;
 using ejemplo.Domain.Entities;
+using ejemplo.Domain.ValueObjects;
 using ejemplo.Domain.Enums;
 
         /*PROTECTED REGION ID(usingejemplo.Application.Services_Usuario_suspenderCuentaUsuario) ENABLED START*/
@@ -14,9 +15,17 @@ public sealed partial class UsuarioService
     public async Task SuspenderCuentaUsuarioAsync(int p_oid)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_Usuario_suspenderCuentaUsuario) ENABLED START*/
-        // Write here your custom code...
+        var usuario = await _repository.ReadAsync(p_oid)
+            ?? throw new ModelException("Usuario not found.");
 
-        throw new ModelException("Application service generation for Usuario.suspenderCuentaUsuario is pending.", new NotImplementedException("Method SuspenderCuentaUsuarioAsync() not yet implemented."));
+        if (usuario is Administrador)
+            throw new ModelException("No se puede suspender la cuenta de un administrador.");
+
+        if (usuario.Estado == EstadoCuenta.Suspendido)
+            throw new ModelException("La cuenta ya está suspendida.");
+
+        usuario.Estado = EstadoCuenta.Suspendido;
+        await _repository.SaveAsync(usuario);
         /*PROTECTED REGION END*/
     }
 }

@@ -23,6 +23,9 @@ public partial class Usuario
     public IList<Venta> ComprasRealizadas { get; set; } = new List<Venta>();
     public IList<ResenaVendedor> ResenasRealizadas { get; set; } = new List<ResenaVendedor>();
     public IList<ResenaVendedor> ResenasRecibidas { get; set; } = new List<ResenaVendedor>();
+    public IList<Favorito> Favoritos { get; set; } = new List<Favorito>();
+    public IList<Intercambio> IntercambiosPropuestos { get; set; } = new List<Intercambio>();
+    public IList<Intercambio> IntercambiosRecibidos { get; set; } = new List<Intercambio>();
 
     private bool HasDefaultIdentity() => EqualityComparer<int>.Default.Equals(Id, default);
 

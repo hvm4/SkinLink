@@ -8,6 +8,7 @@ public partial class InventarioPrivado
 {
     public int Id { get; set; }
     public Moneda ValorEstimadoTotal { get; set; } = null!;
+    public bool EsPublico { get; set; }
     public Usuario Usuario { get; set; } = null!;
     public IList<ActivoDigital> Activos { get; set; } = new List<ActivoDigital>();
 

@@ -12,9 +12,13 @@ public partial class ActivoDigital
     public Moneda PrecioEstimado { get; set; } = null!;
     public AtributosSkin Atributos { get; set; } = null!;
     public bool EnVenta { get; set; }
+    public string IdentificadorUnico { get; set; } = string.Empty;
     public InventarioPrivado Inventario { get; set; } = null!;
     public Venta? Venta { get; set; }
     public IList<ProbabilidadDrop> Probabilidad { get; set; } = new List<ProbabilidadDrop>();
+    public IList<Favorito> FavoritosActivo { get; set; } = new List<Favorito>();
+    public Intercambio? IntercambioOfrecido { get; set; }
+    public Intercambio? IntercambioSolicitado { get; set; }
 
     private bool HasDefaultIdentity() => EqualityComparer<int>.Default.Equals(Id, default);
 

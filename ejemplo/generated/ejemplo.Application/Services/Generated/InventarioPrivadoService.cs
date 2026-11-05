@@ -42,7 +42,7 @@ public sealed partial class InventarioPrivadoService : ServiceEntity<InventarioP
     public Task<InventarioPrivado> ModifierInventarioPrivadoDefaultAsync(InventarioPrivado entity) =>
         ModifierDefaultAsync(entity);
 
-    public async Task<InventarioPrivado> NewAsync(Moneda p_valorEstimadoTotal, int p_usuario_oid, IReadOnlyList<ActivoDigital> p_activos)
+    public async Task<InventarioPrivado> NewAsync(Moneda p_valorEstimadoTotal, bool p_esPublico, int p_usuario_oid, IReadOnlyList<ActivoDigital> p_activos)
     {
         Usuario usuarioEntity = await _unitOfWork.UsuarioRepository.ReadAsync(p_usuario_oid)
             ?? throw new ModelException("Usuario not found for InventarioPrivado.Usuario.");
@@ -50,6 +50,7 @@ public sealed partial class InventarioPrivadoService : ServiceEntity<InventarioP
         InventarioPrivado entity = new InventarioPrivado
         {
             ValorEstimadoTotal = p_valorEstimadoTotal,
+            EsPublico = p_esPublico,
             Usuario = usuarioEntity,
         };
 
@@ -64,11 +65,12 @@ public sealed partial class InventarioPrivadoService : ServiceEntity<InventarioP
         await _repository.DeleteAsync(entity);
     }
 
-    public async Task ModifyAsync(int p_oid, Moneda p_valorEstimadoTotal)
+    public async Task ModifyAsync(int p_oid, Moneda p_valorEstimadoTotal, bool p_esPublico)
     {
         InventarioPrivado entity = await _repository.ReadAsync(p_oid)
             ?? throw new ModelException("InventarioPrivado not found.");
         entity.ValorEstimadoTotal = p_valorEstimadoTotal;
+        entity.EsPublico = p_esPublico;
         await _repository.SaveAsync(entity);
     }
 

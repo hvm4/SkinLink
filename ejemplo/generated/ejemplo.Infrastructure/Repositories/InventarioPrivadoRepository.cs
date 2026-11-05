@@ -25,7 +25,7 @@ public sealed class InventarioPrivadoRepository : RepositoryBase<InventarioPriva
     {
         try
         {
-            return await DbContext.Set<InventarioPrivado>().Include(entity => entity.Usuario).Include(entity => entity.Activos).Include("Activos.Venta").ToListAsync();
+            return await DbContext.Set<InventarioPrivado>().Include(entity => entity.Usuario).Include(entity => entity.Activos).Include("Activos.Venta").Include("Activos.IntercambioOfrecido").Include("Activos.IntercambioSolicitado").ToListAsync();
         }
         catch (Exception ex)
         {
@@ -42,6 +42,8 @@ public sealed class InventarioPrivadoRepository : RepositoryBase<InventarioPriva
                 if (entity is not null) await DbContext.Entry(entity).Reference(item => item.Usuario).LoadAsync();
                 if (entity is not null) await DbContext.Entry(entity).Collection(item => item.Activos).LoadAsync();
                 if (entity is not null) foreach (var child in entity.Activos) await DbContext.Entry(child).Reference(item => item.Venta).LoadAsync();
+                if (entity is not null) foreach (var child in entity.Activos) await DbContext.Entry(child).Reference(item => item.IntercambioOfrecido).LoadAsync();
+                if (entity is not null) foreach (var child in entity.Activos) await DbContext.Entry(child).Reference(item => item.IntercambioSolicitado).LoadAsync();
             return entity;
         }
         catch (Exception ex)

@@ -25,7 +25,7 @@ public sealed class ActivoDigitalRepository : RepositoryBase<ActivoDigital>, IAc
     {
         try
         {
-            return await DbContext.Set<ActivoDigital>().Include(entity => entity.Inventario).Include(entity => entity.Venta).ToListAsync();
+            return await DbContext.Set<ActivoDigital>().Include(entity => entity.Inventario).Include(entity => entity.Venta).Include(entity => entity.IntercambioOfrecido).Include(entity => entity.IntercambioSolicitado).ToListAsync();
         }
         catch (Exception ex)
         {
@@ -41,6 +41,8 @@ public sealed class ActivoDigitalRepository : RepositoryBase<ActivoDigital>, IAc
             var entity = await DbContext.Set<ActivoDigital>().FindAsync([id]);
                 if (entity is not null) await DbContext.Entry(entity).Reference(item => item.Inventario).LoadAsync();
                 if (entity is not null) await DbContext.Entry(entity).Reference(item => item.Venta).LoadAsync();
+                if (entity is not null) await DbContext.Entry(entity).Reference(item => item.IntercambioOfrecido).LoadAsync();
+                if (entity is not null) await DbContext.Entry(entity).Reference(item => item.IntercambioSolicitado).LoadAsync();
             return entity;
         }
         catch (Exception ex)
@@ -145,7 +147,7 @@ public sealed class ActivoDigitalRepository : RepositoryBase<ActivoDigital>, IAc
         try
         {
             return await DbContext.Set<ActivoDigital>()
-                .Where(entity => entity.Atributos != null && entity.Atributos.condicion == p_condicion)
+                .Where(entity => entity.Atributos != null && entity.Atributos.Condicion == p_condicion)
                 .ToListAsync();
         }
         catch (DataException)
@@ -156,6 +158,25 @@ public sealed class ActivoDigitalRepository : RepositoryBase<ActivoDigital>, IAc
         {
             Logger?.LogError(ex, "Error executing ReadFilter ActivoDigital.filtrarActivosPorCondicion.");
             throw new DataException("Error executing ReadFilter ActivoDigital.filtrarActivosPorCondicion.", ex);
+        }
+    }
+
+    public async Task<IReadOnlyList<ActivoDigital>> FiltrarActivosEnVentaAsync(int p_usuarioId, bool p_enVenta)
+    {
+        try
+        {
+            return await DbContext.Set<ActivoDigital>()
+                .Where(entity => entity.Inventario.Usuario.Id == p_usuarioId && entity.EnVenta == p_enVenta)
+                .ToListAsync();
+        }
+        catch (DataException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error executing ReadFilter ActivoDigital.filtrarActivosEnVenta.");
+            throw new DataException("Error executing ReadFilter ActivoDigital.filtrarActivosEnVenta.", ex);
         }
     }
 }

@@ -39,6 +39,8 @@ public sealed class UnitOfWork : IUnitOfWork, IAsyncDisposable
         InventarioPrivadoRepository = new InventarioPrivadoRepository(dbContext, _loggerFactory?.CreateLogger<InventarioPrivadoRepository>());
         ArticuloCatalogoRepository = new ArticuloCatalogoRepository(dbContext, _loggerFactory?.CreateLogger<ArticuloCatalogoRepository>());
         ActivoDigitalRepository = new ActivoDigitalRepository(dbContext, _loggerFactory?.CreateLogger<ActivoDigitalRepository>());
+        FavoritoRepository = new FavoritoRepository(dbContext, _loggerFactory?.CreateLogger<FavoritoRepository>());
+        IntercambioRepository = new IntercambioRepository(dbContext, _loggerFactory?.CreateLogger<IntercambioRepository>());
         VentaRepository = new VentaRepository(dbContext, _loggerFactory?.CreateLogger<VentaRepository>());
         ResenaVendedorRepository = new ResenaVendedorRepository(dbContext, _loggerFactory?.CreateLogger<ResenaVendedorRepository>());
         CajaMisteriosaRepository = new CajaMisteriosaRepository(dbContext, _loggerFactory?.CreateLogger<CajaMisteriosaRepository>());
@@ -53,6 +55,8 @@ public sealed class UnitOfWork : IUnitOfWork, IAsyncDisposable
     public IInventarioPrivadoRepository InventarioPrivadoRepository { get; }
     public IArticuloCatalogoRepository ArticuloCatalogoRepository { get; }
     public IActivoDigitalRepository ActivoDigitalRepository { get; }
+    public IFavoritoRepository FavoritoRepository { get; }
+    public IIntercambioRepository IntercambioRepository { get; }
     public IVentaRepository VentaRepository { get; }
     public IResenaVendedorRepository ResenaVendedorRepository { get; }
     public ICajaMisteriosaRepository CajaMisteriosaRepository { get; }

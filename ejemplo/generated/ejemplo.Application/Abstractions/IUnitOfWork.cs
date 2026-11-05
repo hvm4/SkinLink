@@ -9,6 +9,8 @@ public interface IUnitOfWork : IAsyncDisposable
     IInventarioPrivadoRepository InventarioPrivadoRepository { get; }
     IArticuloCatalogoRepository ArticuloCatalogoRepository { get; }
     IActivoDigitalRepository ActivoDigitalRepository { get; }
+    IFavoritoRepository FavoritoRepository { get; }
+    IIntercambioRepository IntercambioRepository { get; }
     IVentaRepository VentaRepository { get; }
     IResenaVendedorRepository ResenaVendedorRepository { get; }
     ICajaMisteriosaRepository CajaMisteriosaRepository { get; }

@@ -90,4 +90,14 @@ public sealed partial class VentaService : ServiceEntity<Venta>
         return await _repository.ReadAllAsync();
     }
 
+    public async Task<IReadOnlyList<Venta>> FiltrarVentasPorEstadoAsync(EstadoVenta p_estado)
+    {
+        return await _repository.FiltrarVentasPorEstadoAsync(p_estado);
+    }
+
+    public async Task<IReadOnlyList<Venta>> FiltrarVentasPorPrecioMaximoAsync(double p_precioMaximo)
+    {
+        return await _repository.FiltrarVentasPorPrecioMaximoAsync(p_precioMaximo);
+    }
+
 }

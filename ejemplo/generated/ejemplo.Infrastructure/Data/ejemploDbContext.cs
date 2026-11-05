@@ -16,6 +16,8 @@ public sealed class ejemploDbContext : DbContext
     public DbSet<InventarioPrivado> InventarioPrivados => Set<InventarioPrivado>();
     public DbSet<ArticuloCatalogo> ArticuloCatalogos => Set<ArticuloCatalogo>();
     public DbSet<ActivoDigital> ActivoDigitals => Set<ActivoDigital>();
+    public DbSet<Favorito> Favoritos => Set<Favorito>();
+    public DbSet<Intercambio> Intercambios => Set<Intercambio>();
     public DbSet<Venta> Ventas => Set<Venta>();
     public DbSet<ResenaVendedor> ResenaVendedors => Set<ResenaVendedor>();
     public DbSet<CajaMisteriosa> CajaMisteriosas => Set<CajaMisteriosa>();
@@ -140,6 +142,9 @@ public sealed class ejemploDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd();
+            entity.Property(e => e.EsPublico)
+                .HasColumnName("esPublico")
+                .IsRequired();
             entity.OwnsOne(e => e.ValorEstimadoTotal, ownedValorEstimadoTotal =>
             {
                 ownedValorEstimadoTotal.Property(e => e.Valor)
@@ -205,6 +210,9 @@ public sealed class ejemploDbContext : DbContext
             entity.Property(e => e.EnVenta)
                 .HasColumnName("enVenta")
                 .IsRequired();
+            entity.Property(e => e.IdentificadorUnico)
+                .HasColumnName("identificadorUnico")
+                .IsRequired();
             entity.OwnsOne(e => e.PrecioEstimado, ownedPrecioEstimado =>
             {
                 ownedPrecioEstimado.Property(e => e.Valor)
@@ -231,6 +239,36 @@ public sealed class ejemploDbContext : DbContext
                     .HasColumnName("atributos_patron")
                     .IsRequired();
             });
+        });
+
+        modelBuilder.Entity<Favorito>(entity =>
+        {
+            entity.ToTable("Favorito");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+            entity.Property(e => e.FechaMarcado)
+                .HasColumnName("fechaMarcado")
+                .HasColumnType("date")
+                .IsRequired();
+        });
+
+        modelBuilder.Entity<Intercambio>(entity =>
+        {
+            entity.ToTable("Intercambio");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+            entity.Property(e => e.Estado)
+                .HasColumnName("estado")
+                .HasConversion<int>()
+                .IsRequired();
+            entity.Property(e => e.FechaCreacion)
+                .HasColumnName("fechaCreacion")
+                .HasColumnType("date")
+                .IsRequired();
         });
 
         modelBuilder.Entity<Venta>(entity =>
@@ -416,6 +454,42 @@ public sealed class ejemploDbContext : DbContext
             .WithOne(e => e.Administrador)
             .HasForeignKey("AdministradorId")
             .IsRequired();
+
+        modelBuilder.Entity<Usuario>()
+            .HasMany(e => e.Favoritos)
+            .WithOne(e => e.Usuario)
+            .HasForeignKey("UsuarioId")
+            .IsRequired();
+
+        modelBuilder.Entity<ActivoDigital>()
+            .HasMany(e => e.FavoritosActivo)
+            .WithOne(e => e.ActivoDigital)
+            .HasForeignKey("ActivoDigitalId")
+            .IsRequired();
+
+        modelBuilder.Entity<Usuario>()
+            .HasMany(e => e.IntercambiosPropuestos)
+            .WithOne(e => e.Proponente)
+            .HasForeignKey("ProponenteId")
+            .IsRequired();
+
+        modelBuilder.Entity<Usuario>()
+            .HasMany(e => e.IntercambiosRecibidos)
+            .WithOne(e => e.Receptor)
+            .HasForeignKey("ReceptorId")
+            .IsRequired();
+
+        modelBuilder.Entity<Intercambio>()
+            .HasMany(e => e.ActivosOfrecidos)
+            .WithOne(e => e.IntercambioOfrecido)
+            .HasForeignKey("IntercambioOfrecidoId")
+            .IsRequired(false);
+
+        modelBuilder.Entity<Intercambio>()
+            .HasMany(e => e.ActivosSolicitados)
+            .WithOne(e => e.IntercambioSolicitado)
+            .HasForeignKey("IntercambioSolicitadoId")
+            .IsRequired(false);
 
     }
 }

@@ -105,5 +105,41 @@ public sealed class VentaRepository : RepositoryBase<Venta>, IVentaRepository
 
     private static Task<bool> EntityExistsAsync(DbSet<Venta> set, Venta entity) =>
         set.AsNoTracking().AnyAsync(existing => existing.Id == entity.Id);
+    public async Task<IReadOnlyList<Venta>> FiltrarVentasPorEstadoAsync(EstadoVenta p_estado)
+    {
+        try
+        {
+            return await DbContext.Set<Venta>()
+                .Where(entity => entity.EstadoVenta == p_estado)
+                .ToListAsync();
+        }
+        catch (DataException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error executing ReadFilter Venta.filtrarVentasPorEstado.");
+            throw new DataException("Error executing ReadFilter Venta.filtrarVentasPorEstado.", ex);
+        }
+    }
 
+    public async Task<IReadOnlyList<Venta>> FiltrarVentasPorPrecioMaximoAsync(double p_precioMaximo)
+    {
+        try
+        {
+            return await DbContext.Set<Venta>()
+                .Where(entity => (double)entity.PrecioVenta.Valor <= p_precioMaximo)
+                .ToListAsync();
+        }
+        catch (DataException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error executing ReadFilter Venta.filtrarVentasPorPrecioMaximo.");
+            throw new DataException("Error executing ReadFilter Venta.filtrarVentasPorPrecioMaximo.", ex);
+        }
+    }
 }

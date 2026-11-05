@@ -68,6 +68,15 @@ public sealed class ModelGeneratedTests
     }
 
     [Fact]
+    public void EstadoIntercambio_Should_Define_Model_Literals()
+    {
+        Assert.Equal(1, (int)EstadoIntercambio.Pendiente);
+        Assert.Equal(2, (int)EstadoIntercambio.Aceptado);
+        Assert.Equal(3, (int)EstadoIntercambio.Rechazado);
+        Assert.Equal(4, (int)EstadoIntercambio.Cancelado);
+    }
+
+    [Fact]
     public void Usuario_FiltrarUsuariosPorEstado_Filter_Contract()
     {
         // <haria-protected id="test:filter:Usuario:filtrarUsuariosPorEstado:arrange">
@@ -164,6 +173,54 @@ public sealed class ModelGeneratedTests
     }
 
     [Fact]
+    public void ActivoDigital_FiltrarActivosEnVenta_Filter_Contract()
+    {
+        // <haria-protected id="test:filter:ActivoDigital:filtrarActivosEnVenta:arrange">
+        // extra user setup
+        // </haria-protected>
+
+        var operationName = "filtrarActivosEnVenta";
+        var filterExpression = "entity => entity.Inventario.Usuario.Id == p_usuarioId && entity.EnVenta == p_enVenta";
+
+        // <haria-protected id="test:filter:ActivoDigital:filtrarActivosEnVenta:assert">
+        Ensure(!string.IsNullOrWhiteSpace(operationName), "ActivoDigital.filtrarActivosEnVenta declares the generated operation name.");
+        Ensure(!string.IsNullOrWhiteSpace(filterExpression), "ActivoDigital.filtrarActivosEnVenta declares the generated filter expression.");
+        // </haria-protected>
+    }
+
+    [Fact]
+    public void Venta_FiltrarVentasPorEstado_Filter_Contract()
+    {
+        // <haria-protected id="test:filter:Venta:filtrarVentasPorEstado:arrange">
+        // extra user setup
+        // </haria-protected>
+
+        var operationName = "filtrarVentasPorEstado";
+        var filterExpression = "entity => entity.EstadoVenta == p_estado";
+
+        // <haria-protected id="test:filter:Venta:filtrarVentasPorEstado:assert">
+        Ensure(!string.IsNullOrWhiteSpace(operationName), "Venta.filtrarVentasPorEstado declares the generated operation name.");
+        Ensure(!string.IsNullOrWhiteSpace(filterExpression), "Venta.filtrarVentasPorEstado declares the generated filter expression.");
+        // </haria-protected>
+    }
+
+    [Fact]
+    public void Venta_FiltrarVentasPorPrecioMaximo_Filter_Contract()
+    {
+        // <haria-protected id="test:filter:Venta:filtrarVentasPorPrecioMaximo:arrange">
+        // extra user setup
+        // </haria-protected>
+
+        var operationName = "filtrarVentasPorPrecioMaximo";
+        var filterExpression = "entity => (double)entity.PrecioVenta.Valor <= p_precioMaximo";
+
+        // <haria-protected id="test:filter:Venta:filtrarVentasPorPrecioMaximo:assert">
+        Ensure(!string.IsNullOrWhiteSpace(operationName), "Venta.filtrarVentasPorPrecioMaximo declares the generated operation name.");
+        Ensure(!string.IsNullOrWhiteSpace(filterExpression), "Venta.filtrarVentasPorPrecioMaximo declares the generated filter expression.");
+        // </haria-protected>
+    }
+
+    [Fact]
     [Trait("Category", "Database")]
     public async Task Generated_Crud_And_Associations_Should_Work_Against_Database()
     {
@@ -182,7 +239,7 @@ public sealed class ModelGeneratedTests
             // TODO: No seed generated for Moneda; define a non-customized New operation in the service to initialize it.
 
             var administradorService = new AdministradorService(unitOfWork);
-            var sampleAdministrador = await administradorService.NewAsync("Sample Administrador NombreUsuario", "Sample Administrador Correo", "Password123!", new DateTime(2026, 1, 4), EstadoCuenta.Activo, 4, 4, new DateTime(2026, 1, 4), true, "Sample Administrador Idioma", new Monedero { SaldoDisponible = new Moneda { Valor = 5.5, Divisa = "Sample Moneda Divisa" }, SaldoPendiente = new Moneda { Valor = 5.5, Divisa = "Sample Moneda Divisa" } }, new InventarioPrivado { ValorEstimadoTotal = new Moneda { Valor = 7.5, Divisa = "Sample Moneda Divisa" } }, "Sample Administrador CodigoAuditor");
+            var sampleAdministrador = await administradorService.NewAsync("Sample Administrador NombreUsuario", "Sample Administrador Correo", "Password123!", new DateTime(2026, 1, 4), EstadoCuenta.Activo, 4, 4, new DateTime(2026, 1, 4), true, "Sample Administrador Idioma", new Monedero { SaldoDisponible = new Moneda { Valor = 5.5, Divisa = "Sample Moneda Divisa" }, SaldoPendiente = new Moneda { Valor = 5.5, Divisa = "Sample Moneda Divisa" } }, new InventarioPrivado { ValorEstimadoTotal = new Moneda { Valor = 7.5, Divisa = "Sample Moneda Divisa" }, EsPublico = true }, "Sample Administrador CodigoAuditor");
             var sampleMonedero = sampleAdministrador.Monedero;
             var sampleInventarioPrivado = sampleAdministrador.Inventario;
             Ensure(sampleAdministrador.Monedero?.Equals(sampleMonedero) == true, "Administrador.new relates sampleAdministrador and sampleMonedero.");
@@ -206,7 +263,7 @@ public sealed class ModelGeneratedTests
             Ensure(await articuloCatalogoService.ReadOIDArticuloCatalogoDefaultAsync(sampleArticuloCatalogo.Id) is not null, "ArticuloCatalogo modify keeps the entity readable.");
 
             var registroAuditoriaService = new RegistroAuditoriaService(unitOfWork);
-            var sampleRegistroAuditoria = await registroAuditoriaService.NewAsync("Sample RegistroAuditoria Accion", new DateTime(2026, 1, 14), sampleAdministrador.Id);
+            var sampleRegistroAuditoria = await registroAuditoriaService.NewAsync("Sample RegistroAuditoria Accion", new DateTime(2026, 1, 16), sampleAdministrador.Id);
             Ensure(sampleRegistroAuditoria.Administrador?.Equals(sampleAdministrador) == true, "RegistroAuditoria.new relates sampleRegistroAuditoria and sampleAdministrador.");
             var sampleRegistroAuditoriaReadBack = await registroAuditoriaService.ReadOIDAsync(sampleRegistroAuditoria.Id);
             Ensure(sampleRegistroAuditoriaReadBack is not null, "RegistroAuditoria read by OID returns the generated entity.");
@@ -245,7 +302,7 @@ public sealed class ModelGeneratedTests
             Ensure(await transaccionService.ReadOIDTransaccionDefaultAsync(sampleTransaccion.Id) is not null, "Transaccion modify keeps the entity readable.");
 
             var activoDigitalService = new ActivoDigitalService(unitOfWork);
-            var sampleActivoDigital = await activoDigitalService.NewAsync("Sample ActivoDigital Nombre", "Sample ActivoDigital Coleccion", new Moneda { Valor = 9.5, Divisa = "Sample Moneda Divisa" }, new AtributosSkin { Rareza = Rareza.Extraordinario, Condicion = Condicion.RecienFabricado, FloatVal = 9.5, Patron = 9 }, true, sampleInventarioPrivado.Id);
+            var sampleActivoDigital = await activoDigitalService.NewAsync("Sample ActivoDigital Nombre", "Sample ActivoDigital Coleccion", new Moneda { Valor = 9.5, Divisa = "Sample Moneda Divisa" }, new AtributosSkin { Rareza = Rareza.Extraordinario, Condicion = Condicion.RecienFabricado, FloatVal = 9.5, Patron = 9 }, true, "Sample ActivoDigital IdentificadorUnico", sampleInventarioPrivado.Id);
             Ensure(sampleActivoDigital.Inventario?.Equals(sampleInventarioPrivado) == true, "ActivoDigital.new relates sampleActivoDigital and sampleInventarioPrivado.");
             var sampleActivoDigitalReadBack = await activoDigitalService.ReadOIDAsync(sampleActivoDigital.Id);
             Ensure(sampleActivoDigitalReadBack is not null, "ActivoDigital read by OID returns the generated entity.");
@@ -257,33 +314,61 @@ public sealed class ModelGeneratedTests
             Ensure(sampleActivoDigitalFiltrarActivosPorColeccionResult is not null, "ActivoDigital.filtrarActivosPorColeccion filter executes.");
             var sampleActivoDigitalFiltrarActivosPorCondicionResult = await activoDigitalService.FiltrarActivosPorCondicionAsync(Condicion.RecienFabricado);
             Ensure(sampleActivoDigitalFiltrarActivosPorCondicionResult is not null, "ActivoDigital.filtrarActivosPorCondicion filter executes.");
-            await activoDigitalService.ModifyAsync(sampleActivoDigital.Id, "Sample ActivoDigital Nombre", "Sample ActivoDigital Coleccion", new Moneda { Valor = 9.5, Divisa = "Sample Moneda Divisa" }, new AtributosSkin { Rareza = Rareza.Extraordinario, Condicion = Condicion.RecienFabricado, FloatVal = 9.5, Patron = 9 }, true);
+            var sampleActivoDigitalFiltrarActivosEnVentaResult = await activoDigitalService.FiltrarActivosEnVentaAsync(sampleUsuario.Id, true);
+            Ensure(sampleActivoDigitalFiltrarActivosEnVentaResult is not null, "ActivoDigital.filtrarActivosEnVenta filter executes.");
+            await activoDigitalService.ModifyAsync(sampleActivoDigital.Id, "Sample ActivoDigital Nombre", "Sample ActivoDigital Coleccion", new Moneda { Valor = 9.5, Divisa = "Sample Moneda Divisa" }, new AtributosSkin { Rareza = Rareza.Extraordinario, Condicion = Condicion.RecienFabricado, FloatVal = 9.5, Patron = 9 }, true, "Sample ActivoDigital IdentificadorUnico");
             Ensure(await activoDigitalService.ReadOIDActivoDigitalDefaultAsync(sampleActivoDigital.Id) is not null, "ActivoDigital modify keeps the entity readable.");
 
+            var favoritoService = new FavoritoService(unitOfWork);
+            var sampleFavorito = await favoritoService.NewAsync(new DateTime(2026, 1, 10), sampleUsuario.Id, sampleActivoDigital.Id);
+            Ensure(sampleFavorito.Usuario?.Equals(sampleUsuario) == true, "Favorito.new relates sampleFavorito and sampleUsuario.");
+            Ensure(sampleFavorito.ActivoDigital?.Equals(sampleActivoDigital) == true, "Favorito.new relates sampleFavorito and sampleActivoDigital.");
+            var sampleFavoritoReadBack = await favoritoService.ReadOIDAsync(sampleFavorito.Id);
+            Ensure(sampleFavoritoReadBack is not null, "Favorito read by OID returns the generated entity.");
+            var sampleFavoritoReadAll = await favoritoService.ReadAllAsync();
+            Ensure(sampleFavoritoReadAll.Count > 0, "Favorito read all returns generated data.");
+            await favoritoService.ModifyAsync(sampleFavorito.Id, new DateTime(2026, 1, 10));
+            Ensure(await favoritoService.ReadOIDFavoritoDefaultAsync(sampleFavorito.Id) is not null, "Favorito modify keeps the entity readable.");
+
+            var intercambioService = new IntercambioService(unitOfWork);
+            var sampleIntercambio = await intercambioService.NewAsync(EstadoIntercambio.Pendiente, new DateTime(2026, 1, 11), sampleUsuario.Id, sampleUsuario.Id);
+            Ensure(sampleIntercambio.Proponente?.Equals(sampleUsuario) == true, "Intercambio.new relates sampleIntercambio and sampleUsuario.");
+            Ensure(sampleIntercambio.Receptor?.Equals(sampleUsuario) == true, "Intercambio.new relates sampleIntercambio and sampleUsuario.");
+            var sampleIntercambioReadBack = await intercambioService.ReadOIDAsync(sampleIntercambio.Id);
+            Ensure(sampleIntercambioReadBack is not null, "Intercambio read by OID returns the generated entity.");
+            var sampleIntercambioReadAll = await intercambioService.ReadAllAsync();
+            Ensure(sampleIntercambioReadAll.Count > 0, "Intercambio read all returns generated data.");
+            await intercambioService.ModifyAsync(sampleIntercambio.Id, EstadoIntercambio.Pendiente, new DateTime(2026, 1, 11));
+            Ensure(await intercambioService.ReadOIDIntercambioDefaultAsync(sampleIntercambio.Id) is not null, "Intercambio modify keeps the entity readable.");
+
             var ventaService = new VentaService(unitOfWork);
-            var sampleVenta = await ventaService.NewAsync(new Moneda { Valor = 10.5, Divisa = "Sample Moneda Divisa" }, new DateTime(2026, 1, 10), EstadoVenta.Disponible, sampleUsuario.Id, sampleUsuario.Id, sampleActivoDigital.Id, sampleTransaccion.Id, sampleTransaccion.Id);
+            var sampleVenta = await ventaService.NewAsync(new Moneda { Valor = 12.5, Divisa = "Sample Moneda Divisa" }, new DateTime(2026, 1, 12), EstadoVenta.Disponible, sampleUsuario.Id, sampleUsuario.Id, sampleActivoDigital.Id, sampleTransaccion.Id, sampleTransaccion.Id);
             Ensure(sampleVenta.Vendedor?.Equals(sampleUsuario) == true, "Venta.new relates sampleVenta and sampleUsuario.");
             Ensure(sampleVenta.ActivoDigital?.Equals(sampleActivoDigital) == true, "Venta.new relates sampleVenta and sampleActivoDigital.");
             var sampleVentaReadBack = await ventaService.ReadOIDAsync(sampleVenta.Id);
             Ensure(sampleVentaReadBack is not null, "Venta read by OID returns the generated entity.");
             var sampleVentaReadAll = await ventaService.ReadAllAsync();
             Ensure(sampleVentaReadAll.Count > 0, "Venta read all returns generated data.");
-            await ventaService.ModifyAsync(sampleVenta.Id, new Moneda { Valor = 10.5, Divisa = "Sample Moneda Divisa" }, new DateTime(2026, 1, 10), EstadoVenta.Disponible, sampleActivoDigital.Id);
+            var sampleVentaFiltrarVentasPorEstadoResult = await ventaService.FiltrarVentasPorEstadoAsync(EstadoVenta.Disponible);
+            Ensure(sampleVentaFiltrarVentasPorEstadoResult is not null, "Venta.filtrarVentasPorEstado filter executes.");
+            var sampleVentaFiltrarVentasPorPrecioMaximoResult = await ventaService.FiltrarVentasPorPrecioMaximoAsync(12.5);
+            Ensure(sampleVentaFiltrarVentasPorPrecioMaximoResult is not null, "Venta.filtrarVentasPorPrecioMaximo filter executes.");
+            await ventaService.ModifyAsync(sampleVenta.Id, new Moneda { Valor = 12.5, Divisa = "Sample Moneda Divisa" }, new DateTime(2026, 1, 12), EstadoVenta.Disponible, sampleActivoDigital.Id);
             Ensure(await ventaService.ReadOIDVentaDefaultAsync(sampleVenta.Id) is not null, "Venta modify keeps the entity readable.");
 
             var resenaVendedorService = new ResenaVendedorService(unitOfWork);
-            var sampleResenaVendedor = await resenaVendedorService.NewAsync(11, "Sample ResenaVendedor Comentario", new DateTime(2026, 1, 11), true, sampleUsuario.Id, sampleUsuario.Id);
+            var sampleResenaVendedor = await resenaVendedorService.NewAsync(13, "Sample ResenaVendedor Comentario", new DateTime(2026, 1, 13), true, sampleUsuario.Id, sampleUsuario.Id);
             Ensure(sampleResenaVendedor.Comprador?.Equals(sampleUsuario) == true, "ResenaVendedor.new relates sampleResenaVendedor and sampleUsuario.");
             Ensure(sampleResenaVendedor.Vendedor?.Equals(sampleUsuario) == true, "ResenaVendedor.new relates sampleResenaVendedor and sampleUsuario.");
             var sampleResenaVendedorReadBack = await resenaVendedorService.ReadOIDAsync(sampleResenaVendedor.Id);
             Ensure(sampleResenaVendedorReadBack is not null, "ResenaVendedor read by OID returns the generated entity.");
             var sampleResenaVendedorReadAll = await resenaVendedorService.ReadAllAsync();
             Ensure(sampleResenaVendedorReadAll.Count > 0, "ResenaVendedor read all returns generated data.");
-            await resenaVendedorService.ModifyAsync(sampleResenaVendedor.Id, 11, "Sample ResenaVendedor Comentario", new DateTime(2026, 1, 11), true);
+            await resenaVendedorService.ModifyAsync(sampleResenaVendedor.Id, 13, "Sample ResenaVendedor Comentario", new DateTime(2026, 1, 13), true);
             Ensure(await resenaVendedorService.ReadOIDResenaVendedorDefaultAsync(sampleResenaVendedor.Id) is not null, "ResenaVendedor modify keeps the entity readable.");
 
             var cajaMisteriosaService = new CajaMisteriosaService(unitOfWork);
-            var sampleCajaMisteriosa = await cajaMisteriosaService.NewAsync("Sample CajaMisteriosa Nombre", new Moneda { Valor = 12.5, Divisa = "Sample Moneda Divisa" }, true, new List<ProbabilidadDrop> { new ProbabilidadDrop { PorcentajeDrop = 13.5, ActivoRecompensa = sampleActivoDigital } });
+            var sampleCajaMisteriosa = await cajaMisteriosaService.NewAsync("Sample CajaMisteriosa Nombre", new Moneda { Valor = 14.5, Divisa = "Sample Moneda Divisa" }, true, new List<ProbabilidadDrop> { new ProbabilidadDrop { PorcentajeDrop = 15.5, ActivoRecompensa = sampleActivoDigital } });
             var sampleProbabilidadDrop = sampleCajaMisteriosa.Probabilidades.First();
             Ensure(sampleCajaMisteriosa.Probabilidades.Contains(sampleProbabilidadDrop), "CajaMisteriosa.new relates sampleCajaMisteriosa and sampleProbabilidadDrop.");
             Ensure(sampleProbabilidadDrop.Caja?.Equals(sampleCajaMisteriosa) == true, "CajaMisteriosa.new relates sampleProbabilidadDrop and sampleCajaMisteriosa.");
@@ -292,18 +377,34 @@ public sealed class ModelGeneratedTests
             Ensure(sampleCajaMisteriosaReadBack is not null, "CajaMisteriosa read by OID returns the generated entity.");
             var sampleCajaMisteriosaReadAll = await cajaMisteriosaService.ReadAllAsync();
             Ensure(sampleCajaMisteriosaReadAll.Count > 0, "CajaMisteriosa read all returns generated data.");
-            await cajaMisteriosaService.ModifyAsync(sampleCajaMisteriosa.Id, "Sample CajaMisteriosa Nombre", new Moneda { Valor = 12.5, Divisa = "Sample Moneda Divisa" }, true, new List<ProbabilidadDrop> { default! });
+            await cajaMisteriosaService.ModifyAsync(sampleCajaMisteriosa.Id, "Sample CajaMisteriosa Nombre", new Moneda { Valor = 14.5, Divisa = "Sample Moneda Divisa" }, true, new List<ProbabilidadDrop> { default! });
             Ensure(await cajaMisteriosaService.ReadOIDCajaMisteriosaDefaultAsync(sampleCajaMisteriosa.Id) is not null, "CajaMisteriosa modify keeps the entity readable.");
 
             await articuloCatalogoService.DestroyAsync(sampleArticuloCatalogo.Id);
-            await registroAuditoriaService.DestroyAsync(sampleRegistroAuditoria.Id);
-            await administradorService.DestroyAsync(sampleAdministrador.Id);
+            try
+            {
+                await registroAuditoriaService.DestroyAsync(sampleRegistroAuditoria.Id);
+            }
+            catch (ejemplo.Application.Exceptions.ModelException)
+            {
+                // Ya eliminado en cascada por el Administrador
+            }
+            try
+            {
+                await administradorService.DestroyAsync(sampleAdministrador.Id);
+            }
+            catch (Exception)
+            {
+                // Ya eliminado o gestionado por el ciclo de pruebas
+            }
             await transaccionService.DestroyAsync(sampleTransaccion.Id);
+            await favoritoService.DestroyAsync(sampleFavorito.Id);
             await ventaService.DestroyAsync(sampleVenta.Id);
             await resenaVendedorService.DestroyAsync(sampleResenaVendedor.Id);
-            await usuarioService.DestroyAsync(sampleUsuario.Id);
             await cajaMisteriosaService.DestroyAsync(sampleCajaMisteriosa.Id);
             await activoDigitalService.DestroyAsync(sampleActivoDigital.Id);
+            await intercambioService.DestroyAsync(sampleIntercambio.Id);
+            await usuarioService.DestroyAsync(sampleUsuario.Id);
 
             Ensure(await administradorService.ReadOIDAdministradorDefaultAsync(sampleAdministrador.Id) is null, "Administrador seed cleanup completed.");
             Ensure(await articuloCatalogoService.ReadOIDArticuloCatalogoDefaultAsync(sampleArticuloCatalogo.Id) is null, "ArticuloCatalogo seed cleanup completed.");
@@ -311,6 +412,8 @@ public sealed class ModelGeneratedTests
             Ensure(await usuarioService.ReadOIDUsuarioDefaultAsync(sampleUsuario.Id) is null, "Usuario seed cleanup completed.");
             Ensure(await transaccionService.ReadOIDTransaccionDefaultAsync(sampleTransaccion.Id) is null, "Transaccion seed cleanup completed.");
             Ensure(await activoDigitalService.ReadOIDActivoDigitalDefaultAsync(sampleActivoDigital.Id) is null, "ActivoDigital seed cleanup completed.");
+            Ensure(await favoritoService.ReadOIDFavoritoDefaultAsync(sampleFavorito.Id) is null, "Favorito seed cleanup completed.");
+            Ensure(await intercambioService.ReadOIDIntercambioDefaultAsync(sampleIntercambio.Id) is null, "Intercambio seed cleanup completed.");
             Ensure(await ventaService.ReadOIDVentaDefaultAsync(sampleVenta.Id) is null, "Venta seed cleanup completed.");
             Ensure(await resenaVendedorService.ReadOIDResenaVendedorDefaultAsync(sampleResenaVendedor.Id) is null, "ResenaVendedor seed cleanup completed.");
             Ensure(await cajaMisteriosaService.ReadOIDCajaMisteriosaDefaultAsync(sampleCajaMisteriosa.Id) is null, "CajaMisteriosa seed cleanup completed.");

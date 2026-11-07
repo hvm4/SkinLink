@@ -2,6 +2,7 @@
 using ejemplo.Application.Services;
 using ejemplo.Application.UseCases.CajaMisteriosa;
 using ejemplo.Application.UseCases.Intercambio;
+using ejemplo.Application.UseCases.Usuario;
 using ejemplo.Application.UseCases.Venta;
 using ejemplo.Infrastructure.Data;
 using ejemplo.Domain.Entities;
@@ -176,22 +177,8 @@ public static class SeedData
             Ensure(await cajaMisteriosaService.ReadOIDCajaMisteriosaDefaultAsync(sampleCajaMisteriosa.Id) is not null, "CajaMisteriosa modify keeps the entity readable.");
 
             await articuloCatalogoService.DestroyAsync(sampleArticuloCatalogo.Id);
-            try
-            {
-                await registroAuditoriaService.DestroyAsync(sampleRegistroAuditoria.Id);
-            }
-            catch (Exception)
-            {
-                // Ya eliminado en cascada por el Administrador
-            }
-            try
-            {
-                await administradorService.DestroyAsync(sampleAdministrador.Id);
-            }
-            catch (Exception)
-            {
-                // Ya gestionado por el ciclo de borrado o herencia con Usuario
-            }
+            await registroAuditoriaService.DestroyAsync(sampleRegistroAuditoria.Id);
+            await administradorService.DestroyAsync(sampleAdministrador.Id);
             await transaccionService.DestroyAsync(sampleTransaccion.Id);
             await favoritoService.DestroyAsync(sampleFavorito.Id);
             await ventaService.DestroyAsync(sampleVenta.Id);

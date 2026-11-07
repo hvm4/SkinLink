@@ -14,9 +14,14 @@ public sealed partial class ActivoDigitalService
     public async Task BloquearParaVentaAsync(int p_oid)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_ActivoDigital_bloquearParaVenta) ENABLED START*/
-        // Write here your custom code...
+        ActivoDigital activo = await _repository.ReadAsync(p_oid)
+            ?? throw new ModelException("ActivoDigital not found.");
 
-        throw new ModelException("Application service generation for ActivoDigital.bloquearParaVenta is pending.", new NotImplementedException("Method BloquearParaVentaAsync() not yet implemented."));
+        if (activo.EnVenta)
+            throw new ModelException("El activo ya esta bloqueado para la venta.");
+
+        activo.EnVenta = true;
+        await _repository.SaveAsync(activo);
         /*PROTECTED REGION END*/
     }
 }

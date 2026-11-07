@@ -1,7 +1,6 @@
 ﻿using ejemplo.Application.Abstractions;
 using ejemplo.Application.Exceptions;
 using ejemplo.Domain.Entities;
-using ejemplo.Domain.ValueObjects;
 using ejemplo.Domain.Enums;
 
         /*PROTECTED REGION ID(usingejemplo.Application.Services_Usuario_suspenderCuentaUsuario) ENABLED START*/

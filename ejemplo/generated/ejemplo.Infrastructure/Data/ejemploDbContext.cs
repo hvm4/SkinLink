@@ -68,6 +68,10 @@ public sealed class ejemploDbContext : DbContext
             entity.Property(e => e.Idioma)
                 .HasColumnName("idioma")
                 .IsRequired();
+            entity.Property(e => e.FechaUltimaRecompensa)
+                .HasColumnName("fechaUltimaRecompensa")
+                .HasColumnType("date")
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<Administrador>(entity =>

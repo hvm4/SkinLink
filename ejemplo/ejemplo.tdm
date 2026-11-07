@@ -78,6 +78,8 @@ ConceptualModel SkinLink {
             private fechaUltimoLogin : Date (1, 1);
             private temaModoOscuro : Boolean (1, 1);
             private idioma : String (1, 1);
+            // Jorge
+            private fechaUltimaRecompensa : Date (0, 1);
         }
         
         operations
@@ -94,6 +96,9 @@ ConceptualModel SkinLink {
             // Operaciones Custom
             public sumarExperiencia::Custom (p_oid : OID -> Usuario, p_puntos : Integer) : Void;
             public suspenderCuentaUsuario::Custom (p_oid : OID -> Usuario) : Void;
+
+            // Jorge
+            public reclamarRecompensaDiaria::CustomTransaction (p_oid : OID -> Usuario, p_caja_oid : OID -> CajaMisteriosa) : Object -> ActivoDigital;
 
             // ========================================================
             // FILTROS DE LECTURA (ReadFilter) - Modulo Financiero y Auditoria
@@ -267,6 +272,8 @@ ConceptualModel SkinLink {
             // Operaciones Custom
             public bloquearParaVenta::Custom (p_oid : OID -> ActivoDigital) : Void;
             public desbloquear::Custom (p_oid : OID -> ActivoDigital) : Void;
+            // Jorge
+            public actualizarPrecio::Custom (p_oid : OID -> ActivoDigital, p_nuevoPrecio : Moneda) : Void;
             
             // blanca
             public marcarComoFavorito::Custom (p_oid : OID -> ActivoDigital, p_usuario_oid : OID -> Usuario) : Boolean;
@@ -285,7 +292,7 @@ ConceptualModel SkinLink {
             };
             public filtrarActivosPorCondicion::ReadFilter (p_condicion : Condicion) : List<Object -> ActivoDigital>
             {
-                filterLinQ = "entity => entity.Atributos != null && entity.Atributos.condicion == p_condicion"
+                filterLinQ = "entity => entity.Atributos != null && entity.Atributos.Condicion == p_condicion"
             };
 
             // blanca
@@ -366,7 +373,8 @@ ConceptualModel SkinLink {
             public editarPrecio::Custom (p_oid : OID -> Venta, p_nuevoPrecio : Moneda) : Void;
             public cancelarVenta::Custom (p_oid : OID -> Venta) : Void;
             public cancelarIntercambio::CustomTransaction (p_oid : OID -> Venta) : Void;
-            public ejecutarCompra::Custom (p_oid : OID -> Venta, p_comprador_oid : OID -> Usuario) : Void;
+            // Jorge (sustituye a ejecutarCompra)
+            public procesarCompraSkin::CustomTransaction (p_oid : OID -> Venta, p_comprador_oid : OID -> Usuario) : Void;
 
             // blanca
             public filtrarVentasPorEstado::ReadFilter (p_estado : EstadoVenta) : List<Object -> Venta>

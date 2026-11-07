@@ -17,6 +17,7 @@ public partial class Usuario
     public DateTime FechaUltimoLogin { get; set; }
     public bool TemaModoOscuro { get; set; }
     public string Idioma { get; set; } = string.Empty;
+    public DateTime? FechaUltimaRecompensa { get; set; }
     public Monedero Monedero { get; set; } = null!;
     public InventarioPrivado Inventario { get; set; } = null!;
     public IList<Venta> VentasPublicadas { get; set; } = new List<Venta>();

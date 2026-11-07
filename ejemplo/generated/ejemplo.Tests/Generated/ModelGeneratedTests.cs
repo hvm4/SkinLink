@@ -381,22 +381,8 @@ public sealed class ModelGeneratedTests
             Ensure(await cajaMisteriosaService.ReadOIDCajaMisteriosaDefaultAsync(sampleCajaMisteriosa.Id) is not null, "CajaMisteriosa modify keeps the entity readable.");
 
             await articuloCatalogoService.DestroyAsync(sampleArticuloCatalogo.Id);
-            try
-            {
-                await registroAuditoriaService.DestroyAsync(sampleRegistroAuditoria.Id);
-            }
-            catch (ejemplo.Application.Exceptions.ModelException)
-            {
-                // Ya eliminado en cascada por el Administrador
-            }
-            try
-            {
-                await administradorService.DestroyAsync(sampleAdministrador.Id);
-            }
-            catch (Exception)
-            {
-                // Ya eliminado o gestionado por el ciclo de pruebas
-            }
+            await registroAuditoriaService.DestroyAsync(sampleRegistroAuditoria.Id);
+            await administradorService.DestroyAsync(sampleAdministrador.Id);
             await transaccionService.DestroyAsync(sampleTransaccion.Id);
             await favoritoService.DestroyAsync(sampleFavorito.Id);
             await ventaService.DestroyAsync(sampleVenta.Id);

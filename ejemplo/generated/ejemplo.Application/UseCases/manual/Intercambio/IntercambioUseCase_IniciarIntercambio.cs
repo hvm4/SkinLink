@@ -1,12 +1,14 @@
-﻿using ejemplo.Application.Abstractions;
+using ejemplo.Application.Abstractions;
 using ejemplo.Application.Exceptions;
 using ejemplo.Application.Services;
 using ejemplo.Domain.Entities;
 using ejemplo.Domain.Enums;
 
         /*PROTECTED REGION ID(usingejemplo.Application.UseCases_Intercambio_iniciarIntercambio) ENABLED START*/
+        using System;
         using System.Linq;
         using System.Collections.Generic;
+        using UsuarioEntity = ejemplo.Domain.Entities.Usuario;
         /*PROTECTED REGION END*/
 
 namespace ejemplo.Application.UseCases.Intercambio;
@@ -36,9 +38,9 @@ public sealed partial class IntercambioUseCase
             await _unitOfWork.BeginTransactionAsync("IntercambioUseCase.IniciarIntercambioAsync");
             intercambioService = new IntercambioService(_unitOfWork);
 
-            Usuario proponente = await _unitOfWork.UsuarioRepository.ReadAsync(p_proponente_oid)
+            UsuarioEntity proponente = await _unitOfWork.UsuarioRepository.ReadAsync(p_proponente_oid)
                 ?? throw new ModelException("Usuario proponente not found.");
-            Usuario receptor = await _unitOfWork.UsuarioRepository.ReadAsync(p_receptor_oid)
+            UsuarioEntity receptor = await _unitOfWork.UsuarioRepository.ReadAsync(p_receptor_oid)
                 ?? throw new ModelException("Usuario receptor not found.");
 
             var inventarios = await _unitOfWork.InventarioPrivadoRepository.ReadAllAsync();
@@ -91,7 +93,7 @@ public sealed partial class IntercambioUseCase
         /*PROTECTED REGION END*/
     }
 
-    private static List<ActivoDigital> ResolverActivos(IReadOnlyList<ActivoDigital> todos, IEnumerable<int> ids)
+    internal static List<ActivoDigital> ResolverActivos(IReadOnlyList<ActivoDigital> todos, IEnumerable<int> ids)
     {
         List<ActivoDigital> resultado = new();
         foreach (int id in ids)

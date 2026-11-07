@@ -14,9 +14,20 @@ public sealed partial class ActivoDigitalService
     public async Task DesbloquearAsync(int p_oid)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_ActivoDigital_desbloquear) ENABLED START*/
-        // Write here your custom code...
+        ActivoDigital activo = await _repository.ReadAsync(p_oid)
+            ?? throw new ModelException("ActivoDigital not found.");
 
-        throw new ModelException("Application service generation for ActivoDigital.desbloquear is pending.", new NotImplementedException("Method DesbloquearAsync() not yet implemented."));
+        if (!activo.EnVenta)
+            throw new ModelException("El activo no esta bloqueado.");
+
+        // No se puede liberar un activo que tiene un anuncio de venta activo.
+        if (activo.Venta is not null &&
+            (activo.Venta.EstadoVenta == EstadoVenta.Disponible ||
+             activo.Venta.EstadoVenta == EstadoVenta.EnProceso))
+            throw new ModelException("El activo tiene una venta activa; cancela la venta antes de desbloquearlo.");
+
+        activo.EnVenta = false;
+        await _repository.SaveAsync(activo);
         /*PROTECTED REGION END*/
     }
 }

@@ -1,10 +1,12 @@
-﻿using ejemplo.Application.Abstractions;
+using ejemplo.Application.Abstractions;
 using ejemplo.Application.Exceptions;
 using ejemplo.Domain.Entities;
 using ejemplo.Domain.Enums;
 
         /*PROTECTED REGION ID(usingejemplo.Application.Services_CajaMisteriosa_abrirCaja) ENABLED START*/
         // references to other libraries
+        using System;
+        using System.Linq;
         using ejemplo.Domain.ValueObjects;
         /*PROTECTED REGION END*/
 
@@ -32,7 +34,7 @@ public sealed partial class CajaMisteriosaService
 
             // Carga las relaciones necesarias en el contexto compartido (EF hace el enlace).
             await _unitOfWork.ProbabilidadDropRepository.ReadAllAsync();
-            await _unitOfWork.ArticuloCatalogoRepository.ReadAllAsync();
+            await _unitOfWork.ActivoDigitalRepository.ReadAllAsync();
             await _unitOfWork.MonederoRepository.ReadAllAsync();
             await _unitOfWork.InventarioPrivadoRepository.ReadAllAsync();
 
@@ -77,19 +79,26 @@ public sealed partial class CajaMisteriosaService
                 if (tirada < acumulado) { elegido = d; break; }
             }
 
-            var articulo = elegido.ArticuloRecompensa
-                ?? throw new ModelException("La probabilidad elegida no tiene artículo asociado.");
+            var activoBase = elegido.ActivoRecompensa
+                ?? throw new ModelException("La probabilidad elegida no tiene activo de recompensa asociado.");
 
-            // 3) Generar el nuevo activo (unidad concreta del artículo) en el inventario del usuario
+            // 3) Generar el nuevo activo en el inventario del usuario
             double floatVal = Random.Shared.NextDouble();
             var nuevo = new ActivoDigital
             {
-                Articulo = articulo,
+                Nombre = activoBase.Nombre,
+                Coleccion = activoBase.Coleccion,
+                PrecioEstimado = new Moneda
+                {
+                    Valor = activoBase.PrecioEstimado?.Valor ?? 0,
+                    Divisa = activoBase.PrecioEstimado?.Divisa ?? "EUR"
+                },
                 Inventario = inventario,
                 EnVenta = false,
+                IdentificadorUnico = Guid.NewGuid().ToString("N"),
                 Atributos = new AtributosSkin
                 {
-                    FloatVal = floatVal,
+                    Rareza = activoBase.Atributos?.Rareza ?? Rareza.Comun,
                     Condicion = floatVal switch
                     {
                         < 0.07 => Condicion.RecienFabricado,
@@ -98,6 +107,7 @@ public sealed partial class CajaMisteriosaService
                         < 0.45 => Condicion.BastanteDesgastado,
                         _ => Condicion.Deplorable
                     },
+                    FloatVal = floatVal,
                     Patron = Random.Shared.Next(0, 1000)
                 }
             };

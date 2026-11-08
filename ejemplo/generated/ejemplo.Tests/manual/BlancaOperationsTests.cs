@@ -277,6 +277,27 @@ public sealed class BlancaOperationsTests
             new List<int> { s.ActivoProponenteId }, new List<int> { s.ActivoReceptorId }));
     }
 
+    [Fact]
+    public async Task IniciarIntercambio_Con_Activo_Solicitado_En_Venta_Lanza_Y_No_Crea_Nada()
+    {
+        await using var env = await TestEnv.CreateAsync();
+        var s = await SeedTradeAsync(env);
+
+        // El receptor publica su activo en venta: ya no puede intercambiarse.
+        await env.SeedAsync(db =>
+        {
+            db.Set<ActivoDigital>().Single(a => a.Id == s.ActivoReceptorId).EnVenta = true;
+            return 0;
+        });
+
+        var service = new IntercambioUseCase(env.NewUow());
+        await Assert.ThrowsAsync<ModelException>(() => service.IniciarIntercambioAsync(
+            s.ProponenteId, s.ReceptorId,
+            new List<int> { s.ActivoProponenteId }, new List<int> { s.ActivoReceptorId }));
+
+        Assert.Empty(await env.NewUow().IntercambioRepository.ReadAllAsync());
+    }
+
     // ------------------------------------------------------------------
     // CUSTOMTRANSACTION: aceptarIntercambio
     // ------------------------------------------------------------------

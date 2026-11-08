@@ -102,5 +102,41 @@ public sealed class CajaMisteriosaRepository : RepositoryBase<CajaMisteriosa>, I
 
     private static Task<bool> EntityExistsAsync(DbSet<CajaMisteriosa> set, CajaMisteriosa entity) =>
         set.AsNoTracking().AnyAsync(existing => existing.Id == entity.Id);
+    public async Task<IReadOnlyList<CajaMisteriosa>> FiltrarCajasActivasAsync()
+    {
+        try
+        {
+            return await DbContext.Set<CajaMisteriosa>()
+                .Where(entity => entity.Activa == true)
+                .ToListAsync();
+        }
+        catch (DataException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error executing ReadFilter CajaMisteriosa.filtrarCajasActivas.");
+            throw new DataException("Error executing ReadFilter CajaMisteriosa.filtrarCajasActivas.", ex);
+        }
+    }
 
+    public async Task<IReadOnlyList<CajaMisteriosa>> FiltrarCajasPorPrecioAperturaAsync(double p_precioMinimo, double p_precioMaximo)
+    {
+        try
+        {
+            return await DbContext.Set<CajaMisteriosa>()
+                .Where(entity => (double)entity.PrecioApertura.Valor >= p_precioMinimo && (double)entity.PrecioApertura.Valor <= p_precioMaximo)
+                .ToListAsync();
+        }
+        catch (DataException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error executing ReadFilter CajaMisteriosa.filtrarCajasPorPrecioApertura.");
+            throw new DataException("Error executing ReadFilter CajaMisteriosa.filtrarCajasPorPrecioApertura.", ex);
+        }
+    }
 }

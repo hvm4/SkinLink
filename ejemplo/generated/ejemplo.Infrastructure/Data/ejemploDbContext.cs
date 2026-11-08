@@ -22,6 +22,7 @@ public sealed class ejemploDbContext : DbContext
     public DbSet<ResenaVendedor> ResenaVendedors => Set<ResenaVendedor>();
     public DbSet<CajaMisteriosa> CajaMisteriosas => Set<CajaMisteriosa>();
     public DbSet<ProbabilidadDrop> ProbabilidadDrops => Set<ProbabilidadDrop>();
+    public DbSet<ConfiguracionSistema> ConfiguracionSistemas => Set<ConfiguracionSistema>();
     public DbSet<RegistroAuditoria> RegistroAuditorias => Set<RegistroAuditoria>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -67,6 +68,9 @@ public sealed class ejemploDbContext : DbContext
                 .IsRequired();
             entity.Property(e => e.Idioma)
                 .HasColumnName("idioma")
+                .IsRequired();
+            entity.Property(e => e.Verificado)
+                .HasColumnName("verificado")
                 .IsRequired();
             entity.Property(e => e.FechaUltimaRecompensa)
                 .HasColumnName("fechaUltimaRecompensa")
@@ -356,6 +360,36 @@ public sealed class ejemploDbContext : DbContext
                 .ValueGeneratedOnAdd();
             entity.Property(e => e.PorcentajeDrop)
                 .HasColumnName("porcentajeDrop")
+                .IsRequired();
+        });
+
+        modelBuilder.Entity<ConfiguracionSistema>(entity =>
+        {
+            entity.ToTable("ConfiguracionSistema");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+            entity.Property(e => e.LimitePrecioBajo)
+                .HasColumnName("limitePrecioBajo")
+                .IsRequired();
+            entity.Property(e => e.LimitePrecioMedio)
+                .HasColumnName("limitePrecioMedio")
+                .IsRequired();
+            entity.Property(e => e.ComisionPrecioBajo)
+                .HasColumnName("comisionPrecioBajo")
+                .IsRequired();
+            entity.Property(e => e.ComisionPrecioMedio)
+                .HasColumnName("comisionPrecioMedio")
+                .IsRequired();
+            entity.Property(e => e.ComisionPrecioAlto)
+                .HasColumnName("comisionPrecioAlto")
+                .IsRequired();
+            entity.Property(e => e.RetiroMinimo)
+                .HasColumnName("retiroMinimo")
+                .IsRequired();
+            entity.Property(e => e.RetiroMaximoDiario)
+                .HasColumnName("retiroMaximoDiario")
                 .IsRequired();
         });
 

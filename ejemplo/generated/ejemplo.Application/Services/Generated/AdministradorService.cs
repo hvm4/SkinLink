@@ -57,7 +57,7 @@ public sealed partial class AdministradorService : ServiceEntity<Administrador>
         }
     }
 
-    public async Task<Administrador> NewAsync(string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, Monedero p_monedero, InventarioPrivado p_inventario, string p_codigoAuditor)
+    public async Task<Administrador> NewAsync(string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, bool p_verificado, Monedero p_monedero, InventarioPrivado p_inventario, string p_codigoAuditor)
     {
         Administrador entity = new Administrador
         {
@@ -71,6 +71,7 @@ public sealed partial class AdministradorService : ServiceEntity<Administrador>
             FechaUltimoLogin = p_fechaUltimoLogin,
             TemaModoOscuro = p_temaModoOscuro,
             Idioma = p_idioma,
+            Verificado = p_verificado,
             CodigoAuditor = p_codigoAuditor,
             Monedero = p_monedero,
             Inventario = p_inventario,
@@ -91,7 +92,7 @@ public sealed partial class AdministradorService : ServiceEntity<Administrador>
         await _repository.DeleteAsync(entity);
     }
 
-    public async Task ModifyAsync(int p_oid, string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, Monedero p_monedero, InventarioPrivado p_inventario, string p_codigoAuditor)
+    public async Task ModifyAsync(int p_oid, string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, bool p_verificado, Monedero p_monedero, InventarioPrivado p_inventario, string p_codigoAuditor)
     {
         Administrador entity = await _repository.ReadAsync(p_oid)
             ?? throw new ModelException("Administrador not found.");
@@ -105,6 +106,7 @@ public sealed partial class AdministradorService : ServiceEntity<Administrador>
         entity.FechaUltimoLogin = p_fechaUltimoLogin;
         entity.TemaModoOscuro = p_temaModoOscuro;
         entity.Idioma = p_idioma;
+        entity.Verificado = p_verificado;
         entity.CodigoAuditor = p_codigoAuditor;
         await _repository.SaveAsync(entity);
     }

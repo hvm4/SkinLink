@@ -102,5 +102,22 @@ public sealed class ResenaVendedorRepository : RepositoryBase<ResenaVendedor>, I
 
     private static Task<bool> EntityExistsAsync(DbSet<ResenaVendedor> set, ResenaVendedor entity) =>
         set.AsNoTracking().AnyAsync(existing => existing.Id == entity.Id);
-
+    public async Task<IReadOnlyList<ResenaVendedor>> FiltrarResenasVisiblesPorVendedorAsync(int p_vendedorId)
+    {
+        try
+        {
+            return await DbContext.Set<ResenaVendedor>()
+                .Where(entity => entity.Vendedor.Id == p_vendedorId && entity.Oculta == false)
+                .ToListAsync();
+        }
+        catch (DataException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error executing ReadFilter ResenaVendedor.filtrarResenasVisiblesPorVendedor.");
+            throw new DataException("Error executing ReadFilter ResenaVendedor.filtrarResenasVisiblesPorVendedor.", ex);
+        }
+    }
 }

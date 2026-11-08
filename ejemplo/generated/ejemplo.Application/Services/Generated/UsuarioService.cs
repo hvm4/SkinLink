@@ -59,7 +59,7 @@ public sealed partial class UsuarioService : ServiceEntity<Usuario>
         }
     }
 
-    public async Task<Usuario> NewAsync(string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, Monedero p_monedero, InventarioPrivado p_inventario)
+    public async Task<Usuario> NewAsync(string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, bool p_verificado, Monedero p_monedero, InventarioPrivado p_inventario)
     {
         Usuario entity = new Usuario
         {
@@ -73,6 +73,7 @@ public sealed partial class UsuarioService : ServiceEntity<Usuario>
             FechaUltimoLogin = p_fechaUltimoLogin,
             TemaModoOscuro = p_temaModoOscuro,
             Idioma = p_idioma,
+            Verificado = p_verificado,
             Monedero = p_monedero,
             Inventario = p_inventario,
         };
@@ -92,7 +93,7 @@ public sealed partial class UsuarioService : ServiceEntity<Usuario>
         await _repository.DeleteAsync(entity);
     }
 
-    public async Task ModifyAsync(int p_oid, string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, Monedero p_monedero, InventarioPrivado p_inventario)
+    public async Task ModifyAsync(int p_oid, string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, bool p_verificado, Monedero p_monedero, InventarioPrivado p_inventario)
     {
         Usuario entity = await _repository.ReadAsync(p_oid)
             ?? throw new ModelException("Usuario not found.");
@@ -106,6 +107,7 @@ public sealed partial class UsuarioService : ServiceEntity<Usuario>
         entity.FechaUltimoLogin = p_fechaUltimoLogin;
         entity.TemaModoOscuro = p_temaModoOscuro;
         entity.Idioma = p_idioma;
+        entity.Verificado = p_verificado;
         await _repository.SaveAsync(entity);
     }
 

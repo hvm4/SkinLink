@@ -78,15 +78,16 @@ ConceptualModel SkinLink {
             private fechaUltimoLogin : Date (1, 1);
             private temaModoOscuro : Boolean (1, 1);
             private idioma : String (1, 1);
+            private verificado : Boolean (1, 1);
             // Jorge
             private fechaUltimaRecompensa : Date (0, 1);
         }
         
         operations
         {
-            public new::New (p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado) : Object -> Usuario;
+            public new::New (p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_verificado : Boolean, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado) : Object -> Usuario;
             public destroy::Destroy (p_oid : OID -> Usuario) : Void;
-            public modify::Modifier (p_oid : OID -> Usuario, p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado) : Void;
+            public modify::Modifier (p_oid : OID -> Usuario, p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_verificado : Boolean, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado) : Void;
             public readOID::ReadOID (p_oid : OID -> Usuario) : Object -> Usuario;
             public readAll::ReadAll () : List<Object -> Usuario>;
             
@@ -96,6 +97,7 @@ ConceptualModel SkinLink {
             // Operaciones Custom
             public sumarExperiencia::Custom (p_oid : OID -> Usuario, p_puntos : Integer) : Void;
             public suspenderCuentaUsuario::Custom (p_oid : OID -> Usuario) : Void;
+            public verificarUsuario::Custom (p_oid : OID -> Usuario) : Void;
 
             // Jorge
             public reclamarRecompensaDiaria::CustomTransaction (p_oid : OID -> Usuario, p_caja_oid : OID -> CajaMisteriosa) : Object -> ActivoDigital;
@@ -119,9 +121,9 @@ ConceptualModel SkinLink {
         
         operations
         {
-            public new::New (p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado, p_codigoAuditor : String) : Object -> Administrador;
+            public new::New (p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_verificado : Boolean, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado, p_codigoAuditor : String) : Object -> Administrador;
             public destroy::Destroy (p_oid : OID -> Administrador) : Void;
-            public modify::Modifier (p_oid : OID -> Administrador, p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado, p_codigoAuditor : String) : Void;
+            public modify::Modifier (p_oid : OID -> Administrador, p_nombreUsuario : String, p_correo : String, p_contrasena : Password, p_fechaNacimiento : Date, p_estado : EstadoCuenta, p_nivel : Integer, p_experiencia : Integer, p_fechaUltimoLogin : Date, p_temaModoOscuro : Boolean, p_idioma : String, p_verificado : Boolean, p_monedero : Object -> Monedero, p_inventario : Object -> InventarioPrivado, p_codigoAuditor : String) : Void;
             public readOID::ReadOID (p_oid : OID -> Administrador) : Object -> Administrador;
             public readAll::ReadAll () : List<Object -> Administrador>;
             
@@ -154,6 +156,10 @@ ConceptualModel SkinLink {
             // Operaciones Custom
             public incrementarSaldo::Custom (p_oid : OID -> Monedero, p_montoAnadir : Moneda) : Void;
             public decrementarSaldo::Custom (p_oid : OID -> Monedero, p_montoRestar : Moneda) : Void;
+
+            // Casos de uso (CustomTransaction)
+            public depositarFondos::CustomTransaction (p_oid : OID -> Monedero, p_monto : Moneda, p_referenciaPago : String, p_pagoConfirmado : Boolean) : Object -> Transaccion;
+            public retirarSaldoWallet::CustomTransaction (p_oid : OID -> Monedero, p_monto : Moneda, p_destino : String) : Object -> Transaccion;
         }
     };
 
@@ -278,6 +284,7 @@ ConceptualModel SkinLink {
             // blanca
             public marcarComoFavorito::Custom (p_oid : OID -> ActivoDigital, p_usuario_oid : OID -> Usuario) : Boolean;
             public verificarAutenticidad::Custom (p_oid : OID -> ActivoDigital) : Boolean;
+            public generarReporteActividad::Custom (p_oid : OID -> ActivoDigital) : String;
 
             // ========================================================
             // FILTROS DE LECTURA (ReadFilter) - Jorge
@@ -410,6 +417,14 @@ ConceptualModel SkinLink {
             // Operaciones Custom
             public moderarResena::Custom (p_oid : OID -> ResenaVendedor, p_admin_oid : OID -> Administrador) : Void;
             public ocultarResena::Custom (p_oid : OID -> ResenaVendedor) : Void;
+
+            // ========================================================
+            // FILTROS DE LECTURA (ReadFilter)
+            // ========================================================
+            public filtrarResenasVisiblesPorVendedor::ReadFilter (p_vendedorId : Integer) : List<Object -> ResenaVendedor>
+            {
+                filterLinQ = "entity => entity.Vendedor.Id == p_vendedorId && entity.Oculta == false"
+            };
         }
     };
 
@@ -438,6 +453,18 @@ ConceptualModel SkinLink {
             // Operaciones Custom
             public simularApertura::Custom (p_oid : OID -> CajaMisteriosa) : Object -> ActivoDigital;
             public abrirCajaSorpresa::CustomTransaction (p_oid : OID -> CajaMisteriosa, p_usuario_oid : OID -> Usuario) : Object -> ActivoDigital;
+
+            // ========================================================
+            // FILTROS DE LECTURA (ReadFilter)
+            // ========================================================
+            public filtrarCajasActivas::ReadFilter () : List<Object -> CajaMisteriosa>
+            {
+                filterLinQ = "entity => entity.Activa == true"
+            };
+            public filtrarCajasPorPrecioApertura::ReadFilter (p_precioMinimo : Double, p_precioMaximo : Double) : List<Object -> CajaMisteriosa>
+            {
+                filterLinQ = "entity => (double)entity.PrecioApertura.Valor >= p_precioMinimo && (double)entity.PrecioApertura.Valor <= p_precioMaximo"
+            };
         }
     };
 
@@ -456,6 +483,37 @@ ConceptualModel SkinLink {
             public modify::Modifier (p_oid : OID -> ProbabilidadDrop, p_porcentajeDrop : Double, p_activoRecompensa_oid : OID -> ActivoDigital) : Void;
             public readOID::ReadOID (p_oid : OID -> ProbabilidadDrop) : Object -> ProbabilidadDrop;
             public readAll::ReadAll () : List<Object -> ProbabilidadDrop>;
+        }
+    };
+
+    // ==========================================
+    // CONFIGURACION DEL SISTEMA
+    // ==========================================
+
+    Class ConfiguracionSistema
+    {
+        attributes
+        {
+            private oid id : Autogenerated (1, 1);
+            private limitePrecioBajo : Double (1, 1);
+            private limitePrecioMedio : Double (1, 1);
+            private comisionPrecioBajo : Double (1, 1);
+            private comisionPrecioMedio : Double (1, 1);
+            private comisionPrecioAlto : Double (1, 1);
+            private retiroMinimo : Double (1, 1);
+            private retiroMaximoDiario : Double (1, 1);
+        }
+
+        operations
+        {
+            public new::New (p_limitePrecioBajo : Double, p_limitePrecioMedio : Double, p_comisionPrecioBajo : Double, p_comisionPrecioMedio : Double, p_comisionPrecioAlto : Double, p_retiroMinimo : Double, p_retiroMaximoDiario : Double) : Object -> ConfiguracionSistema;
+            public destroy::Destroy (p_oid : OID -> ConfiguracionSistema) : Void;
+            public modify::Modifier (p_oid : OID -> ConfiguracionSistema, p_limitePrecioBajo : Double, p_limitePrecioMedio : Double, p_comisionPrecioBajo : Double, p_comisionPrecioMedio : Double, p_comisionPrecioAlto : Double, p_retiroMinimo : Double, p_retiroMaximoDiario : Double) : Void;
+            public readOID::ReadOID (p_oid : OID -> ConfiguracionSistema) : Object -> ConfiguracionSistema;
+            public readAll::ReadAll () : List<Object -> ConfiguracionSistema>;
+
+            // Operacion Custom
+            public calcularComisionMercado::Custom (p_oid : OID -> ConfiguracionSistema, p_precio : Double) : Double;
         }
     };
 

@@ -91,4 +91,9 @@ public sealed partial class ResenaVendedorService : ServiceEntity<ResenaVendedor
         return await _repository.ReadAllAsync();
     }
 
+    public async Task<IReadOnlyList<ResenaVendedor>> FiltrarResenasVisiblesPorVendedorAsync(int p_vendedorId)
+    {
+        return await _repository.FiltrarResenasVisiblesPorVendedorAsync(p_vendedorId);
+    }
+
 }

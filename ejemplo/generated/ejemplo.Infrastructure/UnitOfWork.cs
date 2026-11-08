@@ -45,6 +45,7 @@ public sealed class UnitOfWork : IUnitOfWork, IAsyncDisposable
         ResenaVendedorRepository = new ResenaVendedorRepository(dbContext, _loggerFactory?.CreateLogger<ResenaVendedorRepository>());
         CajaMisteriosaRepository = new CajaMisteriosaRepository(dbContext, _loggerFactory?.CreateLogger<CajaMisteriosaRepository>());
         ProbabilidadDropRepository = new ProbabilidadDropRepository(dbContext, _loggerFactory?.CreateLogger<ProbabilidadDropRepository>());
+        ConfiguracionSistemaRepository = new ConfiguracionSistemaRepository(dbContext, _loggerFactory?.CreateLogger<ConfiguracionSistemaRepository>());
         RegistroAuditoriaRepository = new RegistroAuditoriaRepository(dbContext, _loggerFactory?.CreateLogger<RegistroAuditoriaRepository>());
     }
 
@@ -61,6 +62,7 @@ public sealed class UnitOfWork : IUnitOfWork, IAsyncDisposable
     public IResenaVendedorRepository ResenaVendedorRepository { get; }
     public ICajaMisteriosaRepository CajaMisteriosaRepository { get; }
     public IProbabilidadDropRepository ProbabilidadDropRepository { get; }
+    public IConfiguracionSistemaRepository ConfiguracionSistemaRepository { get; }
     public IRegistroAuditoriaRepository RegistroAuditoriaRepository { get; }
 
     public IHariaPasswordHasher PasswordHasher { get; }

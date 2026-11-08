@@ -15,6 +15,7 @@ public interface IUnitOfWork : IAsyncDisposable
     IResenaVendedorRepository ResenaVendedorRepository { get; }
     ICajaMisteriosaRepository CajaMisteriosaRepository { get; }
     IProbabilidadDropRepository ProbabilidadDropRepository { get; }
+    IConfiguracionSistemaRepository ConfiguracionSistemaRepository { get; }
     IRegistroAuditoriaRepository RegistroAuditoriaRepository { get; }
 
     IHariaPasswordHasher PasswordHasher { get; }

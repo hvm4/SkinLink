@@ -88,4 +88,14 @@ public sealed partial class CajaMisteriosaService : ServiceEntity<CajaMisteriosa
         return await _repository.ReadAllAsync();
     }
 
+    public async Task<IReadOnlyList<CajaMisteriosa>> FiltrarCajasActivasAsync()
+    {
+        return await _repository.FiltrarCajasActivasAsync();
+    }
+
+    public async Task<IReadOnlyList<CajaMisteriosa>> FiltrarCajasPorPrecioAperturaAsync(double p_precioMinimo, double p_precioMaximo)
+    {
+        return await _repository.FiltrarCajasPorPrecioAperturaAsync(p_precioMinimo, p_precioMaximo);
+    }
+
 }

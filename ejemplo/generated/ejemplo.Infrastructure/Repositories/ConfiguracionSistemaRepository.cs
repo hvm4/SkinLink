@@ -1,0 +1,105 @@
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using ejemplo.Application.Abstractions;
+using ejemplo.Domain.Entities;
+using ejemplo.Domain.Enums;
+using ejemplo.Domain.ValueObjects;
+using ejemplo.Infrastructure.Data;
+using ejemplo.Infrastructure.Exceptions;
+
+namespace ejemplo.Infrastructure.Repositories;
+
+public sealed class ConfiguracionSistemaRepository : RepositoryBase<ConfiguracionSistema>, IConfiguracionSistemaRepository
+{
+    public ConfiguracionSistemaRepository(ILogger<ConfiguracionSistemaRepository>? logger = null)
+        : base(logger)
+    {
+    }
+
+    public ConfiguracionSistemaRepository(ejemploDbContext dbContext, ILogger<ConfiguracionSistemaRepository>? logger = null)
+        : base(dbContext, logger)
+    {
+    }
+
+    public async Task<IReadOnlyList<ConfiguracionSistema>> ReadAllAsync()
+    {
+        try
+        {
+            return await DbContext.Set<ConfiguracionSistema>().ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error reading all {Entity} entities.", EntityName);
+            throw new DataException($"Error reading all {EntityName} entities.", ex);
+        }
+    }
+
+    public async Task<ConfiguracionSistema?> ReadAsync(object id)
+    {
+        try
+        {
+            var entity = await DbContext.Set<ConfiguracionSistema>().FindAsync([id]);
+
+            return entity;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "Error reading {Entity} entity with id {EntityId}.", EntityName, id);
+            throw new DataException($"Error reading {EntityName} entity.", ex);
+        }
+    }
+
+    public async Task SaveAsync(ConfiguracionSistema entity)
+    {
+        await ExecuteRepositoryOperationInTransactionAsync(
+            "Save",
+            async dbContext =>
+            {
+                var set = dbContext.Set<ConfiguracionSistema>();
+                var entry = dbContext.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                {
+                    if (HasDefaultKey(entity))
+                    {
+                        set.Add(entity);
+                    }
+                    else
+                    {
+                        var exists = await EntityExistsAsync(set, entity);
+                        if (exists)
+                        {
+                            set.Update(entity);
+                        }
+                        else
+                        {
+                            set.Add(entity);
+                        }
+                    }
+                }
+                else
+                {
+                    set.Update(entity);
+                }
+            },
+            $"Error saving {EntityName} entity.");
+    }
+
+    public async Task DeleteAsync(ConfiguracionSistema entity)
+    {
+        await ExecuteRepositoryOperationInTransactionAsync(
+            "Delete",
+            dbContext =>
+            {
+                dbContext.Set<ConfiguracionSistema>().Remove(entity);
+                return Task.CompletedTask;
+            },
+            $"Error deleting {EntityName} entity.");
+    }
+
+    private static bool HasDefaultKey(ConfiguracionSistema entity) =>
+        EqualityComparer<int>.Default.Equals(entity.Id, default);
+
+    private static Task<bool> EntityExistsAsync(DbSet<ConfiguracionSistema> set, ConfiguracionSistema entity) =>
+        set.AsNoTracking().AnyAsync(existing => existing.Id == entity.Id);
+
+}

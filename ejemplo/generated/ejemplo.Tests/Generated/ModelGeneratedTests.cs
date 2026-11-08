@@ -164,7 +164,7 @@ public sealed class ModelGeneratedTests
         // </haria-protected>
 
         var operationName = "filtrarActivosPorCondicion";
-        var filterExpression = "entity => entity.Atributos != null && entity.Atributos.condicion == p_condicion";
+        var filterExpression = "entity => entity.Atributos != null && entity.Atributos.Condicion == p_condicion";
 
         // <haria-protected id="test:filter:ActivoDigital:filtrarActivosPorCondicion:assert">
         Ensure(!string.IsNullOrWhiteSpace(operationName), "ActivoDigital.filtrarActivosPorCondicion declares the generated operation name.");

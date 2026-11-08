@@ -343,6 +343,7 @@ ConceptualModel SkinLink {
             // blanca
             public iniciarIntercambio::CustomTransaction (p_proponente_oid : OID -> Usuario, p_receptor_oid : OID -> Usuario, p_activosOfrecidos_oids : List<OID -> ActivoDigital>, p_activosSolicitados_oids : List<OID -> ActivoDigital>) : Object -> Intercambio;
             public aceptarIntercambio::CustomTransaction (p_oid : OID -> Intercambio, p_receptor_oid : OID -> Usuario) : Void;
+            public cancelarIntercambio::CustomTransaction (p_oid : OID -> Intercambio, p_usuario_oid : OID -> Usuario) : Void;
         }
     };
 
@@ -372,7 +373,6 @@ ConceptualModel SkinLink {
             public publicarVenta::Custom (p_oid : OID -> Venta, p_activoDigital_oid : OID -> ActivoDigital) : Void;
             public editarPrecio::Custom (p_oid : OID -> Venta, p_nuevoPrecio : Moneda) : Void;
             public cancelarVenta::Custom (p_oid : OID -> Venta) : Void;
-            public cancelarIntercambio::CustomTransaction (p_oid : OID -> Venta) : Void;
             // Jorge (sustituye a ejecutarCompra)
             public procesarCompraSkin::CustomTransaction (p_oid : OID -> Venta, p_comprador_oid : OID -> Usuario) : Void;
 
@@ -437,7 +437,6 @@ ConceptualModel SkinLink {
             
             // Operaciones Custom
             public simularApertura::Custom (p_oid : OID -> CajaMisteriosa) : Object -> ActivoDigital;
-            public abrirCaja::Custom (p_oid : OID -> CajaMisteriosa, p_usuario_oid : OID -> Usuario) : Void;
             public abrirCajaSorpresa::CustomTransaction (p_oid : OID -> CajaMisteriosa, p_usuario_oid : OID -> Usuario) : Object -> ActivoDigital;
         }
     };

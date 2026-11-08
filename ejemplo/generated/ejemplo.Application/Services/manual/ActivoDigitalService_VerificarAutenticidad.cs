@@ -3,9 +3,9 @@ using ejemplo.Application.Exceptions;
 using ejemplo.Domain.Entities;
 using ejemplo.Domain.Enums;
 
-        /*PROTECTED REGION ID(usingejemplo.Application.Services_ActivoDigital_verificarAutenticidad) ENABLED START*/
-        // references to other libraries
-        /*PROTECTED REGION END*/
+/*PROTECTED REGION ID(usingejemplo.Application.Services_ActivoDigital_verificarAutenticidad) ENABLED START*/
+// references to other libraries
+/*PROTECTED REGION END*/
 
 namespace ejemplo.Application.Services;
 
@@ -27,8 +27,6 @@ public sealed partial class ActivoDigitalService
         int coincidencias = todos.Count(a =>
             string.Equals(a.IdentificadorUnico, activo.IdentificadorUnico, StringComparison.OrdinalIgnoreCase));
         return coincidencias == 1;
-
-        throw new ModelException("Application service generation for ActivoDigital.verificarAutenticidad is pending.", new NotImplementedException("Method VerificarAutenticidadAsync() not yet implemented."));
         /*PROTECTED REGION END*/
     }
 }

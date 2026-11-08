@@ -31,10 +31,13 @@ public sealed partial class IntercambioUseCase
             var activos = await _unitOfWork.ActivoDigitalRepository.ReadAllAsync();
 
             if (intercambio.Estado != EstadoIntercambio.Pendiente)
-                throw new ModelException("Solo se puede cancelar un intercambio pendiente.");
+                throw new ModelException("Solo se puede cancelar o rechazar un intercambio pendiente.");
 
-            if (intercambio.Proponente?.Id != p_usuario_oid)
-                throw new ModelException("Solo el proponente del intercambio puede cancelarlo.");
+            // El proponente cancela; el receptor rechaza.
+            bool esProponente = intercambio.Proponente?.Id == p_usuario_oid;
+            bool esReceptor = intercambio.Receptor?.Id == p_usuario_oid;
+            if (!esProponente && !esReceptor)
+                throw new ModelException("Solo el proponente (cancelar) o el receptor (rechazar) pueden cerrar el intercambio.");
 
             // Liberar todos los activos reservados por la propuesta (ofrecidos y solicitados)
             var reservados = activos
@@ -52,7 +55,7 @@ public sealed partial class IntercambioUseCase
             }
 
             // Anular la propuesta
-            intercambio.Estado = EstadoIntercambio.Cancelado;
+            intercambio.Estado = esProponente ? EstadoIntercambio.Cancelado : EstadoIntercambio.Rechazado;
             await _unitOfWork.IntercambioRepository.SaveAsync(intercambio);
 
             await _unitOfWork.CommitAsync();

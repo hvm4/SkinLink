@@ -46,6 +46,10 @@ public sealed partial class UsuarioUseCase
             if (!caja.Activa)
                 throw new ModelException("La caja seleccionada no está activa.");
 
+            // La recompensa diaria es gratuita: solo se admiten cajas sin coste de apertura.
+            if (caja.PrecioApertura != null && caja.PrecioApertura.Valor > 0)
+                throw new ModelException("La recompensa diaria solo puede canjearse en cajas gratuitas (precio de apertura 0).");
+
             // Cargar colecciones para enlaces de EF
             await _unitOfWork.ProbabilidadDropRepository.ReadAllAsync();
             await _unitOfWork.ActivoDigitalRepository.ReadAllAsync();

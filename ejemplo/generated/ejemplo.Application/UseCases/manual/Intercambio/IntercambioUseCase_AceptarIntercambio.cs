@@ -40,6 +40,11 @@ public sealed partial class IntercambioUseCase
             int proponenteId = intercambio.Proponente?.Id
                 ?? throw new ModelException("El intercambio no tiene proponente.");
 
+            if (intercambio.Receptor!.Estado != EstadoCuenta.Activo)
+                throw new ModelException("La cuenta del receptor no está activa.");
+            if (intercambio.Proponente!.Estado != EstadoCuenta.Activo)
+                throw new ModelException("La cuenta del proponente no está activa.");
+
             List<ActivoDigital> ofrecidos = activos.Where(a => a.IntercambioOfrecido?.Id == intercambio.Id).ToList();
             List<ActivoDigital> solicitados = activos.Where(a => a.IntercambioSolicitado?.Id == intercambio.Id).ToList();
 

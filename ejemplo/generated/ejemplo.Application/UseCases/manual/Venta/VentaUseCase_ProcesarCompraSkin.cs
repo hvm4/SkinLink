@@ -42,6 +42,8 @@ public sealed partial class VentaUseCase
             await _unitOfWork.MonederoRepository.ReadAllAsync();
             await _unitOfWork.InventarioPrivadoRepository.ReadAllAsync();
             await _unitOfWork.ActivoDigitalRepository.ReadAllAsync();
+            await _unitOfWork.IntercambioRepository.ReadAllAsync();
+            var configuraciones = await _unitOfWork.ConfiguracionSistemaRepository.ReadAllAsync();
 
             var vendedor = venta.Vendedor
                 ?? throw new ModelException("La venta no tiene un vendedor asociado.");
@@ -51,6 +53,14 @@ public sealed partial class VentaUseCase
 
             var activo = venta.ActivoDigital
                 ?? throw new ModelException("La venta no tiene un activo digital asociado.");
+
+            // El activo debe seguir siendo del vendedor, estar publicado y no estar en un intercambio pendiente.
+            if (activo.Inventario?.Usuario?.Id != vendedor.Id)
+                throw new ModelException("El activo ya no pertenece al vendedor.");
+            if (!activo.EnVenta)
+                throw new ModelException("El activo no está publicado en venta.");
+            if (activo.IntercambioOfrecido is not null || activo.IntercambioSolicitado is not null)
+                throw new ModelException("El activo participa en un intercambio pendiente y no puede venderse.");
 
             var monederoComprador = comprador.Monedero
                 ?? throw new ModelException("El comprador no tiene un monedero asociado.");
@@ -65,8 +75,28 @@ public sealed partial class VentaUseCase
             if (monederoComprador.SaldoDisponible.Divisa != precio.Divisa)
                 throw new ModelException("La divisa del monedero del comprador no coincide con la del precio de venta.");
 
+            if (monederoVendedor.SaldoDisponible.Divisa != precio.Divisa)
+                throw new ModelException("La divisa del monedero del vendedor no coincide con la del precio de venta.");
+            if (double.IsNaN(precio.Valor) || double.IsInfinity(precio.Valor) || precio.Valor <= 0)
+                throw new ModelException("El precio de venta no es válido.");
             if (monederoComprador.SaldoDisponible.Valor < precio.Valor)
                 throw new ModelException("Saldo insuficiente en el monedero del comprador.");
+
+            // Comisión de mercado (porcentaje según tramo de precio). Sin configuración => sin comisión.
+            double comisionPorcentaje = 0d;
+            var configuracion = configuraciones.FirstOrDefault();
+            if (configuracion is not null)
+            {
+                var configuracionService = new ConfiguracionSistemaService(_unitOfWork);
+                comisionPorcentaje = await configuracionService.CalcularComisionMercadoAsync(configuracion.Id, precio.Valor);
+            }
+            double comision = Math.Round(precio.Valor * comisionPorcentaje / 100d, 2);
+            double importeNeto = precio.Valor - comision;
+            if (importeNeto < 0)
+                throw new ModelException("La comisión no puede superar el precio de venta.");
+
+            // Reserva la venta dentro de la transacción antes de mover dinero.
+            venta.EstadoVenta = EstadoVenta.EnProceso;
 
             // 1) Descontar importe al comprador
             monederoComprador.SaldoDisponible = new Moneda
@@ -79,7 +109,7 @@ public sealed partial class VentaUseCase
             // 2) Acreditar fondos al vendedor
             monederoVendedor.SaldoDisponible = new Moneda
             {
-                Valor = monederoVendedor.SaldoDisponible.Valor + precio.Valor,
+                Valor = monederoVendedor.SaldoDisponible.Valor + importeNeto,
                 Divisa = monederoVendedor.SaldoDisponible.Divisa
             };
             await _unitOfWork.MonederoRepository.SaveAsync(monederoVendedor);
@@ -98,9 +128,9 @@ public sealed partial class VentaUseCase
             var transaccionCobroVendedor = new Transaccion
             {
                 Tipo = TipoTransaccion.CobroVenta,
-                Monto = new Moneda { Valor = precio.Valor, Divisa = precio.Divisa },
+                Monto = new Moneda { Valor = importeNeto, Divisa = precio.Divisa },
                 Fecha = DateTime.UtcNow,
-                Concepto = $"Cobro por venta de activo '{activo.Nombre}' a usuario '{comprador.NombreUsuario}'",
+                Concepto = $"Cobro por venta de activo '{activo.Nombre}' a usuario '{comprador.NombreUsuario}' (comisión {comision:F2} {precio.Divisa})",
                 Monedero = monederoVendedor
             };
             await _unitOfWork.TransaccionRepository.SaveAsync(transaccionCobroVendedor);

@@ -43,6 +43,11 @@ public sealed partial class IntercambioUseCase
             UsuarioEntity receptor = await _unitOfWork.UsuarioRepository.ReadAsync(p_receptor_oid)
                 ?? throw new ModelException("Usuario receptor not found.");
 
+            if (proponente.Estado != EstadoCuenta.Activo)
+                throw new ModelException("La cuenta del proponente no está activa.");
+            if (receptor.Estado != EstadoCuenta.Activo)
+                throw new ModelException("La cuenta del receptor no está activa.");
+
             var inventarios = await _unitOfWork.InventarioPrivadoRepository.ReadAllAsync();
             await _unitOfWork.IntercambioRepository.ReadAllAsync();
             var activos = await _unitOfWork.ActivoDigitalRepository.ReadAllAsync();

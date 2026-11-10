@@ -1,0 +1,26 @@
+@* HARIA-WEB GENERATED sha256:b688ed412c54ada1fef7be76ae9de6e1aed0a83f622bf9e9a0e9f45632767e8b *@
+@model Skinlink.Web.ViewModels.CajaMisteriosaViewModel
+@{
+    var templateData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(ViewData);
+    templateData.TemplateInfo.HtmlFieldPrefix = "Probabilidades[__index__]";
+}
+<fieldset class="mb-4" data-haria-composition data-prefix="Probabilidades">
+    <legend>Probabilidades</legend>
+    <span asp-validation-for="Probabilidades" class="text-danger"></span>
+    <div data-haria-rows>
+    @for (var index = 0; index < Model.Probabilidades.Count; index++)
+    {
+        <div class="border rounded p-3 mb-2" data-haria-row>
+            <partial name="_ProbabilidadesItem" for="Probabilidades[index]" />
+            <button type="button" class="btn btn-sm btn-outline-danger" data-haria-remove>Eliminar línea</button>
+        </div>
+    }
+    </div>
+    <template>
+        <div class="border rounded p-3 mb-2" data-haria-row>
+            <partial name="_ProbabilidadesItem" model="Model.ProbabilidadesTemplate" view-data="templateData" />
+            <button type="button" class="btn btn-sm btn-outline-danger" data-haria-remove>Eliminar línea</button>
+        </div>
+    </template>
+    <button type="button" class="btn btn-outline-primary" data-haria-add>Añadir línea</button>
+</fieldset>

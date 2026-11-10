@@ -1,0 +1,101 @@
+@* HARIA-WEB GENERATED sha256:cdd821d7e164644e8407a40d4d0a2d5f7b69750be38d533b31cb0148d9a4565d *@
+@model Skinlink.Web.ViewModels.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Editar</span>
+                <h1 class="h3 mb-1">Usuario</h1>
+                <p class="text-body-secondary mb-0">Completa los campos y guarda los cambios.</p>
+            </div>
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <div class="card-body p-4">
+                    <div asp-validation-summary="All" class="alert alert-danger py-2" role="alert"></div>
+                    <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label asp-for="NombreUsuario" class="form-label"></label>
+            <input asp-for="NombreUsuario" class="form-control" />
+            <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Correo" class="form-label"></label>
+            <input asp-for="Correo" class="form-control" />
+            <span asp-validation-for="Correo" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Contrasena" class="form-label"></label>
+            <input asp-for="Contrasena" type="password" value="" autocomplete="new-password" class="form-control" />
+            <span asp-validation-for="Contrasena" class="text-danger"></span>
+            <div class="form-text">Déjalo vacío para conservar la contraseña actual.</div>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FechaNacimiento" class="form-label"></label>
+            <input asp-for="FechaNacimiento" type="date" class="form-control" />
+            <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Estado" class="form-label"></label>
+            <select asp-for="Estado" asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.EstadoCuenta>()" class="form-select"></select>
+            <span asp-validation-for="Estado" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Nivel" class="form-label"></label>
+            <input asp-for="Nivel" class="form-control" />
+            <span asp-validation-for="Nivel" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Experiencia" class="form-label"></label>
+            <input asp-for="Experiencia" class="form-control" />
+            <span asp-validation-for="Experiencia" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FechaUltimoLogin" class="form-label"></label>
+            <input asp-for="FechaUltimoLogin" type="date" class="form-control" />
+            <span asp-validation-for="FechaUltimoLogin" class="text-danger"></span>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="TemaModoOscuro" class="form-check-input" />
+            <label asp-for="TemaModoOscuro" class="form-check-label"></label>
+            <span asp-validation-for="TemaModoOscuro" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Idioma" class="form-label"></label>
+            <input asp-for="Idioma" class="form-control" />
+            <span asp-validation-for="Idioma" class="text-danger"></span>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="Verificado" class="form-check-input" />
+            <label asp-for="Verificado" class="form-check-label"></label>
+            <span asp-validation-for="Verificado" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MonederoId" class="form-label"></label>
+            <select asp-for="MonederoId" asp-items="Model.MonederoOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="MonederoId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="InventarioId" class="form-label"></label>
+            <select asp-for="InventarioId" asp-items="Model.InventarioOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="InventarioId" class="text-danger"></span>
+        </div>
+                </div>
+                <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+
+}

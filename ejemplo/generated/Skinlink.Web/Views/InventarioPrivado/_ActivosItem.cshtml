@@ -1,0 +1,72 @@
+@* HARIA-WEB GENERATED sha256:c3e6a5327537f80feab19c75929c8094c931ef8dc7932d80e83ac535e5a353da *@
+@model Skinlink.Web.ViewModels.ActivoDigitalViewModel
+    <input asp-for="Id" type="hidden" />
+    <span asp-validation-for="Id" class="text-danger"></span>
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Coleccion" class="form-label"></label>
+            <input asp-for="Coleccion" class="form-control" />
+            <span asp-validation-for="Coleccion" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PrecioEstimadoValor" class="form-label"></label>
+            <input asp-for="PrecioEstimadoValor" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="PrecioEstimadoValor" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PrecioEstimadoDivisa" class="form-label"></label>
+            <input asp-for="PrecioEstimadoDivisa" class="form-control" />
+            <span asp-validation-for="PrecioEstimadoDivisa" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="AtributosRareza" class="form-label"></label>
+            <select asp-for="AtributosRareza" asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.Rareza>()" class="form-select"></select>
+            <span asp-validation-for="AtributosRareza" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="AtributosCondicion" class="form-label"></label>
+            <select asp-for="AtributosCondicion" asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.Condicion>()" class="form-select"></select>
+            <span asp-validation-for="AtributosCondicion" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="AtributosFloatVal" class="form-label"></label>
+            <input asp-for="AtributosFloatVal" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="AtributosFloatVal" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="AtributosPatron" class="form-label"></label>
+            <input asp-for="AtributosPatron" class="form-control" />
+            <span asp-validation-for="AtributosPatron" class="text-danger"></span>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="EnVenta" class="form-check-input" />
+            <label asp-for="EnVenta" class="form-check-label"></label>
+            <span asp-validation-for="EnVenta" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="IdentificadorUnico" class="form-label"></label>
+            <input asp-for="IdentificadorUnico" class="form-control" />
+            <span asp-validation-for="IdentificadorUnico" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="VentaId" class="form-label"></label>
+            <select asp-for="VentaId" asp-items="Model.VentaOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="VentaId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="IntercambioOfrecidoId" class="form-label"></label>
+            <select asp-for="IntercambioOfrecidoId" asp-items="Model.IntercambioOfrecidoOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="IntercambioOfrecidoId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="IntercambioSolicitadoId" class="form-label"></label>
+            <select asp-for="IntercambioSolicitadoId" asp-items="Model.IntercambioSolicitadoOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="IntercambioSolicitadoId" class="text-danger"></span>
+        </div>
+

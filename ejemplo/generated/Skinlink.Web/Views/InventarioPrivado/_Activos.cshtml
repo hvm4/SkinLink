@@ -1,0 +1,26 @@
+@* HARIA-WEB GENERATED sha256:29d314d1c099da10edfb0d5909eba24edc61bad3cde0158aa6f2cf80a4cf5abb *@
+@model Skinlink.Web.ViewModels.InventarioPrivadoViewModel
+@{
+    var templateData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(ViewData);
+    templateData.TemplateInfo.HtmlFieldPrefix = "Activos[__index__]";
+}
+<fieldset class="mb-4" data-haria-composition data-prefix="Activos">
+    <legend>Activos</legend>
+    <span asp-validation-for="Activos" class="text-danger"></span>
+    <div data-haria-rows>
+    @for (var index = 0; index < Model.Activos.Count; index++)
+    {
+        <div class="border rounded p-3 mb-2" data-haria-row>
+            <partial name="_ActivosItem" for="Activos[index]" />
+            <button type="button" class="btn btn-sm btn-outline-danger" data-haria-remove>Eliminar línea</button>
+        </div>
+    }
+    </div>
+    <template>
+        <div class="border rounded p-3 mb-2" data-haria-row>
+            <partial name="_ActivosItem" model="Model.ActivosTemplate" view-data="templateData" />
+            <button type="button" class="btn btn-sm btn-outline-danger" data-haria-remove>Eliminar línea</button>
+        </div>
+    </template>
+    <button type="button" class="btn btn-outline-primary" data-haria-add>Añadir línea</button>
+</fieldset>

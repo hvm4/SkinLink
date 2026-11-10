@@ -1,0 +1,74 @@
+@* HARIA-WEB GENERATED sha256:448fdf7576d8ea659d935cd2afc14101d57d11ea1b89cc2600d797d0841f7994 *@
+@model Skinlink.Web.ViewModels.TransaccionViewModel
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Crear</span>
+                <h1 class="h3 mb-1">Transaccion</h1>
+                <p class="text-body-secondary mb-0">Completa los campos y guarda los cambios.</p>
+            </div>
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="card-body p-4">
+                    <div asp-validation-summary="All" class="alert alert-danger py-2" role="alert"></div>
+        <div class="mb-3">
+            <label asp-for="Tipo" class="form-label"></label>
+            <select asp-for="Tipo" asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.TipoTransaccion>()" class="form-select"></select>
+            <span asp-validation-for="Tipo" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MontoValor" class="form-label"></label>
+            <input asp-for="MontoValor" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="MontoValor" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MontoDivisa" class="form-label"></label>
+            <input asp-for="MontoDivisa" class="form-control" />
+            <span asp-validation-for="MontoDivisa" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Fecha" class="form-label"></label>
+            <input asp-for="Fecha" type="date" class="form-control" />
+            <span asp-validation-for="Fecha" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Concepto" class="form-label"></label>
+            <input asp-for="Concepto" class="form-control" />
+            <span asp-validation-for="Concepto" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MonederoId" class="form-label"></label>
+            <select asp-for="MonederoId" asp-items="Model.MonederoOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="MonederoId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="VentaCobroId" class="form-label"></label>
+            <select asp-for="VentaCobroId" asp-items="Model.VentaCobroOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="VentaCobroId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="VentaPagoId" class="form-label"></label>
+            <select asp-for="VentaPagoId" asp-items="Model.VentaPagoOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="VentaPagoId" class="text-danger"></span>
+        </div>
+                </div>
+                <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/haria-numbers.js" asp-append-version="true"></script>
+
+}

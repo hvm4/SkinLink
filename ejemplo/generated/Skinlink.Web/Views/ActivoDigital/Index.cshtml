@@ -1,0 +1,80 @@
+@* HARIA-WEB GENERATED sha256:baad3885d9a8f39023b08831e4c79cc526690a1c14e8a059fa2d1fdb56a732fd *@
+@model IEnumerable<Skinlink.Web.ViewModels.ActivoDigitalViewModel>
+
+@{
+    ViewData["Title"] = "ActivoDigital";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 p-4">
+        <div>
+            <h1 class="h3 mb-1">ActivoDigital</h1>
+            <p class="text-body-secondary mb-0">Consulta y gestiona los registros disponibles.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">Crear</a>
+    </div>
+    <div class="card-body p-0">
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">@Html.DisplayNameFor(model => model.Id)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.Nombre)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.Coleccion)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.PrecioEstimadoValor)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.PrecioEstimadoDivisa)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.AtributosRareza)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.AtributosCondicion)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.AtributosFloatVal)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.AtributosPatron)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.EnVenta)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.IdentificadorUnico)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.InventarioLabel)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.VentaLabel)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.IntercambioOfrecidoLabel)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.IntercambioSolicitadoLabel)</th>
+                        <th scope="col" class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Coleccion)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PrecioEstimadoValor)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PrecioEstimadoDivisa)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AtributosRareza)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AtributosCondicion)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AtributosFloatVal)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AtributosPatron)</td>
+                            <td>@Html.DisplayFor(modelItem => item.EnVenta)</td>
+                            <td>@Html.DisplayFor(modelItem => item.IdentificadorUnico)</td>
+                            <td>@Html.DisplayFor(modelItem => item.InventarioLabel)</td>
+                            <td>@Html.DisplayFor(modelItem => item.VentaLabel)</td>
+                            <td>@Html.DisplayFor(modelItem => item.IntercambioOfrecidoLabel)</td>
+                            <td>@Html.DisplayFor(modelItem => item.IntercambioSolicitadoLabel)</td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Detalles</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                            </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center p-5">
+            <h2 class="h5">Todavía no hay registros</h2>
+            <p class="text-body-secondary">Crea el primer registro para comenzar.</p>
+            <a asp-action="Create" class="btn btn-primary">Crear</a>
+        </div>
+    }
+    </div>
+</div>

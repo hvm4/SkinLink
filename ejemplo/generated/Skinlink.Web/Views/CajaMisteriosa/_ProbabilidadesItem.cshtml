@@ -1,0 +1,15 @@
+@* HARIA-WEB GENERATED sha256:ac0253688306a6964a9bdf17e4aa86e93641841279bb10fdb8176ffc80912f6c *@
+@model Skinlink.Web.ViewModels.ProbabilidadDropViewModel
+    <input asp-for="Id" type="hidden" />
+    <span asp-validation-for="Id" class="text-danger"></span>
+        <div class="mb-3">
+            <label asp-for="PorcentajeDrop" class="form-label"></label>
+            <input asp-for="PorcentajeDrop" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="PorcentajeDrop" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ActivoRecompensaId" class="form-label"></label>
+            <select asp-for="ActivoRecompensaId" asp-items="Model.ActivoRecompensaOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="ActivoRecompensaId" class="text-danger"></span>
+        </div>
+

@@ -1,0 +1,41 @@
+@* HARIA-WEB GENERATED sha256:4cf9302faa827b6f0cb011e1afdfe97dfc9b0d875864d6f22555c73233fc5ab8 *@
+@model Skinlink.Web.ViewModels.InventarioPrivadoViewModel
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<div class="row justify-content-center">
+    <div class="col-xl-9">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Detalles</span>
+                <h1 class="h3 mb-1">InventarioPrivado</h1>
+                <p class="text-body-secondary mb-0">Review the complete record information.</p>
+            </div>
+            <div class="card-body p-4">
+                <dl class="row mb-0 gy-2">
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Id)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.Id)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.ValorEstimadoTotalValor)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.ValorEstimadoTotalValor)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.ValorEstimadoTotalDivisa)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.ValorEstimadoTotalDivisa)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.EsPublico)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.EsPublico)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.UsuarioLabel)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.UsuarioLabel)</dd>
+                </dl>
+                <h2 class="h5 mt-4">Activos</h2>
+                <table class="table"><thead><tr><th>Nombre</th><th>Coleccion</th><th>PrecioEstimadoValor</th><th>PrecioEstimadoDivisa</th><th>AtributosRareza</th><th>AtributosCondicion</th><th>AtributosFloatVal</th><th>AtributosPatron</th><th>EnVenta</th><th>IdentificadorUnico</th><th>VentaLabel</th><th>IntercambioOfrecidoLabel</th><th>IntercambioSolicitadoLabel</th></tr></thead>
+                <tbody>@foreach (var row in Model.Activos) { <tr><td>@Html.DisplayFor(_ => row.Nombre)</td><td>@Html.DisplayFor(_ => row.Coleccion)</td><td>@Html.DisplayFor(_ => row.PrecioEstimadoValor)</td><td>@Html.DisplayFor(_ => row.PrecioEstimadoDivisa)</td><td>@Html.DisplayFor(_ => row.AtributosRareza)</td><td>@Html.DisplayFor(_ => row.AtributosCondicion)</td><td>@Html.DisplayFor(_ => row.AtributosFloatVal)</td><td>@Html.DisplayFor(_ => row.AtributosPatron)</td><td>@Html.DisplayFor(_ => row.EnVenta)</td><td>@Html.DisplayFor(_ => row.IdentificadorUnico)</td><td>@Html.DisplayFor(_ => row.VentaLabel)</td><td>@Html.DisplayFor(_ => row.IntercambioOfrecidoLabel)</td><td>@Html.DisplayFor(_ => row.IntercambioSolicitadoLabel)</td></tr> }</tbody></table>
+            </div>
+            <div class="card-footer bg-body p-4">
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

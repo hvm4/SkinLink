@@ -1,0 +1,70 @@
+@* HARIA-WEB GENERATED sha256:91b22788164b355e19f7a19de06c078db5fa79de7b8fd7dc97b77467ec45a92e *@
+@model Skinlink.Web.ViewModels.ConfiguracionSistemaViewModel
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Editar</span>
+                <h1 class="h3 mb-1">ConfiguracionSistema</h1>
+                <p class="text-body-secondary mb-0">Completa los campos y guarda los cambios.</p>
+            </div>
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <div class="card-body p-4">
+                    <div asp-validation-summary="All" class="alert alert-danger py-2" role="alert"></div>
+                    <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label asp-for="LimitePrecioBajo" class="form-label"></label>
+            <input asp-for="LimitePrecioBajo" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="LimitePrecioBajo" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="LimitePrecioMedio" class="form-label"></label>
+            <input asp-for="LimitePrecioMedio" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="LimitePrecioMedio" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ComisionPrecioBajo" class="form-label"></label>
+            <input asp-for="ComisionPrecioBajo" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="ComisionPrecioBajo" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ComisionPrecioMedio" class="form-label"></label>
+            <input asp-for="ComisionPrecioMedio" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="ComisionPrecioMedio" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ComisionPrecioAlto" class="form-label"></label>
+            <input asp-for="ComisionPrecioAlto" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="ComisionPrecioAlto" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="RetiroMinimo" class="form-label"></label>
+            <input asp-for="RetiroMinimo" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="RetiroMinimo" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="RetiroMaximoDiario" class="form-label"></label>
+            <input asp-for="RetiroMaximoDiario" type="text" inputmode="decimal" asp-format="{0:G}" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" />
+            <span asp-validation-for="RetiroMaximoDiario" class="text-danger"></span>
+        </div>
+                </div>
+                <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/haria-numbers.js" asp-append-version="true"></script>
+
+}

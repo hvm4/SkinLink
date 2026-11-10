@@ -1,0 +1,70 @@
+@* HARIA-WEB GENERATED sha256:7db07e702f89f4e0a17e23136b17bb778870db3da672d6aeb4fb0b8a8a8ea90b *@
+@model IEnumerable<Skinlink.Web.ViewModels.VentaViewModel>
+
+@{
+    ViewData["Title"] = "Venta";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 p-4">
+        <div>
+            <h1 class="h3 mb-1">Venta</h1>
+            <p class="text-body-secondary mb-0">Consulta y gestiona los registros disponibles.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">Crear</a>
+    </div>
+    <div class="card-body p-0">
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">@Html.DisplayNameFor(model => model.Id)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.PrecioVentaValor)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.PrecioVentaDivisa)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.FechaPublicacion)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.EstadoVenta)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.VendedorLabel)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.CompradorLabel)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.ActivoDigitalLabel)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.TransaccionCobroLabel)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.TransaccionPagoLabel)</th>
+                        <th scope="col" class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PrecioVentaValor)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PrecioVentaDivisa)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FechaPublicacion)</td>
+                            <td>@Html.DisplayFor(modelItem => item.EstadoVenta)</td>
+                            <td>@Html.DisplayFor(modelItem => item.VendedorLabel)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CompradorLabel)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ActivoDigitalLabel)</td>
+                            <td>@Html.DisplayFor(modelItem => item.TransaccionCobroLabel)</td>
+                            <td>@Html.DisplayFor(modelItem => item.TransaccionPagoLabel)</td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Detalles</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                            </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center p-5">
+            <h2 class="h5">Todavía no hay registros</h2>
+            <p class="text-body-secondary">Crea el primer registro para comenzar.</p>
+            <a asp-action="Create" class="btn btn-primary">Crear</a>
+        </div>
+    }
+    </div>
+</div>

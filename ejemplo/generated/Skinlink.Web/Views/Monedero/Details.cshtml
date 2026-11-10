@@ -1,0 +1,41 @@
+@* HARIA-WEB GENERATED sha256:25218a95abe871fe2df56feeccc49f5c3bf11f2bce4fa87131c0ecadc50d6a02 *@
+@model Skinlink.Web.ViewModels.MonederoViewModel
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<div class="row justify-content-center">
+    <div class="col-xl-9">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Detalles</span>
+                <h1 class="h3 mb-1">Monedero</h1>
+                <p class="text-body-secondary mb-0">Review the complete record information.</p>
+            </div>
+            <div class="card-body p-4">
+                <dl class="row mb-0 gy-2">
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Id)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.Id)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.SaldoDisponibleValor)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.SaldoDisponibleValor)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.SaldoDisponibleDivisa)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.SaldoDisponibleDivisa)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.SaldoPendienteValor)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.SaldoPendienteValor)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.SaldoPendienteDivisa)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.SaldoPendienteDivisa)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.UsuarioLabel)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.UsuarioLabel)</dd>
+                </dl>
+
+            </div>
+            <div class="card-footer bg-body p-4">
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

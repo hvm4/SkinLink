@@ -1,0 +1,59 @@
+@* HARIA-WEB GENERATED sha256:21c3bd59bc732794cb66906365d3e7551dfcc87c40535e8f33b6bba7c5d6eff0 *@
+@model Skinlink.Web.ViewModels.ActivoDigitalViewModel
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<div class="row justify-content-center">
+    <div class="col-xl-9">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Detalles</span>
+                <h1 class="h3 mb-1">ActivoDigital</h1>
+                <p class="text-body-secondary mb-0">Review the complete record information.</p>
+            </div>
+            <div class="card-body p-4">
+                <dl class="row mb-0 gy-2">
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Id)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.Id)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Nombre)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.Nombre)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Coleccion)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.Coleccion)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.PrecioEstimadoValor)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.PrecioEstimadoValor)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.PrecioEstimadoDivisa)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.PrecioEstimadoDivisa)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.AtributosRareza)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.AtributosRareza)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.AtributosCondicion)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.AtributosCondicion)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.AtributosFloatVal)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.AtributosFloatVal)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.AtributosPatron)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.AtributosPatron)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.EnVenta)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.EnVenta)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.IdentificadorUnico)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.IdentificadorUnico)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.InventarioLabel)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.InventarioLabel)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.VentaLabel)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.VentaLabel)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.IntercambioOfrecidoLabel)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.IntercambioOfrecidoLabel)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.IntercambioSolicitadoLabel)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.IntercambioSolicitadoLabel)</dd>
+                </dl>
+
+            </div>
+            <div class="card-footer bg-body p-4">
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

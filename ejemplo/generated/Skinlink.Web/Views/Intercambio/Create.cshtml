@@ -1,0 +1,54 @@
+@* HARIA-WEB GENERATED sha256:7b65292c6dbb9b5d46e290f09326fc11813b9972eb5ec4decb63e348a035722f *@
+@model Skinlink.Web.ViewModels.IntercambioViewModel
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Crear</span>
+                <h1 class="h3 mb-1">Intercambio</h1>
+                <p class="text-body-secondary mb-0">Completa los campos y guarda los cambios.</p>
+            </div>
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="card-body p-4">
+                    <div asp-validation-summary="All" class="alert alert-danger py-2" role="alert"></div>
+        <div class="mb-3">
+            <label asp-for="Estado" class="form-label"></label>
+            <select asp-for="Estado" asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.EstadoIntercambio>()" class="form-select"></select>
+            <span asp-validation-for="Estado" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FechaCreacion" class="form-label"></label>
+            <input asp-for="FechaCreacion" type="date" class="form-control" />
+            <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProponenteId" class="form-label"></label>
+            <select asp-for="ProponenteId" asp-items="Model.ProponenteOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="ProponenteId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ReceptorId" class="form-label"></label>
+            <select asp-for="ReceptorId" asp-items="Model.ReceptorOptions" class="form-select"><option value="">Selecciona...</option></select>
+            <span asp-validation-for="ReceptorId" class="text-danger"></span>
+        </div>
+                </div>
+                <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+
+}

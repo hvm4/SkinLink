@@ -1,0 +1,45 @@
+@* HARIA-WEB GENERATED sha256:4b9ebf1feed2b8b40c604f2c66bb56f3b9f973503677b037d106dd5d62326dbf *@
+@model Skinlink.Web.ViewModels.ConfiguracionSistemaViewModel
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<div class="row justify-content-center">
+    <div class="col-xl-9">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-3">Detalles</span>
+                <h1 class="h3 mb-1">ConfiguracionSistema</h1>
+                <p class="text-body-secondary mb-0">Review the complete record information.</p>
+            </div>
+            <div class="card-body p-4">
+                <dl class="row mb-0 gy-2">
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Id)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.Id)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.LimitePrecioBajo)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.LimitePrecioBajo)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.LimitePrecioMedio)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.LimitePrecioMedio)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.ComisionPrecioBajo)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.ComisionPrecioBajo)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.ComisionPrecioMedio)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.ComisionPrecioMedio)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.ComisionPrecioAlto)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.ComisionPrecioAlto)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.RetiroMinimo)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.RetiroMinimo)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.RetiroMaximoDiario)</dt>
+            <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.RetiroMaximoDiario)</dd>
+                </dl>
+
+            </div>
+            <div class="card-footer bg-body p-4">
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

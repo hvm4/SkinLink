@@ -192,7 +192,7 @@ public static class SeedData
             await cajaMisteriosaService.ModifyAsync(sampleCajaMisteriosa.Id, "Sample CajaMisteriosa Nombre", new Moneda { Valor = 14.5, Divisa = "Sample Moneda Divisa" }, true, new List<ProbabilidadDrop> { default! });
             Ensure(await cajaMisteriosaService.ReadOIDCajaMisteriosaDefaultAsync(sampleCajaMisteriosa.Id) is not null, "CajaMisteriosa modify keeps the entity readable.");
 
-            await articuloCatalogoService.DestroyAsync(sampleArticuloCatalogo.Id);
+            /* await articuloCatalogoService.DestroyAsync(sampleArticuloCatalogo.Id);
             await configuracionSistemaService.DestroyAsync(sampleConfiguracionSistema.Id);
             await registroAuditoriaService.DestroyAsync(sampleRegistroAuditoria.Id);
             await administradorService.DestroyAsync(sampleAdministrador.Id);
@@ -204,7 +204,7 @@ public static class SeedData
             await activoDigitalService.DestroyAsync(sampleActivoDigital.Id);
             await intercambioService.DestroyAsync(sampleIntercambio.Id);
             await usuarioService.DestroyAsync(sampleUsuario.Id);
-
+            */
             Ensure(await administradorService.ReadOIDAdministradorDefaultAsync(sampleAdministrador.Id) is null, "Administrador seed cleanup completed.");
             Ensure(await articuloCatalogoService.ReadOIDArticuloCatalogoDefaultAsync(sampleArticuloCatalogo.Id) is null, "ArticuloCatalogo seed cleanup completed.");
             Ensure(await configuracionSistemaService.ReadOIDConfiguracionSistemaDefaultAsync(sampleConfiguracionSistema.Id) is null, "ConfiguracionSistema seed cleanup completed.");

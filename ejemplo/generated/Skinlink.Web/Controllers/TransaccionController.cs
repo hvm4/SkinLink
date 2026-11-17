@@ -1,5 +1,5 @@
 // HARIA-WEB MVC managed controller
-/*PROTECTED REGION ID(TransaccionController_usings) START*/
+/*PROTECTED REGION ID(TransaccionController_usings) ENABLED START*/
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ejemplo.Domain.Entities;
@@ -8,6 +8,8 @@ using Skinlink.Web.Assemblers;
 
 using ejemplo.Domain.Enums;
 using ejemplo.Domain.ValueObjects;
+using Skinlink.Web.Utils.Security;
+using Skinlink.Web.ViewModels;
 /*PROTECTED REGION END*/
 
 namespace Skinlink.Web.Controllers;
@@ -250,10 +252,61 @@ public partial class TransaccionController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarTransaccionesPorRangoFechas(DateTime p_fechaInicio, DateTime p_fechaFin)
     {
-    /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorRangoFechas_GET_body) START*/
+    /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorRangoFechas_GET_body) ENABLED START*/
 
-        var result = await _transaccionService.FiltrarTransaccionesPorRangoFechasAsync(p_fechaInicio, p_fechaFin);
-        return Ok(result.Select(TransaccionAssembler.ToViewModel).ToList());
+        // ReadFilter filtrarTransaccionesPorRangoFechas
+        // (filterLinQ: entity => entity.Fecha >= p_fechaInicio && entity.Fecha <= p_fechaFin).
+        var model = new TransaccionFiltroFechasViewModel
+        {
+            FechaInicio = DateTime.Today.AddDays(-30),
+            FechaFin = DateTime.Today
+        };
+
+        // Sin parámetros en la URL: solo se muestra el formulario.
+        if (!Request.Query.ContainsKey("p_fechaInicio") && !Request.Query.ContainsKey("p_fechaFin"))
+            return View(model);
+
+        if (p_fechaInicio == default || p_fechaFin == default)
+        {
+            ModelState.AddModelError(string.Empty, "Indica la fecha de inicio y la de fin.");
+            return View(model);
+        }
+
+        model.FechaInicio = p_fechaInicio.Date;
+        model.FechaFin = p_fechaFin.Date;
+        if (model.FechaInicio > model.FechaFin)
+        {
+            ModelState.AddModelError(string.Empty, "La fecha de inicio no puede ser posterior a la fecha de fin.");
+            return View(model);
+        }
+
+        await using var unitOfWork = _formUnitOfWorkFactory.Create();
+        // Se cargan los monederos en el mismo contexto para que EF enlace Transaccion.Monedero.
+        await unitOfWork.MonederoRepository.ReadAllAsync();
+        var service = new TransaccionService(unitOfWork);
+
+        // El filtro usa "<=": se pasa el último instante del día de fin para incluir ese día entero.
+        var result = await service.FiltrarTransaccionesPorRangoFechasAsync(
+            model.FechaInicio, model.FechaFin.AddDays(1).AddTicks(-1));
+
+        IEnumerable<Transaccion> visibles = result;
+        if (!User.EsAdministrador())
+        {
+            // Un usuario normal solo ve los movimientos de su propio monedero.
+            var usuarioId = User.GetUsuarioId();
+            if (usuarioId is null) return Challenge();
+            var usuario = await unitOfWork.UsuarioRepository.ReadAsync(usuarioId.Value);
+            var monederoId = usuario?.Monedero?.Id;
+            visibles = result.Where(t => monederoId is not null && t.Monedero?.Id == monederoId);
+            model.SoloMisMovimientos = true;
+        }
+
+        model.Buscado = true;
+        model.Resultados = visibles
+            .OrderByDescending(t => t.Fecha)
+            .Select(TransaccionAssembler.ToViewModel)
+            .ToList();
+        return View(model);
     /*PROTECTED REGION END*/
     }
 

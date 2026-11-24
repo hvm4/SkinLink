@@ -114,13 +114,9 @@ public sealed partial class UsuarioUseCase
 
             // Actualizar fecha de reclamo y otorgar experiencia
             usuario.FechaUltimaRecompensa = ahora;
-            usuario.Experiencia += 25; // Bonificación de XP diaria
-            int nuevoNivel = (usuario.Experiencia / 100) + 1;
-            if (nuevoNivel > usuario.Nivel)
-            {
-                usuario.Nivel = nuevoNivel;
-            }
             await _unitOfWork.UsuarioRepository.SaveAsync(usuario);
+            // Bonificación de XP diaria (RF-04), con la regla única de nivel de sumarExperiencia
+            await usuarioService.SumarExperienciaAsync(usuario.Id, 25);
 
             await _unitOfWork.CommitAsync();
         }

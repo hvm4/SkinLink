@@ -118,6 +118,9 @@ public sealed partial class CajaMisteriosaUseCase
             };
             await _unitOfWork.ActivoDigitalRepository.SaveAsync(result);
 
+            // 4) Experiencia por abrir una caja (RF-04)
+            await new UsuarioService(_unitOfWork).SumarExperienciaAsync(usuario.Id, 20);
+
             await _unitOfWork.CommitAsync();
         }
         catch (Exception ex)

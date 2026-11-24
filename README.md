@@ -79,6 +79,15 @@ Todas las entidades tienen las operaciones CRUD generadas (`new`, `modify`, `des
 | Usuario | `verificarUsuario` | Marca la identidad como verificada (mayor de edad, cuenta no suspendida) |
 | Venta | `cancelarVenta` | Cancela la venta |
 | ConfiguracionSistema | `calcularComisionMercado` | Comisión según el tramo de precio |
+| Monedero | `incrementarSaldo` / `decrementarSaldo` | Suma o resta saldo disponible (importe positivo, misma divisa, nunca negativo) |
+| Transaccion | `validarSaldoMonedero` | Indica si un monedero cubre un importe en su divisa |
+| Usuario | `sumarExperiencia` | Suma XP y recalcula el nivel (nivel = XP / 100 + 1). La usan compra (+50 comprador, +30 vendedor), publicación (+10), caja (+20) y recompensa diaria (+25) |
+| Administrador | `actualizarEstadoKYC` | Cambia el estado de una cuenta y lo registra en `RegistroAuditoria` |
+| Venta | `publicarVenta` | Publica un activo del inventario del vendedor (propiedad, no bloqueado, precio válido) |
+| Venta | `editarPrecio` | Cambia el precio de una venta disponible |
+| ResenaVendedor | `moderarResena` | El administrador oculta/restaura la reseña y queda en auditoría |
+| ResenaVendedor | `ocultarResena` | Oculta la reseña del perfil del vendedor |
+| CajaMisteriosa | `simularApertura` | Simula la apertura sin coste ni persistencia |
 
 ### Operaciones CustomTransaction (casos de uso)
 
@@ -95,16 +104,12 @@ Todas las entidades tienen las operaciones CRUD generadas (`new`, `modify`, `des
 
 `filtrarUsuariosPorEstado`, `filtrarTransaccionesPorTipo`, `filtrarTransaccionesPorRangoFechas`, `filtrarActivosPorRareza`, `filtrarActivosPorColeccion`, `filtrarActivosPorCondicion`, `filtrarActivosEnVenta`, `filtrarVentasPorEstado`, `filtrarVentasPorPrecioMaximo`, `filtrarResenasVisiblesPorVendedor`, `filtrarCajasActivas`, `filtrarCajasPorPrecioApertura`.
 
-### Operaciones aún sin implementar
-
-Siguen con el código generado por HARIA, que lanza `ModelException("... is pending")`:
-
-`incrementarSaldo`, `decrementarSaldo`, `validarSaldoMonedero`, `sumarExperiencia`, `actualizarEstadoKYC`, `publicarVenta`, `editarPrecio`, `moderarResena`, `ocultarResena`, `simularApertura`.
+Todas las operaciones Custom y CustomTransaction del modelo están implementadas.
 
 ## Pruebas
 
 - `SkinLink.Tests/Generated/ModelGeneratedTests.cs`: pruebas generadas (CRUD y asociaciones contra la base de datos, literales de enumerados y contrato de los filtros).
-- `SkinLink.Tests/manual/`: pruebas de las operaciones Custom, CustomTransaction y filtros implementados a mano, con SQLite en memoria.
+- `SkinLink.Tests/manual/`: pruebas de las operaciones Custom, CustomTransaction y filtros implementados a mano, con SQLite en memoria (`OperacionesPendientesTests.cs` cubre las 10 operaciones completadas en esta entrega y la experiencia por actividad).
 
 ## Normas de trabajo con HARIA
 

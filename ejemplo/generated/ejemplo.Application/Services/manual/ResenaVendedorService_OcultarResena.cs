@@ -14,9 +14,16 @@ public sealed partial class ResenaVendedorService
     public async Task OcultarResenaAsync(int p_oid)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_ResenaVendedor_ocultarResena) ENABLED START*/
-        // Write here your custom code...
+        // Oculta una reseña del perfil público del vendedor (RF-26). No se borra: se conserva para auditoría.
+        // Para restaurarla o dejar constancia del administrador, usar moderarResena.
+        var resena = await _repository.ReadAsync(p_oid)
+            ?? throw new ModelException("ResenaVendedor not found.");
 
-        throw new ModelException("Application service generation for ResenaVendedor.ocultarResena is pending.", new NotImplementedException("Method OcultarResenaAsync() not yet implemented."));
+        if (resena.Oculta)
+            throw new ModelException("La reseña ya está oculta.");
+
+        resena.Oculta = true;
+        await _repository.SaveAsync(resena);
         /*PROTECTED REGION END*/
     }
 }

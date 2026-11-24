@@ -147,15 +147,11 @@ public sealed partial class VentaUseCase
             venta.TransaccionCobro = transaccionCobroVendedor;
             await _unitOfWork.VentaRepository.SaveAsync(venta);
 
-            // 6) Incrementar XP al comprador tras la compra (CU-12 / RF-04)
-            comprador.Experiencia += 50;
-            // Verificar umbral de nivel si procede (cada 100 XP sube un nivel)
-            int nuevoNivel = (comprador.Experiencia / 100) + 1;
-            if (nuevoNivel > comprador.Nivel)
-            {
-                comprador.Nivel = nuevoNivel;
-            }
-            await _unitOfWork.UsuarioRepository.SaveAsync(comprador);
+            // 6) Experiencia por la compraventa (CU-12 / RF-04): compra para el comprador y venta para el vendedor
+            var usuarioService = new UsuarioService(_unitOfWork);
+            await usuarioService.SumarExperienciaAsync(comprador.Id, 50);
+            if (vendedor.Estado == EstadoCuenta.Activo)
+                await usuarioService.SumarExperienciaAsync(vendedor.Id, 30);
 
             await _unitOfWork.CommitAsync();
         }

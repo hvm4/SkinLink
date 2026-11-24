@@ -1,0 +1,49 @@
+@* Fichero manual (Miembro 1): vista del ReadFilter filtrarUsuariosPorEstado. *@
+@model Skinlink.Web.ViewModels.UsuarioFiltroEstadoViewModel
+@{
+    ViewData["Title"] = "Filtrar usuarios por estado";
+}
+
+<h1 class="h3">Filtrar usuarios por estado</h1>
+<partial name="_MensajesOperacion" />
+<form asp-action="FiltrarUsuariosPorEstado" method="get" class="row g-2 align-items-end mb-3" style="max-width: 32rem">
+    <div class="col">
+        <label for="p_estado" class="form-label">Estado de la cuenta</label>
+        <select id="p_estado" name="p_estado" class="form-select">
+            @foreach (var estado in Enum.GetValues<ejemplo.Domain.Enums.EstadoCuenta>())
+            {
+                <option value="@estado" selected="@(estado == Model.Estado)">@estado</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+@if (Model.Buscado)
+{
+    <p>@Model.Resultados.Count resultado(s) con estado <strong>@Model.Estado</strong>.</p>
+    if (Model.Resultados.Count > 0)
+    {
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Id</th><th>Tipo</th><th>Nombre de usuario</th><th>Correo</th><th>Verificado</th><th>Nivel</th><th></th></tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Resultados)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@(Model.AdministradorIds.Contains(item.Id) ? "Administrador" : "Usuario")</td>
+                    <td>@item.NombreUsuario</td>
+                    <td>@item.Correo</td>
+                    <td>@(item.Verificado ? "Sí" : "No")</td>
+                    <td>@item.Nivel</td>
+                    <td><a asp-action="Details" asp-route-id="@item.Id">Ver ficha</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}

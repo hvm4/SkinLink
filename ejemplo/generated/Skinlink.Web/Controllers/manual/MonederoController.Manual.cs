@@ -22,7 +22,8 @@ public partial class MonederoController
 {
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(MonederoController_IncrementarSaldo_POST_attributes) START*/
+    /*PROTECTED REGION ID(MonederoController_IncrementarSaldo_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> IncrementarSaldo(int p_oid, Moneda p_montoAnadir)
     {
@@ -36,7 +37,8 @@ public partial class MonederoController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(MonederoController_DecrementarSaldo_POST_attributes) START*/
+    /*PROTECTED REGION ID(MonederoController_DecrementarSaldo_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DecrementarSaldo(int p_oid, Moneda p_montoRestar)
     {

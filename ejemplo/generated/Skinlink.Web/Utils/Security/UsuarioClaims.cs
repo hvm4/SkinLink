@@ -10,6 +10,9 @@ public static class Roles
 {
     public const string Usuario = "Usuario";
     public const string Administrador = "Administrador";
+
+    /// <summary>Cualquier cuenta activa (usuario normal o administrador). Las cuentas suspendidas no tienen rol.</summary>
+    public const string Todos = Usuario + "," + Administrador;
 }
 
 public static partial class HariaWebAuthentication
@@ -20,6 +23,15 @@ public static partial class HariaWebAuthentication
     // (Administrador hereda de Usuario), nunca a partir de datos del formulario.
     static partial void AddTrustedClaims(List<Claim> claims, string domainClass, object identifier, object? serverEntity)
     {
+        if (serverEntity is ejemplo.Domain.Entities.Usuario cuenta)
+        {
+            claims.Add(new Claim(UsuarioClaimsExtensions.NombreUsuarioClaim, cuenta.NombreUsuario ?? string.Empty));
+            claims.Add(new Claim(UsuarioClaimsExtensions.EstadoCuentaClaim, cuenta.Estado.ToString()));
+
+            // Una cuenta suspendida inicia sesión pero sin ningún rol: solo ve la portada y puede cerrar sesión.
+            if (cuenta.Estado != ejemplo.Domain.Enums.EstadoCuenta.Activo) return;
+        }
+
         if (serverEntity is ejemplo.Domain.Entities.Administrador)
         {
             claims.Add(new Claim(ClaimTypes.Role, Roles.Administrador));
@@ -33,6 +45,21 @@ public static partial class HariaWebAuthentication
 
 public static class UsuarioClaimsExtensions
 {
+    public const string NombreUsuarioClaim = "SkinlinkNombreUsuario";
+    public const string EstadoCuentaClaim = "SkinlinkEstadoCuenta";
+
+    /// <summary>Nombre de usuario de la cuenta autenticada (si no, su id).</summary>
+    public static string GetNombreUsuario(this ClaimsPrincipal user) =>
+        user.FindFirst(NombreUsuarioClaim)?.Value ?? user.Identity?.Name ?? string.Empty;
+
+    /// <summary>True si la cuenta estaba suspendida al iniciar sesión.</summary>
+    public static bool EstaSuspendido(this ClaimsPrincipal user) =>
+        user.FindFirst(EstadoCuentaClaim)?.Value == ejemplo.Domain.Enums.EstadoCuenta.Suspendido.ToString();
+
+    /// <summary>Un administrador puede ver cualquier usuario; un usuario normal, solo a sí mismo.</summary>
+    public static bool PuedeAccederAUsuario(this ClaimsPrincipal user, int usuarioId) =>
+        user.EsAdministrador() || user.GetUsuarioId() == usuarioId;
+
     /// <summary>True si la cuenta autenticada tiene el rol Administrador.</summary>
     public static bool EsAdministrador(this ClaimsPrincipal user) =>
         user.Identity?.IsAuthenticated == true && user.IsInRole(Roles.Administrador);

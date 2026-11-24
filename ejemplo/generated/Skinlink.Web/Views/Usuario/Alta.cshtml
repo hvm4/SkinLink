@@ -1,0 +1,18 @@
+@* Fichero manual (Miembro 1): alta de usuario por un administrador. El monedero y el inventario se crean vacíos. *@
+@model Skinlink.Web.ViewModels.UsuarioViewModel
+@{
+    ViewData["Title"] = "Crear usuario";
+}
+
+<h1 class="h3">Crear usuario</h1>
+<form asp-action="Create" method="post" style="max-width: 32rem">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <partial name="_CamposCuenta" model="Model" />
+    <p class="text-body-secondary small">Se le creará un monedero y un inventario vacíos.</p>
+    <button type="submit" class="btn btn-primary">Crear</button>
+    <a asp-action="Index" class="btn btn-link">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

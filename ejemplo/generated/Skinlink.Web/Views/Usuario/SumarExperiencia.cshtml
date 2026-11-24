@@ -1,0 +1,18 @@
+@* Fichero manual (Miembro 1): vista de la operación custom sumarExperiencia (solo administradores). *@
+@model Skinlink.Web.ViewModels.SumarExperienciaViewModel
+@{
+    ViewData["Title"] = "Sumar experiencia";
+}
+
+<h1 class="h3">Sumar experiencia a @Model.NombreUsuario</h1>
+<partial name="_MensajesOperacion" />
+<p>Nivel actual: @Model.NivelActual · Experiencia actual: @Model.ExperienciaActual puntos. Cada 100 puntos se sube un nivel.</p>
+<form asp-action="SumarExperiencia" method="post" style="max-width: 24rem">
+    <input type="hidden" name="p_oid" value="@Model.UsuarioId" />
+    <div class="mb-3">
+        <label for="p_puntos" class="form-label">Puntos de experiencia</label>
+        <input id="p_puntos" name="p_puntos" type="number" min="1" value="@Model.Puntos" required class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Sumar</button>
+    <a asp-action="Details" asp-route-id="@Model.UsuarioId" class="btn btn-link">Cancelar</a>
+</form>

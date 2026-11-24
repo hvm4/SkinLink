@@ -1,0 +1,32 @@
+@* Fichero manual (Miembro 1): portada para visitantes, usuarios normales y cuentas suspendidas. *@
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <h1 class="h3">SkinLink</h1>
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <p>Compra, vende e intercambia skins. Puedes ver los activos y las cajas sin cuenta; para operar, inicia sesión o regístrate.</p>
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+            <a class="btn btn-outline-primary" asp-controller="Usuario" asp-action="Register">Crear cuenta</a>
+            <a class="btn btn-link" asp-controller="ActivoDigital" asp-action="Buscar">Ver activos</a>
+            <a class="btn btn-link" asp-controller="CajaMisteriosa" asp-action="Buscar">Ver cajas</a>
+        }
+        else if (!User.IsInRole(Roles.Usuario))
+        {
+            <div class="alert alert-warning mb-0">Tu cuenta está suspendida. Ponte en contacto con un administrador para reactivarla.</div>
+        }
+        else
+        {
+            <p>Hola, @User.GetNombreUsuario().</p>
+            <ul>
+                <li><a asp-controller="Usuario" asp-action="Perfil">Mi perfil</a></li>
+                <li><a asp-controller="Usuario" asp-action="ReclamarRecompensaDiaria">Reclamar la recompensa diaria</a></li>
+                <li><a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas">Mis movimientos</a></li>
+                <li><a asp-controller="ActivoDigital" asp-action="Buscar">Buscar activos</a></li>
+                <li><a asp-controller="CajaMisteriosa" asp-action="Buscar">Cajas misteriosas</a></li>
+                <li><a asp-controller="Venta" asp-action="Index">Ventas</a></li>
+                <li><a asp-controller="Intercambio" asp-action="Index">Intercambios</a></li>
+                <li><a asp-controller="Favorito" asp-action="Index">Favoritos</a></li>
+            </ul>
+        }
+    </div>
+</div>

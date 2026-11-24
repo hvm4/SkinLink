@@ -13,7 +13,9 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(ArticuloCatalogoController_class_attributes) ENABLED START*/
-[Authorize]
+// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
+// Las acciones con [AllowAnonymous] siguen siendo públicas.
+[Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class ArticuloCatalogoController : Controller
 {
@@ -60,7 +62,8 @@ public partial class ArticuloCatalogoController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ArticuloCatalogoController_Create_GET_attributes) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_Create_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public IActionResult Create()
     {
@@ -72,7 +75,8 @@ public partial class ArticuloCatalogoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ArticuloCatalogoController_Create_POST_attributes) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_Create_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.ArticuloCatalogoViewModel model)
     {
@@ -129,7 +133,8 @@ public partial class ArticuloCatalogoController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ArticuloCatalogoController_Edit_GET_attributes) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_Edit_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -143,7 +148,8 @@ public partial class ArticuloCatalogoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ArticuloCatalogoController_Edit_POST_attributes) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_Edit_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.ArticuloCatalogoViewModel model)
     {
@@ -204,7 +210,8 @@ public partial class ArticuloCatalogoController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ArticuloCatalogoController_Delete_GET_attributes) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_Delete_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -219,7 +226,8 @@ public partial class ArticuloCatalogoController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ArticuloCatalogoController_DeleteConfirmed_POST_attributes) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_DeleteConfirmed_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

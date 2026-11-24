@@ -106,6 +106,27 @@ Todas las entidades tienen las operaciones CRUD generadas (`new`, `modify`, `des
 
 Todas las operaciones Custom y CustomTransaction del modelo están implementadas.
 
+## Seguridad y roles (Skinlink.Web)
+
+Los roles se asignan al iniciar sesión en `Utils/Security/UsuarioClaims.cs` (punto `AddTrustedClaims` de HARIA Web), según la entidad cargada en el servidor:
+
+| Cuenta | Rol |
+|---|---|
+| `Usuario` activo | `Usuario` |
+| `Administrador` activo (hereda de `Usuario`) | `Administrador` |
+| Cuenta suspendida | ninguno: solo ve la portada y puede cerrar sesión |
+
+- **Solo `Administrador`**:
+  - Controladores `Administrador`, `RegistroAuditoria`, `ConfiguracionSistema` y `ProbabilidadDrop`.
+  - Listado, alta, edición, borrado y filtro de `Usuario`; `sumarExperiencia`, `suspenderCuentaUsuario`, `verificarUsuario` y `actualizarEstadoKYC`.
+  - Alta, edición y borrado de `ArticuloCatalogo`, `CajaMisteriosa`, `Transaccion`, `Monedero` e `InventarioPrivado`; `incrementarSaldo`, `decrementarSaldo` y `validarSaldoMonedero`.
+- **Cualquier cuenta activa** (`Roles.Todos`): el resto. Un usuario solo ve su propia ficha (`Usuario/Details`) y solo reclama su propia recompensa diaria.
+- Las acciones con `[AllowAnonymous]` (búsqueda de activos y cajas) siguen siendo públicas.
+- En el código: `[Authorize(Roles = Roles.Administrador)]` o `Roles.Todos`; `User.GetUsuarioId()`, `User.EsAdministrador()`, `User.PuedeAccederAUsuario(id)`.
+- El login es con el **id** del usuario y su contraseña; al registrarse se muestra el id.
+- Los roles van en la cookie: si se suspende a alguien con la sesión abierta, pierde el acceso al volver a iniciar sesión.
+- `Views/Home/Index.cshtml` es generado: si se regenera con "Update Home Page", hay que volver a poner el `if` que separa la portada del administrador (`_BusinessNavigation`) de la del resto (`_InicioUsuario`).
+
 ## Pruebas
 
 - `SkinLink.Tests/Generated/ModelGeneratedTests.cs`: pruebas generadas (CRUD y asociaciones contra la base de datos, literales de enumerados y contrato de los filtros).

@@ -21,11 +21,35 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacidad</a></li>
+                        @* Menú según el rol (Miembro 1). El menú solo muestra enlaces: el acceso lo controla [Authorize]. *@
+                        <li class="nav-item"><a class="nav-link" asp-controller="ActivoDigital" asp-action="Buscar">Activos</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="CajaMisteriosa" asp-action="Buscar">Cajas</a></li>
+                        @if (User.IsInRole(Roles.Usuario) || User.EsAdministrador())
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Usuario" asp-action="Perfil">Mi perfil</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Usuario" asp-action="ReclamarRecompensaDiaria">Recompensa diaria</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas">Mis movimientos</a></li>
+                        }
+                        @if (User.EsAdministrador())
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Administración</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuarios</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Usuario" asp-action="FiltrarUsuariosPorEstado">Filtrar usuarios por estado</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Administrador" asp-action="ActualizarEstadoKYC">Actualizar estado KYC</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Administrador" asp-action="Index">Administradores</a></li>
+                                    <li><a class="dropdown-item" asp-controller="RegistroAuditoria" asp-action="Index">Registro de auditoría</a></li>
+                                    <li><a class="dropdown-item" asp-controller="ArticuloCatalogo" asp-action="Descuento">Descuentos del catálogo</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Index">Todas las entidades</a></li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                     <div class="d-flex align-items-lg-center gap-2">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <span class="navbar-text text-white-50 small">@User.Identity.Name</span>
+                        <span class="navbar-text text-white-50 small">@User.GetNombreUsuario() (id @User.Identity.Name)@(User.EsAdministrador() ? " · Administrador" : User.EstaSuspendido() ? " · Cuenta suspendida" : "")</span>
                         <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
                             <button type="submit" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
                         </form>

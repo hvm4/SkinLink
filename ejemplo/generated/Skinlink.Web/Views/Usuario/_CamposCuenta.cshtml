@@ -1,0 +1,53 @@
+@* Fichero manual (Miembro 1): campos comunes de una cuenta en el alta administrativa.
+   Lo usan Usuario/Alta y, por herencia, Administrador/Alta. *@
+@model Skinlink.Web.ViewModels.UsuarioViewModel
+<div class="mb-3">
+    <label asp-for="NombreUsuario" class="form-label">Nombre de usuario</label>
+    <input asp-for="NombreUsuario" class="form-control" />
+    <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Correo" class="form-label">Correo</label>
+    <input asp-for="Correo" type="email" class="form-control" />
+    <span asp-validation-for="Correo" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Contrasena" class="form-label"></label>
+    <input asp-for="Contrasena" type="password" value="" autocomplete="new-password" required class="form-control" />
+    <span asp-validation-for="Contrasena" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+    <input asp-for="FechaNacimiento" type="date" class="form-control" />
+</div>
+<div class="mb-3">
+    <label asp-for="Estado" class="form-label">Estado</label>
+    <select asp-for="Estado" asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.EstadoCuenta>()" class="form-select"></select>
+</div>
+<div class="row">
+    <div class="col mb-3">
+        <label asp-for="Nivel" class="form-label">Nivel</label>
+        <input asp-for="Nivel" class="form-control" />
+    </div>
+    <div class="col mb-3">
+        <label asp-for="Experiencia" class="form-label">Experiencia</label>
+        <input asp-for="Experiencia" class="form-control" />
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="FechaUltimoLogin" class="form-label">Último acceso</label>
+    <input asp-for="FechaUltimoLogin" type="date" class="form-control" />
+</div>
+<div class="mb-3">
+    <label asp-for="Idioma" class="form-label">Idioma</label>
+    <input asp-for="Idioma" class="form-control" />
+    <span asp-validation-for="Idioma" class="text-danger"></span>
+</div>
+<div class="form-check mb-2">
+    <input asp-for="TemaModoOscuro" class="form-check-input" />
+    <label asp-for="TemaModoOscuro" class="form-check-label">Tema oscuro</label>
+</div>
+<div class="form-check mb-3">
+    <input asp-for="Verificado" class="form-check-input" />
+    <label asp-for="Verificado" class="form-check-label">Identidad verificada</label>
+</div>

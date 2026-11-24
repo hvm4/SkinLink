@@ -1,0 +1,51 @@
+@* Fichero manual (Miembro 1): listado de usuarios para administradores (incluye la herencia Usuario <- Administrador). *@
+@model IEnumerable<Skinlink.Web.ViewModels.UsuarioViewModel>
+@{
+    ViewData["Title"] = "Usuarios";
+    var administradorIds = ViewData["AdministradorIds"] as HashSet<int> ?? new HashSet<int>();
+}
+
+<h1 class="h3">Usuarios</h1>
+<partial name="_MensajesOperacion" />
+<p>
+    <a asp-action="Create" class="btn btn-primary btn-sm">Crear usuario</a>
+    <a asp-controller="Administrador" asp-action="Create" class="btn btn-outline-primary btn-sm">Crear administrador</a>
+    <a asp-action="FiltrarUsuariosPorEstado" class="btn btn-outline-secondary btn-sm">Filtrar por estado</a>
+    <a asp-controller="Administrador" asp-action="ActualizarEstadoKYC" class="btn btn-outline-secondary btn-sm">Actualizar estado KYC</a>
+</p>
+
+@if (!Model.Any())
+{
+    <p>Todavía no hay usuarios.</p>
+}
+else
+{
+    <table class="table table-sm table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Id</th><th>Tipo</th><th>Nombre de usuario</th><th>Correo</th><th>Estado</th><th>Verificado</th><th>Nivel</th><th>Experiencia</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            var esAdministrador = administradorIds.Contains(item.Id);
+            <tr>
+                <td>@item.Id</td>
+                <td>@(esAdministrador ? "Administrador" : "Usuario")</td>
+                <td>@item.NombreUsuario</td>
+                <td>@item.Correo</td>
+                <td>@item.Estado</td>
+                <td>@(item.Verificado ? "Sí" : "No")</td>
+                <td>@item.Nivel</td>
+                <td>@item.Experiencia</td>
+                <td class="text-nowrap">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Ficha y operaciones</a>
+                    <a asp-controller="@(esAdministrador ? "Administrador" : "Usuario")" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    <a asp-controller="@(esAdministrador ? "Administrador" : "Usuario")" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

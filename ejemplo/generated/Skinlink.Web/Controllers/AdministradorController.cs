@@ -14,7 +14,8 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(AdministradorController_class_attributes) ENABLED START*/
-[Authorize]
+// Seguridad (Miembro 1): solo administradores.
+[Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
 /*PROTECTED REGION END*/
 public partial class AdministradorController : Controller
 {
@@ -64,12 +65,18 @@ public partial class AdministradorController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
-    /*PROTECTED REGION ID(AdministradorController_Create_GET_body) START*/
+    /*PROTECTED REGION ID(AdministradorController_Create_GET_body) ENABLED START*/
 
-        var model = new Skinlink.Web.ViewModels.AdministradorViewModel();
-
-        await LoadFormOptionsAsync(model);
-        return View(model);
+        // Alta de administrador (subclase de Usuario): monedero e inventario propios y vacíos.
+        return View("Alta", new Skinlink.Web.ViewModels.AdministradorViewModel
+        {
+            FechaNacimiento = DateTime.Today.AddYears(-18),
+            FechaUltimoLogin = DateTime.Today,
+            Estado = EstadoCuenta.Activo,
+            Nivel = 1,
+            Idioma = "es",
+            Verificado = true
+        });
     /*PROTECTED REGION END*/
     }
 
@@ -81,51 +88,26 @@ public partial class AdministradorController : Controller
     {
     /*PROTECTED REGION ID(AdministradorController_Create_POST_body) ENABLED START*/
 
-        ModelState.Remove(nameof(model.FechaUltimaRecompensa)); // Campo fuera del contrato Create de Application.
-        await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new AdministradorService(unitOfWork);
-
-
-
-        await LoadFormOptionsAsync(model, unitOfWork);
-        if (model.MonederoId is int selectedMonedero &&
-            !model.MonederoOptions.Any(option => option.Value == Convert.ToString(selectedMonedero, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError("MonederoId", "Selecciona un registro existente de Monedero.");
-        if (model.MonederoId is null) ModelState.AddModelError("MonederoId", "Debes seleccionar una opción.");
-        if (model.InventarioId is int selectedInventario &&
-            !model.InventarioOptions.Any(option => option.Value == Convert.ToString(selectedInventario, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError("InventarioId", "Selecciona un registro existente de InventarioPrivado.");
-        if (model.InventarioId is null) ModelState.AddModelError("InventarioId", "Debes seleccionar una opción.");
-
+        ModelState.Remove(nameof(model.FechaUltimaRecompensa));
+        ModelState.Remove(nameof(model.MonederoId));
+        ModelState.Remove(nameof(model.InventarioId));
         if (string.IsNullOrEmpty(model.Contrasena)) ModelState.AddModelError(nameof(model.Contrasena), "Debes indicar una contraseña.");
-        if (!ModelState.IsValid) return View(model);
+        if ((await _usuarioService.ReadAllAsync()).Any(usuario => string.Equals(usuario.Correo?.Trim(), model.Correo?.Trim(), StringComparison.OrdinalIgnoreCase)))
+            ModelState.AddModelError(nameof(model.Correo), "Ya existe una cuenta con ese correo.");
+        if (!ModelState.IsValid) return View("Alta", model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Administrador.Create");
         try
         {
-
-            var monederoSel = await unitOfWork.MonederoRepository.ReadAsync(model.MonederoId.GetValueOrDefault()) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.");
-            var inventarioSel = await unitOfWork.InventarioPrivadoRepository.ReadAsync(model.InventarioId.GetValueOrDefault()) ?? throw new InvalidOperationException("El registro seleccionado de InventarioPrivado ya no existe.");
-            var entity = await service.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento, model.Estado, model.Nivel, model.Experiencia, model.FechaUltimoLogin, model.TemaModoOscuro, model.Idioma, model.Verificado, monederoSel, inventarioSel, model.CodigoAuditor);
-            entity.Monedero = model.MonederoId is int referenceMonedero
-                ? await unitOfWork.MonederoRepository.ReadAsync(referenceMonedero) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.") : null!;
-            entity.Inventario = model.InventarioId is int referenceInventario
-                ? await unitOfWork.InventarioPrivadoRepository.ReadAsync(referenceInventario) ?? throw new InvalidOperationException("El registro seleccionado de InventarioPrivado ya no existe.") : null!;
-
-            await service.ModifierAdministradorDefaultAsync(entity);
-
-            await unitOfWork.CommitAsync();
+            var entity = await _administradorService.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento, model.Estado, model.Nivel, model.Experiencia, model.FechaUltimoLogin, model.TemaModoOscuro, model.Idioma, model.Verificado, CuentaNueva.Monedero(), CuentaNueva.Inventario(), model.CodigoAuditor);
+            TempData["Exito"] = $"Administrador creado. Su identificador de acceso es {entity.Id}.";
+            return RedirectToAction("Details", "Usuario", new { id = entity.Id });
         }
-        catch (Exception error)
+        catch (Exception error) when (error is not OperationCanceledException)
         {
-            await unitOfWork.RollbackAsync();
-            if (error is OperationCanceledException) throw;
-            _logger.LogError(error, "Could not save the record and its lines.");
-            ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
-            return View(model);
+            _logger.LogError(error, "No se ha podido crear el administrador.");
+            ModelState.AddModelError(string.Empty, MensajesOperacion.De(error));
+            return View("Alta", model);
         }
-
-        return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
     }
 
@@ -232,10 +214,10 @@ public partial class AdministradorController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarUsuariosPorEstado(EstadoCuenta p_estado)
     {
-    /*PROTECTED REGION ID(AdministradorController_FiltrarUsuariosPorEstado_GET_body) START*/
+    /*PROTECTED REGION ID(AdministradorController_FiltrarUsuariosPorEstado_GET_body) ENABLED START*/
 
-        var result = await _usuarioService.FiltrarUsuariosPorEstadoAsync(p_estado);
-        return Ok(result.Select(UsuarioAssembler.ToViewModel).ToList());
+        // Operación heredada de Usuario: se reutiliza la vista del filtro de Usuario.
+        return RedirectToAction("FiltrarUsuariosPorEstado", "Usuario", new { p_estado });
     /*PROTECTED REGION END*/
     }
 

@@ -1,4 +1,13 @@
 @* HARIA-WEB GENERATED sha256:8f8ec3988845d58a673b4ac9dfc8a716a77f52a855041accdde5e1ef9a481f96 *@
 @{ ViewData["Title"] = "Inicio"; }
 
-<partial name="_BusinessNavigation" />
+@* Miembro 1: los administradores ven todas las entidades; el resto, su página de inicio.
+   Si se regenera la portada con "Update Home Page", hay que volver a poner este if. *@
+@if (User.EsAdministrador())
+{
+    <partial name="_BusinessNavigation" />
+}
+else
+{
+    <partial name="_InicioUsuario" />
+}

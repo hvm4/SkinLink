@@ -16,50 +16,74 @@ namespace Skinlink.Web.Controllers;
 // Class-level authorization applies to both partial files.
 // [Authorize(Roles = "Admin")]
 /*PROTECTED REGION ID(UsuarioController_manual_class_attributes) ENABLED START*/
-// Class-level authorization applies to both partial files.
-// [Authorize(Roles = "Admin")]
+// La autorización de clase está en UsuarioController.cs: [Authorize(Roles = Roles.Todos)].
 /*PROTECTED REGION END*/
 public partial class UsuarioController
 {
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(UsuarioController_SumarExperiencia_POST_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_SumarExperiencia_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> SumarExperiencia(int p_oid, int p_puntos)
     {
     /*PROTECTED REGION ID(UsuarioController_SumarExperiencia_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _usuarioService.SumarExperienciaAsync(p_oid, p_puntos);
-        return NoContent();
+        try
+        {
+            await _usuarioService.SumarExperienciaAsync(p_oid, p_puntos);
+            TempData["Exito"] = $"Se han sumado {p_puntos} puntos de experiencia.";
+            return RedirectToAction(nameof(Details), new { id = p_oid });
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["Error"] = MensajesOperacion.De(error);
+            return RedirectToAction(nameof(SumarExperiencia), new { id = p_oid });
+        }
     /*PROTECTED REGION END*/
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(UsuarioController_SuspenderCuentaUsuario_POST_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_SuspenderCuentaUsuario_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> SuspenderCuentaUsuario(int p_oid)
     {
     /*PROTECTED REGION ID(UsuarioController_SuspenderCuentaUsuario_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _usuarioService.SuspenderCuentaUsuarioAsync(p_oid);
-        return NoContent();
+        try
+        {
+            await _usuarioService.SuspenderCuentaUsuarioAsync(p_oid);
+            TempData["Exito"] = "La cuenta se ha suspendido. El usuario perderá el acceso la próxima vez que inicie sesión.";
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["Error"] = MensajesOperacion.De(error);
+        }
+        return RedirectToAction(nameof(Details), new { id = p_oid });
     /*PROTECTED REGION END*/
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(UsuarioController_VerificarUsuario_POST_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_VerificarUsuario_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> VerificarUsuario(int p_oid)
     {
     /*PROTECTED REGION ID(UsuarioController_VerificarUsuario_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _usuarioService.VerificarUsuarioAsync(p_oid);
-        return NoContent();
+        try
+        {
+            await _usuarioService.VerificarUsuarioAsync(p_oid);
+            TempData["Exito"] = "La identidad del usuario se ha verificado.";
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["Error"] = MensajesOperacion.De(error);
+        }
+        return RedirectToAction(nameof(Details), new { id = p_oid });
     /*PROTECTED REGION END*/
     }
 
@@ -71,11 +95,26 @@ public partial class UsuarioController
     {
     /*PROTECTED REGION ID(UsuarioController_ReclamarRecompensaDiaria_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
-        var useCase = new ejemplo.Application.UseCases.Usuario.UsuarioUseCase(unitOfWork);
-        var result = await useCase.ReclamarRecompensaDiariaAsync(p_oid, p_caja_oid);
-        return Ok(result);
+        // La recompensa diaria solo la reclama el propio usuario para sí mismo.
+        if (User.GetUsuarioId() != p_oid) return Forbid();
+        if (p_caja_oid <= 0)
+        {
+            TempData["Error"] = "Selecciona una caja gratuita.";
+            return RedirectToAction(nameof(ReclamarRecompensaDiaria));
+        }
+        try
+        {
+            await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
+            var useCase = new ejemplo.Application.UseCases.Usuario.UsuarioUseCase(unitOfWork);
+            var result = await useCase.ReclamarRecompensaDiariaAsync(p_oid, p_caja_oid);
+            TempData["Exito"] = $"¡Recompensa diaria reclamada! Has obtenido «{result.Nombre}» ({result.Atributos?.Rareza}, {result.Atributos?.Condicion}) y 25 puntos de experiencia.";
+            return RedirectToAction(nameof(Details), new { id = p_oid });
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["Error"] = MensajesOperacion.De(error);
+            return RedirectToAction(nameof(ReclamarRecompensaDiaria));
+        }
     /*PROTECTED REGION END*/
     }
 }

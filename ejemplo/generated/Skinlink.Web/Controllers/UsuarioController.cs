@@ -1,11 +1,12 @@
 // HARIA-WEB MVC managed controller
-/*PROTECTED REGION ID(UsuarioController_usings) START*/
+/*PROTECTED REGION ID(UsuarioController_usings) ENABLED START*/
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ejemplo.Domain.Entities;
 using ejemplo.Application.Services;
 using Skinlink.Web.Assemblers;
 using Skinlink.Web.Utils.Security;
+using Skinlink.Web.ViewModels;
 
 using ejemplo.Domain.Enums;
 using ejemplo.Domain.ValueObjects;
@@ -14,7 +15,9 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(UsuarioController_class_attributes) ENABLED START*/
-[Authorize]
+// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
+// Las acciones con [AllowAnonymous] siguen siendo públicas.
+[Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class UsuarioController : Controller
 {
@@ -33,14 +36,17 @@ public partial class UsuarioController : Controller
     }
     /*PROTECTED REGION END*/
     [HttpGet]
-    /*PROTECTED REGION ID(UsuarioController_Index_GET_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_Index_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
-    /*PROTECTED REGION ID(UsuarioController_Index_GET_body) START*/
+    /*PROTECTED REGION ID(UsuarioController_Index_GET_body) ENABLED START*/
 
         var entities = await _usuarioService.ReadAllAsync();
-        return View(entities.Select(UsuarioAssembler.ToViewModel).ToList());
+        // Herencia Usuario <- Administrador: el listado incluye los dos tipos y marca los administradores.
+        ViewData["AdministradorIds"] = entities.OfType<Administrador>().Select(item => item.Id).ToHashSet();
+        return View("Listado", entities.Select(UsuarioAssembler.ToViewModel).ToList());
     /*PROTECTED REGION END*/
     }
 
@@ -49,81 +55,64 @@ public partial class UsuarioController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Details(int id)
     {
-    /*PROTECTED REGION ID(UsuarioController_Details_GET_body) START*/
+    /*PROTECTED REGION ID(UsuarioController_Details_GET_body) ENABLED START*/
 
+        // Un usuario solo puede ver su propia ficha; un administrador, cualquiera.
+        if (!User.PuedeAccederAUsuario(id)) return Forbid();
         var entity = await _usuarioService.ReadOIDAsync(id);
         if (entity is null) return NotFound();
-        return View(UsuarioAssembler.ToViewModel(entity));
+        return View("Perfil", ConstruirPerfil(entity));
     /*PROTECTED REGION END*/
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(UsuarioController_Create_GET_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_Create_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
-    /*PROTECTED REGION ID(UsuarioController_Create_GET_body) START*/
+    /*PROTECTED REGION ID(UsuarioController_Create_GET_body) ENABLED START*/
 
-        var model = new Skinlink.Web.ViewModels.UsuarioViewModel();
-
-        await LoadFormOptionsAsync(model);
-        return View(model);
+        // Alta administrativa: el monedero y el inventario se crean vacíos automáticamente.
+        return View("Alta", new UsuarioViewModel
+        {
+            FechaNacimiento = DateTime.Today.AddYears(-18),
+            FechaUltimoLogin = DateTime.Today,
+            Estado = EstadoCuenta.Activo,
+            Nivel = 1,
+            Idioma = "es"
+        });
     /*PROTECTED REGION END*/
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(UsuarioController_Create_POST_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_Create_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.UsuarioViewModel model)
     {
     /*PROTECTED REGION ID(UsuarioController_Create_POST_body) ENABLED START*/
 
-        ModelState.Remove(nameof(model.FechaUltimaRecompensa)); // Campo fuera del contrato Create de Application.
-        await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new UsuarioService(unitOfWork);
-
-
-
-        await LoadFormOptionsAsync(model, unitOfWork);
-        if (model.MonederoId is int selectedMonedero &&
-            !model.MonederoOptions.Any(option => option.Value == Convert.ToString(selectedMonedero, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError("MonederoId", "Selecciona un registro existente de Monedero.");
-        if (model.MonederoId is null) ModelState.AddModelError("MonederoId", "Debes seleccionar una opción.");
-        if (model.InventarioId is int selectedInventario &&
-            !model.InventarioOptions.Any(option => option.Value == Convert.ToString(selectedInventario, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError("InventarioId", "Selecciona un registro existente de InventarioPrivado.");
-        if (model.InventarioId is null) ModelState.AddModelError("InventarioId", "Debes seleccionar una opción.");
-
+        // Alta administrativa: cada Usuario tiene su propio Monedero e InventarioPrivado (relaciones 1 a 1),
+        // así que se crean nuevos en lugar de elegir uno existente que ya pertenece a otro usuario.
+        QuitarCamposGestionadosPorServidor();
         if (string.IsNullOrEmpty(model.Contrasena)) ModelState.AddModelError(nameof(model.Contrasena), "Debes indicar una contraseña.");
-        if (!ModelState.IsValid) return View(model);
+        if (await CorreoEnUsoAsync(model.Correo)) ModelState.AddModelError(nameof(model.Correo), "Ya existe una cuenta con ese correo.");
+        if (!ModelState.IsValid) return View("Alta", model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Usuario.Create");
         try
         {
-
-            var monederoSel = await unitOfWork.MonederoRepository.ReadAsync(model.MonederoId.GetValueOrDefault()) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.");
-            var inventarioSel = await unitOfWork.InventarioPrivadoRepository.ReadAsync(model.InventarioId.GetValueOrDefault()) ?? throw new InvalidOperationException("El registro seleccionado de InventarioPrivado ya no existe.");
-            var entity = await service.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento, model.Estado, model.Nivel, model.Experiencia, model.FechaUltimoLogin, model.TemaModoOscuro, model.Idioma, model.Verificado, monederoSel, inventarioSel);
-            entity.Monedero = model.MonederoId is int referenceMonedero
-                ? await unitOfWork.MonederoRepository.ReadAsync(referenceMonedero) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.") : null!;
-            entity.Inventario = model.InventarioId is int referenceInventario
-                ? await unitOfWork.InventarioPrivadoRepository.ReadAsync(referenceInventario) ?? throw new InvalidOperationException("El registro seleccionado de InventarioPrivado ya no existe.") : null!;
-
-            await service.ModifierUsuarioDefaultAsync(entity);
-
-            await unitOfWork.CommitAsync();
+            var entity = await _usuarioService.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento, model.Estado, model.Nivel, model.Experiencia, model.FechaUltimoLogin, model.TemaModoOscuro, model.Idioma, model.Verificado, CuentaNueva.Monedero(), CuentaNueva.Inventario());
+            TempData["Exito"] = $"Usuario creado. Su identificador de acceso es {entity.Id}.";
+            return RedirectToAction(nameof(Details), new { id = entity.Id });
         }
-        catch (Exception error)
+        catch (Exception error) when (error is not OperationCanceledException)
         {
-            await unitOfWork.RollbackAsync();
-            if (error is OperationCanceledException) throw;
-            _logger.LogError(error, "Could not save the record and its lines.");
-            ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
-            return View(model);
+            _logger.LogError(error, "No se ha podido crear el usuario.");
+            ModelState.AddModelError(string.Empty, MensajesOperacion.De(error));
+            return View("Alta", model);
         }
-
-        return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
     }
 
@@ -133,12 +122,10 @@ public partial class UsuarioController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Register()
     {
-    /*PROTECTED REGION ID(UsuarioController_Register_GET_body) START*/
+    /*PROTECTED REGION ID(UsuarioController_Register_GET_body) ENABLED START*/
 
-        var model = new Skinlink.Web.ViewModels.UsuarioViewModel();
-
-        await LoadFormOptionsAsync(model);
-        return View(model);
+        if (User.Identity?.IsAuthenticated == true) return RedirectToAction(nameof(Perfil));
+        return View("Registro", new UsuarioViewModel { FechaNacimiento = DateTime.Today.AddYears(-18), Idioma = "es" });
     /*PROTECTED REGION END*/
     }
 
@@ -151,48 +138,26 @@ public partial class UsuarioController : Controller
     {
     /*PROTECTED REGION ID(UsuarioController_Register_POST_body) ENABLED START*/
 
-        ModelState.Remove(nameof(model.FechaUltimaRecompensa)); // Campo fuera del contrato Create de Application.
-        await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new UsuarioService(unitOfWork);
-
-
-
-        await LoadFormOptionsAsync(model, unitOfWork);
-        if (model.MonederoId is int selectedMonedero &&
-            !model.MonederoOptions.Any(option => option.Value == Convert.ToString(selectedMonedero, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError("MonederoId", "Selecciona un registro existente de Monedero.");
-        if (model.MonederoId is null) ModelState.AddModelError("MonederoId", "Debes seleccionar una opción.");
-        if (model.InventarioId is int selectedInventario &&
-            !model.InventarioOptions.Any(option => option.Value == Convert.ToString(selectedInventario, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError("InventarioId", "Selecciona un registro existente de InventarioPrivado.");
-        if (model.InventarioId is null) ModelState.AddModelError("InventarioId", "Debes seleccionar una opción.");
-
+        // Registro propio: el usuario solo elige sus datos personales. El estado, el nivel, la experiencia
+        // y la verificación los fija el servidor, y el monedero y el inventario se crean vacíos.
+        QuitarCamposGestionadosPorServidor();
         if (string.IsNullOrEmpty(model.Contrasena)) ModelState.AddModelError(nameof(model.Contrasena), "Debes indicar una contraseña.");
-        if (!ModelState.IsValid) return View(model);
+        if (model.FechaNacimiento.Date > DateTime.Today) ModelState.AddModelError(nameof(model.FechaNacimiento), "La fecha de nacimiento no puede ser futura.");
+        if (await CorreoEnUsoAsync(model.Correo)) ModelState.AddModelError(nameof(model.Correo), "Ya existe una cuenta con ese correo.");
+        if (!ModelState.IsValid) return View("Registro", model);
+
         Usuario createdUser;
-        await unitOfWork.BeginTransactionAsync("MVC.Usuario.Create");
         try
         {
-
-            var monederoSel = await unitOfWork.MonederoRepository.ReadAsync(model.MonederoId.GetValueOrDefault()) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.");
-            var inventarioSel = await unitOfWork.InventarioPrivadoRepository.ReadAsync(model.InventarioId.GetValueOrDefault()) ?? throw new InvalidOperationException("El registro seleccionado de InventarioPrivado ya no existe.");
-            var entity = await service.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento, model.Estado, model.Nivel, model.Experiencia, model.FechaUltimoLogin, model.TemaModoOscuro, model.Idioma, model.Verificado, monederoSel, inventarioSel);
-            entity.Monedero = model.MonederoId is int referenceMonedero
-                ? await unitOfWork.MonederoRepository.ReadAsync(referenceMonedero) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.") : null!;
-            entity.Inventario = model.InventarioId is int referenceInventario
-                ? await unitOfWork.InventarioPrivadoRepository.ReadAsync(referenceInventario) ?? throw new InvalidOperationException("El registro seleccionado de InventarioPrivado ya no existe.") : null!;
-
-            await service.ModifierUsuarioDefaultAsync(entity);
-            createdUser = entity;
-            await unitOfWork.CommitAsync();
+            createdUser = await _usuarioService.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento,
+                EstadoCuenta.Activo, 1, 0, DateTime.UtcNow, model.TemaModoOscuro, model.Idioma, false,
+                CuentaNueva.Monedero(), CuentaNueva.Inventario());
         }
-        catch (Exception error)
+        catch (Exception error) when (error is not OperationCanceledException)
         {
-            await unitOfWork.RollbackAsync();
-            if (error is OperationCanceledException) throw;
-            _logger.LogError(error, "Could not save the record and its lines.");
-            ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
-            return View(model);
+            _logger.LogError(error, "No se ha podido registrar el usuario.");
+            ModelState.AddModelError(string.Empty, MensajesOperacion.De(error));
+            return View("Registro", model);
         }
         try
         {
@@ -202,15 +167,17 @@ public partial class UsuarioController : Controller
         catch (Exception error) when (error is not OperationCanceledException)
         {
             _logger.LogError(error, "La cuenta se ha creado, pero no se ha podido iniciar la sesión.");
-            ModelState.AddModelError(string.Empty, "Tu cuenta ya está creada. Inicia sesión desde la página de acceso.");
-            return View(model);
+            TempData["Exito"] = $"Tu cuenta ya está creada. Tu identificador de acceso es {createdUser.Id}: úsalo para iniciar sesión.";
+            return RedirectToAction("Login", "Account");
         }
-        return RedirectToAction(nameof(Index));
+        TempData["Exito"] = $"¡Bienvenido a SkinLink! Tu identificador de acceso es {createdUser.Id}: guárdalo, lo necesitarás para iniciar sesión.";
+        return RedirectToAction(nameof(Details), new { id = createdUser.Id });
     /*PROTECTED REGION END*/
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(UsuarioController_Edit_GET_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_Edit_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -226,7 +193,8 @@ public partial class UsuarioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(UsuarioController_Edit_POST_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_Edit_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.UsuarioViewModel model)
     {
@@ -280,7 +248,8 @@ public partial class UsuarioController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(UsuarioController_Delete_GET_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_Delete_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -295,7 +264,8 @@ public partial class UsuarioController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(UsuarioController_DeleteConfirmed_POST_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_DeleteConfirmed_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -308,14 +278,25 @@ public partial class UsuarioController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(UsuarioController_FiltrarUsuariosPorEstado_GET_attributes) START*/
+    /*PROTECTED REGION ID(UsuarioController_FiltrarUsuariosPorEstado_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarUsuariosPorEstado(EstadoCuenta p_estado)
     {
-    /*PROTECTED REGION ID(UsuarioController_FiltrarUsuariosPorEstado_GET_body) START*/
+    /*PROTECTED REGION ID(UsuarioController_FiltrarUsuariosPorEstado_GET_body) ENABLED START*/
 
-        var result = await _usuarioService.FiltrarUsuariosPorEstadoAsync(p_estado);
-        return Ok(result.Select(UsuarioAssembler.ToViewModel).ToList());
+        // ReadFilter filtrarUsuariosPorEstado (filterLinQ: entity => entity.Estado == p_estado).
+        // Sin parámetro en la URL solo se muestra el formulario.
+        var model = new UsuarioFiltroEstadoViewModel();
+        if (Request.Query.ContainsKey("p_estado") && Enum.IsDefined(p_estado))
+        {
+            var result = await _usuarioService.FiltrarUsuariosPorEstadoAsync(p_estado);
+            model.Estado = p_estado;
+            model.Buscado = true;
+            model.Resultados = result.Select(UsuarioAssembler.ToViewModel).ToList();
+            model.AdministradorIds = result.OfType<Administrador>().Select(item => item.Id).ToHashSet();
+        }
+        return View(model);
     /*PROTECTED REGION END*/
     }
 

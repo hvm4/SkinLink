@@ -22,7 +22,8 @@ public partial class TransaccionController
 {
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(TransaccionController_ValidarSaldoMonedero_POST_attributes) START*/
+    /*PROTECTED REGION ID(TransaccionController_ValidarSaldoMonedero_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> ValidarSaldoMonedero(int p_oid, int p_monedero_oid, Moneda p_montoRequerido)
     {

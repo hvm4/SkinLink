@@ -79,7 +79,9 @@ public partial class FavoritoController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new FavoritoService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.FavoritoService(unitOfWork);
+
+
 
 
 
@@ -94,19 +96,22 @@ public partial class FavoritoController : Controller
         if (model.ActivoDigitalId is null) ModelState.AddModelError("ActivoDigitalId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Favorito.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Favorito.Create");
+
 
             var entity = await service.NewAsync(model.FechaMarcado, model.UsuarioId.GetValueOrDefault(), model.ActivoDigitalId.GetValueOrDefault());
-            entity.Usuario = model.UsuarioId is int referenceUsuario
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceUsuario) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.ActivoDigital = model.ActivoDigitalId is int referenceActivoDigital
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoDigital) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
+
+            await service.ApplyFavoritoRelationsAsync(entity, p_usuario_id: model.UsuarioId, p_activoDigital_id: model.ActivoDigitalId);
 
             await service.ModifierFavoritoDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -118,6 +123,7 @@ public partial class FavoritoController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -148,9 +154,11 @@ public partial class FavoritoController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new FavoritoService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.FavoritoService(unitOfWork);
+
         var entity = await service.ReadOIDFavoritoDefaultAsync(id);
         if (entity is null) return NotFound();
+
 
 
         await LoadFormOptionsAsync(model, unitOfWork);
@@ -164,19 +172,22 @@ public partial class FavoritoController : Controller
         if (model.ActivoDigitalId is null) ModelState.AddModelError("ActivoDigitalId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Favorito.Edit");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Favorito.Edit");
+
 
             await service.ModifyAsync(id, model.FechaMarcado);
-            entity.Usuario = model.UsuarioId is int referenceUsuario
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceUsuario) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.ActivoDigital = model.ActivoDigitalId is int referenceActivoDigital
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoDigital) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
+            entity = await service.ReadOIDFavoritoDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyFavoritoRelationsAsync(entity, p_usuario_id: model.UsuarioId, p_activoDigital_id: model.ActivoDigitalId);
 
             await service.ModifierFavoritoDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -188,6 +199,7 @@ public partial class FavoritoController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

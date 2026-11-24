@@ -1,0 +1,29 @@
+@* HARIA-WEB GENERATED sha256:96d380ec520379c35976301ed49f16de85913c8d1e53a6a3a9610f9fc8ad245b *@
+@model IEnumerable<Skinlink.Web.ViewModels.ActivoDigitalViewModel>
+
+<h2 class="h5 mt-4">Activos</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.Coleccion)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.PrecioEstimadoValor)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.PrecioEstimadoDivisa)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.AtributosRareza)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.AtributosCondicion)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.AtributosFloatVal)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.AtributosPatron)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.EnVenta)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.IdentificadorUnico)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.VentaLabel)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.IntercambioOfrecidoLabel)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.IntercambioSolicitadoLabel)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <partial name="_ActivosDetailsItem" model="item" />
+        }
+    </tbody>
+</table>

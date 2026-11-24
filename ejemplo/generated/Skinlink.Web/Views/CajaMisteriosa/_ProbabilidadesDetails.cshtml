@@ -1,0 +1,18 @@
+@* HARIA-WEB GENERATED sha256:0d8b725f7263ef5d4cc1fab96a55c34eb803e94f3a77ef56155bdfda371e8753 *@
+@model IEnumerable<Skinlink.Web.ViewModels.ProbabilidadDropViewModel>
+
+<h2 class="h5 mt-4">Probabilidades</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(model => model.PorcentajeDrop)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.ActivoRecompensaLabel)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <partial name="_ProbabilidadesDetailsItem" model="item" />
+        }
+    </tbody>
+</table>

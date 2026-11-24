@@ -42,6 +42,13 @@ public sealed partial class InventarioPrivadoService : ServiceEntity<InventarioP
     public Task<InventarioPrivado> ModifierInventarioPrivadoDefaultAsync(InventarioPrivado entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyInventarioPrivadoRelationsAsync(InventarioPrivado entity, int? p_usuario_id)
+    {
+        if (p_usuario_id is null) throw new ModelException("InventarioPrivado.Usuario is required.");
+        entity.Usuario = p_usuario_id is int selectedUsuario
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedUsuario) ?? throw new ModelException("Usuario not found for InventarioPrivado.Usuario.") : null!;
+    }
+
     public async Task<InventarioPrivado> NewAsync(Moneda p_valorEstimadoTotal, bool p_esPublico, int p_usuario_oid, IReadOnlyList<ActivoDigital> p_activos)
     {
         Usuario usuarioEntity = await _unitOfWork.UsuarioRepository.ReadAsync(p_usuario_oid)

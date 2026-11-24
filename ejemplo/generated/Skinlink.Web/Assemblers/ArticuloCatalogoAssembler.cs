@@ -18,6 +18,7 @@ public static class ArticuloCatalogoAssembler
             Habilitado = entity.Habilitado,
             PorcentajeDescuento = entity.PorcentajeDescuento,
             FechaFinDescuento = entity.FechaFinDescuento,
+            Imagen = entity.Imagen,
 
         };
     /*PROTECTED REGION END*/

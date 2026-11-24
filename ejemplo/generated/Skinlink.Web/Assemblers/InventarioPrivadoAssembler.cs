@@ -15,7 +15,6 @@ public static class InventarioPrivadoAssembler
             EsPublico = entity.EsPublico,
             UsuarioId = entity.Usuario?.Id,
             UsuarioLabel = entity.Usuario is null ? null : Convert.ToString(entity.Usuario.NombreUsuario, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty,
-            Activos = entity.Activos.Select(ActivoDigitalAssembler.ToViewModel).ToList(),
         };
     /*PROTECTED REGION END*/
 

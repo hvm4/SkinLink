@@ -73,73 +73,41 @@ public partial class InventarioPrivadoController : Controller
     [ValidateAntiForgeryToken]
     /*PROTECTED REGION ID(InventarioPrivadoController_Create_POST_attributes) START*/
     /*PROTECTED REGION END*/
-    public async Task<IActionResult> Create(Skinlink.Web.ViewModels.InventarioPrivadoViewModel model)
+    public async Task<IActionResult> Create(Skinlink.Web.ViewModels.InventarioPrivadoViewModel model, IReadOnlyList<ActivoDigital> p_activos)
     {
     /*PROTECTED REGION ID(InventarioPrivadoController_Create_POST_body) START*/
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new InventarioPrivadoService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.InventarioPrivadoService(unitOfWork);
 
-        model.Activos ??= new();
-        if (model.Activos.Count > 500) return BadRequest("Número de líneas no válido (máximo 500).");
+
+
+
+
         await LoadFormOptionsAsync(model, unitOfWork);
         if (model.UsuarioId is int selectedUsuario &&
             !model.UsuarioOptions.Any(option => option.Value == Convert.ToString(selectedUsuario, System.Globalization.CultureInfo.InvariantCulture)))
             ModelState.AddModelError("UsuarioId", "Selecciona un registro existente de Usuario.");
         if (model.UsuarioId is null) ModelState.AddModelError("UsuarioId", "Debes seleccionar una opción.");
-        if (model.Activos is null) { model.Activos = new(); ModelState.AddModelError(nameof(model.Activos), "Debes indicar las líneas."); }
-        if (model.Activos.Count < 0 || model.Activos.Count > 500)
-            ModelState.AddModelError(nameof(model.Activos), "Número de líneas no válido (máximo 500).");
 
-        for (var index = 0; index < model.Activos.Count; index++)
-        {
-            var row = model.Activos[index];
-            if (!EqualityComparer<int>.Default.Equals(row.Id, default!))
-                ModelState.AddModelError($"Activos[{index}].Id", "La línea no pertenece a este registro o está repetida.");
-        if (row.VentaId is int selectedVenta &&
-            !row.VentaOptions.Any(option => option.Value == Convert.ToString(selectedVenta, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError($"Activos[{index}].VentaId", "Selecciona un registro existente de Venta.");
 
-        if (row.IntercambioOfrecidoId is int selectedIntercambioOfrecido &&
-            !row.IntercambioOfrecidoOptions.Any(option => option.Value == Convert.ToString(selectedIntercambioOfrecido, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError($"Activos[{index}].IntercambioOfrecidoId", "Selecciona un registro existente de Intercambio.");
 
-        if (row.IntercambioSolicitadoId is int selectedIntercambioSolicitado &&
-            !row.IntercambioSolicitadoOptions.Any(option => option.Value == Convert.ToString(selectedIntercambioSolicitado, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError($"Activos[{index}].IntercambioSolicitadoId", "Selecciona un registro existente de Intercambio.");
-
-        }
 
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.InventarioPrivado.Create");
+
         try
         {
-            var submittedActivos = new List<ejemplo.Domain.Entities.ActivoDigital>();
-            foreach (var row in model.Activos)
-            {
-                var child = ActivoDigitalAssembler.Create(row);
-                ActivoDigitalAssembler.ApplyToEntity(row, child);
-            child.Venta = row.VentaId is int referenceVenta
-                ? await unitOfWork.VentaRepository.ReadAsync(referenceVenta) ?? throw new InvalidOperationException("El registro seleccionado de Venta ya no existe.") : null!;
-            child.IntercambioOfrecido = row.IntercambioOfrecidoId is int referenceIntercambioOfrecido
-                ? await unitOfWork.IntercambioRepository.ReadAsync(referenceIntercambioOfrecido) ?? throw new InvalidOperationException("El registro seleccionado de Intercambio ya no existe.") : null!;
-            child.IntercambioSolicitado = row.IntercambioSolicitadoId is int referenceIntercambioSolicitado
-                ? await unitOfWork.IntercambioRepository.ReadAsync(referenceIntercambioSolicitado) ?? throw new InvalidOperationException("El registro seleccionado de Intercambio ya no existe.") : null!;
-                submittedActivos.Add(child);
-            }
-            var entity = await service.NewAsync(new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.ValorEstimadoTotalValor, Divisa = model.ValorEstimadoTotalDivisa }, model.EsPublico, model.UsuarioId.GetValueOrDefault(), submittedActivos);
-            entity.Usuario = model.UsuarioId is int referenceUsuario
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceUsuario) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            
-            for (var index = 0; index < submittedActivos.Count; index++)
-            {
-                var child = submittedActivos[index];
-                child.Inventario = entity;
-                if (!entity.Activos.Contains(child)) entity.Activos.Add(child);
-            }
+            await unitOfWork.BeginTransactionAsync("MVC.InventarioPrivado.Create");
+
+
+            var entity = await service.NewAsync(new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.ValorEstimadoTotalValor, Divisa = model.ValorEstimadoTotalDivisa }, model.EsPublico, model.UsuarioId.GetValueOrDefault(), p_activos);
+
+            await service.ApplyInventarioPrivadoRelationsAsync(entity, p_usuario_id: model.UsuarioId);
+
             await service.ModifierInventarioPrivadoDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -151,6 +119,7 @@ public partial class InventarioPrivadoController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -181,69 +150,36 @@ public partial class InventarioPrivadoController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new InventarioPrivadoService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.InventarioPrivadoService(unitOfWork);
+
         var entity = await service.ReadOIDInventarioPrivadoDefaultAsync(id);
         if (entity is null) return NotFound();
-        model.Activos ??= new();
-        if (model.Activos.Count > 500) return BadRequest("Número de líneas no válido (máximo 500).");
+
+
+
         await LoadFormOptionsAsync(model, unitOfWork);
         if (model.UsuarioId is int selectedUsuario &&
             !model.UsuarioOptions.Any(option => option.Value == Convert.ToString(selectedUsuario, System.Globalization.CultureInfo.InvariantCulture)))
             ModelState.AddModelError("UsuarioId", "Selecciona un registro existente de Usuario.");
         if (model.UsuarioId is null) ModelState.AddModelError("UsuarioId", "Debes seleccionar una opción.");
-        if (model.Activos is null) { model.Activos = new(); ModelState.AddModelError(nameof(model.Activos), "Debes indicar las líneas."); }
-        if (model.Activos.Count < 0 || model.Activos.Count > 500)
-            ModelState.AddModelError(nameof(model.Activos), "Número de líneas no válido (máximo 500).");
-        var seenActivos = new HashSet<int>();
-        for (var index = 0; index < model.Activos.Count; index++)
-        {
-            var row = model.Activos[index];
-            if (!EqualityComparer<int>.Default.Equals(row.Id, default!) &&
-                (!entity.Activos.Any(child => child.Id.Equals(row.Id)) || !seenActivos.Add(row.Id)))
-                ModelState.AddModelError($"Activos[{index}].Id", "La línea no pertenece a este registro o está repetida.");
-        if (row.VentaId is int selectedVenta &&
-            !row.VentaOptions.Any(option => option.Value == Convert.ToString(selectedVenta, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError($"Activos[{index}].VentaId", "Selecciona un registro existente de Venta.");
 
-        if (row.IntercambioOfrecidoId is int selectedIntercambioOfrecido &&
-            !row.IntercambioOfrecidoOptions.Any(option => option.Value == Convert.ToString(selectedIntercambioOfrecido, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError($"Activos[{index}].IntercambioOfrecidoId", "Selecciona un registro existente de Intercambio.");
 
-        if (row.IntercambioSolicitadoId is int selectedIntercambioSolicitado &&
-            !row.IntercambioSolicitadoOptions.Any(option => option.Value == Convert.ToString(selectedIntercambioSolicitado, System.Globalization.CultureInfo.InvariantCulture)))
-            ModelState.AddModelError($"Activos[{index}].IntercambioSolicitadoId", "Selecciona un registro existente de Intercambio.");
 
-        }
 
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.InventarioPrivado.Edit");
+
         try
         {
-            var submittedActivos = new List<ejemplo.Domain.Entities.ActivoDigital>();
-            foreach (var row in model.Activos)
-            {
-                var child = entity.Activos.SingleOrDefault(item => item.Id.Equals(row.Id)) ?? ActivoDigitalAssembler.Create(row);
-                ActivoDigitalAssembler.ApplyToEntity(row, child);
-            child.Venta = row.VentaId is int referenceVenta
-                ? await unitOfWork.VentaRepository.ReadAsync(referenceVenta) ?? throw new InvalidOperationException("El registro seleccionado de Venta ya no existe.") : null!;
-            child.IntercambioOfrecido = row.IntercambioOfrecidoId is int referenceIntercambioOfrecido
-                ? await unitOfWork.IntercambioRepository.ReadAsync(referenceIntercambioOfrecido) ?? throw new InvalidOperationException("El registro seleccionado de Intercambio ya no existe.") : null!;
-            child.IntercambioSolicitado = row.IntercambioSolicitadoId is int referenceIntercambioSolicitado
-                ? await unitOfWork.IntercambioRepository.ReadAsync(referenceIntercambioSolicitado) ?? throw new InvalidOperationException("El registro seleccionado de Intercambio ya no existe.") : null!;
-                submittedActivos.Add(child);
-            }
+            await unitOfWork.BeginTransactionAsync("MVC.InventarioPrivado.Edit");
+
+
             await service.ModifyAsync(id, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.ValorEstimadoTotalValor, Divisa = model.ValorEstimadoTotalDivisa }, model.EsPublico);
-            entity.Usuario = model.UsuarioId is int referenceUsuario
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceUsuario) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            foreach (var removed in entity.Activos.Where(child => !submittedActivos.Contains(child)).ToList()) entity.Activos.Remove(removed);
-            for (var index = 0; index < submittedActivos.Count; index++)
-            {
-                var child = submittedActivos[index];
-                child.Inventario = entity;
-                if (!entity.Activos.Contains(child)) entity.Activos.Add(child);
-            }
+            entity = await service.ReadOIDInventarioPrivadoDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyInventarioPrivadoRelationsAsync(entity, p_usuario_id: model.UsuarioId);
+
             await service.ModifierInventarioPrivadoDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -255,6 +191,7 @@ public partial class InventarioPrivadoController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -299,48 +236,14 @@ public partial class InventarioPrivadoController : Controller
     /*PROTECTED REGION ID(InventarioPrivadoController_method_LoadFormOptionsAsync_SkinlinkWebViewModelsInventarioPrivadoViewModel_ejemploApplicationAbstractionsIUnitOfWork) START*/
     private async Task LoadFormOptionsAsync(Skinlink.Web.ViewModels.InventarioPrivadoViewModel model, ejemplo.Application.Abstractions.IUnitOfWork unitOfWork)
     {
-        if (model.Activos.Count > 500) { ModelState.AddModelError(nameof(model.Activos), "Máximo 500 líneas."); return; }
+
         var options0 = (await unitOfWork.UsuarioRepository.ReadAllAsync()).Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = Convert.ToString(item.Id, System.Globalization.CultureInfo.InvariantCulture), Text = Convert.ToString(item.NombreUsuario, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty }).ToList();
-        var options1 = (await unitOfWork.VentaRepository.ReadAllAsync()).Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = Convert.ToString(item.Id, System.Globalization.CultureInfo.InvariantCulture), Text = Convert.ToString(item.Id, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty }).ToList();
-        var options2 = (await unitOfWork.IntercambioRepository.ReadAllAsync()).Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = Convert.ToString(item.Id, System.Globalization.CultureInfo.InvariantCulture), Text = Convert.ToString(item.Id, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty }).ToList();
         model.UsuarioOptions = options0.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
         {
             Value = item.Value,
             Text = item.Text
         }).ToList();
-        foreach (var row in model.Activos)
-        {
-        row.VentaOptions = options1.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        {
-            Value = item.Value,
-            Text = item.Text
-        }).ToList();
-        row.IntercambioOfrecidoOptions = options2.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        {
-            Value = item.Value,
-            Text = item.Text
-        }).ToList();
-        row.IntercambioSolicitadoOptions = options2.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        {
-            Value = item.Value,
-            Text = item.Text
-        }).ToList();
-        }
-        model.ActivosTemplate.VentaOptions = options1.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        {
-            Value = item.Value,
-            Text = item.Text
-        }).ToList();
-        model.ActivosTemplate.IntercambioOfrecidoOptions = options2.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        {
-            Value = item.Value,
-            Text = item.Text
-        }).ToList();
-        model.ActivosTemplate.IntercambioSolicitadoOptions = options2.Select(item => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        {
-            Value = item.Value,
-            Text = item.Text
-        }).ToList();
+
     }
     /*PROTECTED REGION END*/
 

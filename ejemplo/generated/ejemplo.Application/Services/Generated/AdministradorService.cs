@@ -57,6 +57,16 @@ public sealed partial class AdministradorService : ServiceEntity<Administrador>
         }
     }
 
+    public async Task ApplyAdministradorRelationsAsync(Administrador entity, int? p_monedero_id, int? p_inventario_id)
+    {
+        if (p_monedero_id is null) throw new ModelException("Administrador.Monedero is required.");
+        entity.Monedero = p_monedero_id is int selectedMonedero
+            ? await _unitOfWork.MonederoRepository.ReadAsync(selectedMonedero) ?? throw new ModelException("Monedero not found for Administrador.Monedero.") : null!;
+        if (p_inventario_id is null) throw new ModelException("Administrador.Inventario is required.");
+        entity.Inventario = p_inventario_id is int selectedInventario
+            ? await _unitOfWork.InventarioPrivadoRepository.ReadAsync(selectedInventario) ?? throw new ModelException("InventarioPrivado not found for Administrador.Inventario.") : null!;
+    }
+
     public async Task<Administrador> NewAsync(string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, bool p_verificado, Monedero p_monedero, InventarioPrivado p_inventario, string p_codigoAuditor)
     {
         Administrador entity = new Administrador

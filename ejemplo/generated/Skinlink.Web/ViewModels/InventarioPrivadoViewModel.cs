@@ -25,12 +25,7 @@ public sealed class InventarioPrivadoViewModel : IValidatableObject
     [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever, UIHint("HariaAssociationLabel"), Display(Name = "Usuario")]
     public string? UsuarioLabel { get; set; }
 
-    // HARIA-WEB COMPOSITION {"property":"Activos","fullName":"Skinlink.Web.ViewModels.ActivoDigitalViewModel","fields":[{"name":"Id","type":"int","key":true},{"name":"Nombre","type":"string","key":false},{"name":"Coleccion","type":"string","key":false},{"name":"PrecioEstimadoValor","type":"double","key":false},{"name":"PrecioEstimadoDivisa","type":"string","key":false},{"name":"AtributosRareza","type":"ejemplo.Domain.Enums.Rareza","key":false,"enumType":"ejemplo.Domain.Enums.Rareza"},{"name":"AtributosCondicion","type":"ejemplo.Domain.Enums.Condicion","key":false,"enumType":"ejemplo.Domain.Enums.Condicion"},{"name":"AtributosFloatVal","type":"double","key":false},{"name":"AtributosPatron","type":"int","key":false},{"name":"EnVenta","type":"bool","key":false},{"name":"IdentificadorUnico","type":"string","key":false},{"name":"VentaId","type":"int?","association":true},{"name":"VentaLabel","type":"string?","readOnly":true},{"name":"IntercambioOfrecidoId","type":"int?","association":true},{"name":"IntercambioOfrecidoLabel","type":"string?","readOnly":true},{"name":"IntercambioSolicitadoId","type":"int?","association":true},{"name":"IntercambioSolicitadoLabel","type":"string?","readOnly":true}]}
-    [UIHint("HariaComposition")]
-    [MinLength(0)]
-    public List<ActivoDigitalViewModel> Activos { get; set; } = new();
-    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever, Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ValidateNever]
-    public ActivoDigitalViewModel ActivosTemplate { get; set; } = new();
+    // HARIA-WEB DEDICATED COLLECTION {"property":"Activos","controller":"ActivoDigital","parent":"Inventario"}
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
@@ -44,6 +39,15 @@ public sealed class InventarioPrivadoViewModel : IValidatableObject
     {
         yield break;
     }
+
+
+    // HARIA-WEB COMPOSITION {"property":"Activos","fullName":"Skinlink.Web.ViewModels.ActivoDigitalViewModel","fields":[{"name":"Id","type":"int","key":true},{"name":"Nombre","type":"string","key":false},{"name":"Coleccion","type":"string","key":false},{"name":"PrecioEstimadoValor","type":"double","key":false},{"name":"PrecioEstimadoDivisa","type":"string","key":false},{"name":"AtributosRareza","type":"ejemplo.Domain.Enums.Rareza","key":false,"enumType":"ejemplo.Domain.Enums.Rareza"},{"name":"AtributosCondicion","type":"ejemplo.Domain.Enums.Condicion","key":false,"enumType":"ejemplo.Domain.Enums.Condicion"},{"name":"AtributosFloatVal","type":"double","key":false},{"name":"AtributosPatron","type":"int","key":false},{"name":"EnVenta","type":"bool","key":false},{"name":"IdentificadorUnico","type":"string","key":false},{"name":"VentaId","type":"int?","association":true},{"name":"VentaLabel","type":"string?","readOnly":true},{"name":"IntercambioOfrecidoId","type":"int?","association":true},{"name":"IntercambioOfrecidoLabel","type":"string?","readOnly":true},{"name":"IntercambioSolicitadoId","type":"int?","association":true},{"name":"IntercambioSolicitadoLabel","type":"string?","readOnly":true}]}
+    [UIHint("HariaComposition")]
+    [MinLength(0)]
+    public List<ActivoDigitalViewModel> Activos { get; set; } = new();
+
+    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever, Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ValidateNever]
+    public ActivoDigitalViewModel ActivosTemplate { get; set; } = new();
 
     /*PROTECTED REGION END*/
 }

@@ -1,4 +1,4 @@
-// HARIA-WEB GENERATED sha256:68ba5266bee0c571375572f54f7e6f8397b336750f12056c1cc9cb15858c2c44
+// HARIA-WEB GENERATED sha256:b4505676ebee20110d70dccbf339b880a03d807f408775418606a9afb84cc99c
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
@@ -37,7 +37,9 @@ public static class HariaWebClassSession
         services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromHours(8);
-            options.Cookie.Name = ".HariaWeb.Session";
+            // Cookies are shared across ports: isolate generated applications on the same host.
+            // The former shared cookie is intentionally ignored because another app may own it.
+            options.Cookie.Name = ".HariaWeb.Skinlink.Web.Session";
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
             options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;

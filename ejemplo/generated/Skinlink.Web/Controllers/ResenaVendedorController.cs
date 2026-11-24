@@ -79,7 +79,9 @@ public partial class ResenaVendedorController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new ResenaVendedorService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.ResenaVendedorService(unitOfWork);
+
+
 
 
 
@@ -94,19 +96,22 @@ public partial class ResenaVendedorController : Controller
         if (model.VendedorId is null) ModelState.AddModelError("VendedorId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.ResenaVendedor.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.ResenaVendedor.Create");
+
 
             var entity = await service.NewAsync(model.Puntuacion, model.Comentario, model.Fecha, model.Oculta, model.CompradorId.GetValueOrDefault(), model.VendedorId.GetValueOrDefault());
-            entity.Comprador = model.CompradorId is int referenceComprador
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceComprador) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.Vendedor = model.VendedorId is int referenceVendedor
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceVendedor) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
+
+            await service.ApplyResenaVendedorRelationsAsync(entity, p_comprador_id: model.CompradorId, p_vendedor_id: model.VendedorId);
 
             await service.ModifierResenaVendedorDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -118,6 +123,7 @@ public partial class ResenaVendedorController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -148,9 +154,11 @@ public partial class ResenaVendedorController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new ResenaVendedorService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.ResenaVendedorService(unitOfWork);
+
         var entity = await service.ReadOIDResenaVendedorDefaultAsync(id);
         if (entity is null) return NotFound();
+
 
 
         await LoadFormOptionsAsync(model, unitOfWork);
@@ -164,19 +172,22 @@ public partial class ResenaVendedorController : Controller
         if (model.VendedorId is null) ModelState.AddModelError("VendedorId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.ResenaVendedor.Edit");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.ResenaVendedor.Edit");
+
 
             await service.ModifyAsync(id, model.Puntuacion, model.Comentario, model.Fecha, model.Oculta);
-            entity.Comprador = model.CompradorId is int referenceComprador
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceComprador) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.Vendedor = model.VendedorId is int referenceVendedor
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceVendedor) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
+            entity = await service.ReadOIDResenaVendedorDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyResenaVendedorRelationsAsync(entity, p_comprador_id: model.CompradorId, p_vendedor_id: model.VendedorId);
 
             await service.ModifierResenaVendedorDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -188,6 +199,7 @@ public partial class ResenaVendedorController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

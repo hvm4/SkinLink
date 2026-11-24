@@ -41,6 +41,16 @@ public sealed partial class IntercambioService : ServiceEntity<Intercambio>
     public Task<Intercambio> ModifierIntercambioDefaultAsync(Intercambio entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyIntercambioRelationsAsync(Intercambio entity, int? p_proponente_id, int? p_receptor_id)
+    {
+        if (p_proponente_id is null) throw new ModelException("Intercambio.Proponente is required.");
+        entity.Proponente = p_proponente_id is int selectedProponente
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedProponente) ?? throw new ModelException("Usuario not found for Intercambio.Proponente.") : null!;
+        if (p_receptor_id is null) throw new ModelException("Intercambio.Receptor is required.");
+        entity.Receptor = p_receptor_id is int selectedReceptor
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedReceptor) ?? throw new ModelException("Usuario not found for Intercambio.Receptor.") : null!;
+    }
+
     public async Task<Intercambio> NewAsync(EstadoIntercambio p_estado, DateTime p_fechaCreacion, int p_proponente_oid, int p_receptor_oid)
     {
         Usuario proponenteEntity = await _unitOfWork.UsuarioRepository.ReadAsync(p_proponente_oid)

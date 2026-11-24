@@ -1,4 +1,4 @@
-@* HARIA-WEB GENERATED sha256:a12299a70c4f43b215c625f5a60027435935066de81043748e4f539f34109f18 *@
+@* HARIA-WEB GENERATED sha256:eb3766eeebf2cdf248ca3635ce36acb7fc6a979820e9034038db6357aa98a8dc *@
 @model Skinlink.Web.ViewModels.ActivoDigitalViewModel
 
 @{
@@ -13,7 +13,7 @@
                 <h1 class="h3 mb-1">ActivoDigital</h1>
                 <p class="text-body-secondary mb-0">Completa los campos y guarda los cambios.</p>
             </div>
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div class="card-body p-4">
                     <div asp-validation-summary="All" class="alert alert-danger py-2" role="alert"></div>
@@ -69,6 +69,11 @@
             <span asp-validation-for="IdentificadorUnico" class="text-danger"></span>
         </div>
         <div class="mb-3">
+            <label asp-for="ImagenUpload" class="form-label"></label>
+            <input asp-for="ImagenUpload" type="file" accept=".png,image/png,.jpg,image/jpeg,.jpeg" class="form-control" />
+            <span asp-validation-for="ImagenUpload" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
             <label asp-for="InventarioId" class="form-label"></label>
             <select asp-for="InventarioId" asp-items="Model.InventarioOptions" class="form-select"><option value="">Selecciona...</option></select>
             <span asp-validation-for="InventarioId" class="text-danger"></span>
@@ -87,6 +92,17 @@
             <label asp-for="IntercambioSolicitadoId" class="form-label"></label>
             <select asp-for="IntercambioSolicitadoId" asp-items="Model.IntercambioSolicitadoOptions" class="form-select"><option value="">Selecciona...</option></select>
             <span asp-validation-for="IntercambioSolicitadoId" class="text-danger"></span>
+        </div>
+        <div class="mb-3"><p class="form-label">Imagen actual</p>
+@if (!string.IsNullOrWhiteSpace(Model.Imagen))
+                {
+                    <img src="@Url.Content("~/" + Model.Imagen.TrimStart('/'))" alt="@Html.DisplayNameFor(model => model.Imagen)" class="img-thumbnail img-fluid" style="max-width: 320px; max-height: 240px;" />
+                }
+                else
+                {
+                    <span class="text-body-secondary">Sin imagen</span>
+                }
+            <p class="form-text">Deja el archivo vacío para conservar la imagen actual.</p>
         </div>
                 </div>
                 <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">

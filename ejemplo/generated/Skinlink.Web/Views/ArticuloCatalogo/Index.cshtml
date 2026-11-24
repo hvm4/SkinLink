@@ -1,4 +1,4 @@
-@* HARIA-WEB GENERATED sha256:d63fb61e33728789128bfc695569f084464d4c9246aec33c6bc2eca2a278c1e6 *@
+@* HARIA-WEB GENERATED sha256:00710f8220a21b17563bf053c272112cb727c65f58b366983ec02d1d4efab056 *@
 @model IEnumerable<Skinlink.Web.ViewModels.ArticuloCatalogoViewModel>
 
 @{
@@ -29,6 +29,7 @@
                         <th scope="col">@Html.DisplayNameFor(model => model.Habilitado)</th>
                         <th scope="col">@Html.DisplayNameFor(model => model.PorcentajeDescuento)</th>
                         <th scope="col">@Html.DisplayNameFor(model => model.FechaFinDescuento)</th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.Imagen)</th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>
                 </thead>
@@ -45,6 +46,14 @@
                             <td>@Html.DisplayFor(modelItem => item.Habilitado)</td>
                             <td>@Html.DisplayFor(modelItem => item.PorcentajeDescuento)</td>
                             <td>@Html.DisplayFor(modelItem => item.FechaFinDescuento)</td>
+                            <td>@if (!string.IsNullOrWhiteSpace(item.Imagen))
+                {
+                    <img src="@Url.Content("~/" + item.Imagen.TrimStart('/'))" alt="@Html.DisplayNameFor(model => model.Imagen)" class="img-thumbnail object-fit-cover" style="width: 96px; height: 72px;" loading="lazy" />
+                }
+                else
+                {
+                    <span class="text-body-secondary">Sin imagen</span>
+                }</td>
                             <td class="text-end text-nowrap">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Detalles</a>
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>

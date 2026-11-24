@@ -15,6 +15,7 @@ public partial class ArticuloCatalogo
     public bool Habilitado { get; set; }
     public double? PorcentajeDescuento { get; set; }
     public DateTime? FechaFinDescuento { get; set; }
+    public string? Imagen { get; set; }
 
     private bool HasDefaultIdentity() => EqualityComparer<int>.Default.Equals(Id, default);
 

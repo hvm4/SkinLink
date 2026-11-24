@@ -4,6 +4,9 @@ builder.Configuration.Sources.Insert(0, new Microsoft.Extensions.Configuration.J
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+// HARIA-WEB: FILE STORAGE
+builder.Services.Configure<Skinlink.Web.Utils.Files.HariaWebFileOptions>(builder.Configuration.GetSection("HariaWeb:Files"));
+builder.Services.AddScoped<Skinlink.Web.Utils.Files.IWebFileStorage, Skinlink.Web.Utils.Files.HariaWebFileStorage>();
 // HARIA-WEB: LOCALIZATION SERVICES
 Skinlink.Web.Utils.Localization.HariaWebLocalization.AddHariaWebLocalization(builder.Services, builder.Configuration);
 // HARIA-WEB: USER SESSION SERVICES
@@ -38,6 +41,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 // HARIA-WEB: USER SESSION MIDDLEWARE
 app.UseSession();
+// Uploaded files under wwwroot are PUBLIC. Use separate authorized storage for private documents.
+Skinlink.Web.Utils.Files.HariaWebUploadApplicationExtensions.UseHariaWebUploads(app);
 app.UseRouting();
 
 // HARIA-WEB: SECURITY MIDDLEWARE BEGIN

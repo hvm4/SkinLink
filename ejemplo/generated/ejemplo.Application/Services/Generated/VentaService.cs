@@ -42,6 +42,22 @@ public sealed partial class VentaService : ServiceEntity<Venta>
     public Task<Venta> ModifierVentaDefaultAsync(Venta entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyVentaRelationsAsync(Venta entity, int? p_vendedor_id, int? p_comprador_id, int? p_activoDigital_id, int? p_transaccionCobro_id, int? p_transaccionPago_id)
+    {
+        if (p_vendedor_id is null) throw new ModelException("Venta.Vendedor is required.");
+        entity.Vendedor = p_vendedor_id is int selectedVendedor
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedVendedor) ?? throw new ModelException("Usuario not found for Venta.Vendedor.") : null!;
+        entity.Comprador = p_comprador_id is int selectedComprador
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedComprador) ?? throw new ModelException("Usuario not found for Venta.Comprador.") : null!;
+        if (p_activoDigital_id is null) throw new ModelException("Venta.ActivoDigital is required.");
+        entity.ActivoDigital = p_activoDigital_id is int selectedActivoDigital
+            ? await _unitOfWork.ActivoDigitalRepository.ReadAsync(selectedActivoDigital) ?? throw new ModelException("ActivoDigital not found for Venta.ActivoDigital.") : null!;
+        entity.TransaccionCobro = p_transaccionCobro_id is int selectedTransaccionCobro
+            ? await _unitOfWork.TransaccionRepository.ReadAsync(selectedTransaccionCobro) ?? throw new ModelException("Transaccion not found for Venta.TransaccionCobro.") : null!;
+        entity.TransaccionPago = p_transaccionPago_id is int selectedTransaccionPago
+            ? await _unitOfWork.TransaccionRepository.ReadAsync(selectedTransaccionPago) ?? throw new ModelException("Transaccion not found for Venta.TransaccionPago.") : null!;
+    }
+
     public async Task<Venta> NewAsync(Moneda p_precioVenta, DateTime p_fechaPublicacion, EstadoVenta p_estadoVenta, int p_vendedor_oid, int p_comprador_oid, int p_activoDigital_oid, int p_transaccionCobro_oid, int p_transaccionPago_oid)
     {
         Usuario vendedorEntity = await _unitOfWork.UsuarioRepository.ReadAsync(p_vendedor_oid)

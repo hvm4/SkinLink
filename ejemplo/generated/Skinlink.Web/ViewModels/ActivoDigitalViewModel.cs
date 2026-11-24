@@ -40,6 +40,17 @@ public sealed class ActivoDigitalViewModel : IValidatableObject
     [Required(ErrorMessage = "Debes indicar {0}.")]
     public string IdentificadorUnico { get; set; } = string.Empty;
 
+    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever]
+    [Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ValidateNever]
+    [System.ComponentModel.ReadOnly(true)]
+    [UIHint("HariaImage")]
+    public string? Imagen { get; set; }
+
+    [DataType(DataType.Upload)]
+    [Display(Name = "imagen")]
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Microsoft.AspNetCore.Http.IFormFile? ImagenUpload { get; set; }
+
     [UIHint("HariaAssociation")]
     [Display(Name = "Inventario")]
     public int? InventarioId { get; set; }

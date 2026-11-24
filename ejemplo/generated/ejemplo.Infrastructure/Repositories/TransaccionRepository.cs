@@ -103,12 +103,12 @@ public sealed class TransaccionRepository : RepositoryBase<Transaccion>, ITransa
 
     private static Task<bool> EntityExistsAsync(DbSet<Transaccion> set, Transaccion entity) =>
         set.AsNoTracking().AnyAsync(existing => existing.Id == entity.Id);
-    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorTipoAsync(TipoTransaccion p_tipo)
+    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorTipoAsync(int p_usuarioId, TipoTransaccion p_tipo)
     {
         try
         {
             return await DbContext.Set<Transaccion>()
-                .Where(entity => entity.Tipo == p_tipo)
+                .Where(entity => (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && entity.Tipo == p_tipo)
                 .ToListAsync();
         }
         catch (DataException)
@@ -122,12 +122,12 @@ public sealed class TransaccionRepository : RepositoryBase<Transaccion>, ITransa
         }
     }
 
-    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorRangoFechasAsync(DateTime p_fechaInicio, DateTime p_fechaFin)
+    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorRangoFechasAsync(int p_usuarioId, DateTime p_fechaInicio, DateTime p_fechaFin)
     {
         try
         {
             return await DbContext.Set<Transaccion>()
-                .Where(entity => entity.Fecha >= p_fechaInicio && entity.Fecha <= p_fechaFin)
+                .Where(entity => (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && entity.Fecha >= p_fechaInicio && entity.Fecha <= p_fechaFin)
                 .ToListAsync();
         }
         catch (DataException)

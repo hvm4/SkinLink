@@ -80,11 +80,14 @@ public partial class CajaMisteriosaController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new CajaMisteriosaService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.CajaMisteriosaService(unitOfWork);
+
+
 
         model.Probabilidades ??= new();
         if (model.Probabilidades.Count > 500) return BadRequest("Número de líneas no válido (máximo 500).");
         await LoadFormOptionsAsync(model, unitOfWork);
+
 
         if (model.Probabilidades is null) { model.Probabilidades = new(); ModelState.AddModelError(nameof(model.Probabilidades), "Debes indicar las líneas."); }
         if (model.Probabilidades.Count < 1 || model.Probabilidades.Count > 500)
@@ -95,36 +98,28 @@ public partial class CajaMisteriosaController : Controller
             var row = model.Probabilidades[index];
             if (!EqualityComparer<int>.Default.Equals(row.Id, default!))
                 ModelState.AddModelError($"Probabilidades[{index}].Id", "La línea no pertenece a este registro o está repetida.");
-        if (row.ActivoRecompensaId is int selectedActivoRecompensa &&
-            !row.ActivoRecompensaOptions.Any(option => option.Value == Convert.ToString(selectedActivoRecompensa, System.Globalization.CultureInfo.InvariantCulture)))
+        if (row.ActivoRecompensaId is int selectedRowProbabilidadesActivoRecompensa &&
+            !row.ActivoRecompensaOptions.Any(option => option.Value == Convert.ToString(selectedRowProbabilidadesActivoRecompensa, System.Globalization.CultureInfo.InvariantCulture)))
             ModelState.AddModelError($"Probabilidades[{index}].ActivoRecompensaId", "Selecciona un registro existente de ActivoDigital.");
         if (row.ActivoRecompensaId is null) ModelState.AddModelError($"Probabilidades[{index}].ActivoRecompensaId", "Debes seleccionar una opción.");
         }
 
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.CajaMisteriosa.Create");
+
         try
         {
-            var submittedProbabilidades = new List<ejemplo.Domain.Entities.ProbabilidadDrop>();
-            foreach (var row in model.Probabilidades)
-            {
-                var child = ProbabilidadDropAssembler.Create(row);
-                ProbabilidadDropAssembler.ApplyToEntity(row, child);
-            child.ActivoRecompensa = row.ActivoRecompensaId is int referenceActivoRecompensa
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoRecompensa) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
-                submittedProbabilidades.Add(child);
-            }
+            await unitOfWork.BeginTransactionAsync("MVC.CajaMisteriosa.Create");
+            var submittedProbabilidades = await service.PrepareCajaMisteriosaProbabilidadesAsync(null,
+                model.Probabilidades.Select(row => (row.Id, ProbabilidadDropAssembler.Create(row), row.ActivoRecompensaId)).ToList());
+
             var entity = await service.NewAsync(model.Nombre, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.PrecioAperturaValor, Divisa = model.PrecioAperturaDivisa }, model.Activa, submittedProbabilidades);
 
-            
-            for (var index = 0; index < submittedProbabilidades.Count; index++)
-            {
-                var child = submittedProbabilidades[index];
-                child.Caja = entity;
-                if (!entity.Probabilidades.Contains(child)) entity.Probabilidades.Add(child);
-            }
+            await service.ApplyCajaMisteriosaRelationsAsync(entity, p_probabilidades: submittedProbabilidades);
+
             await service.ModifierCajaMisteriosaDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -136,6 +131,7 @@ public partial class CajaMisteriosaController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -166,12 +162,15 @@ public partial class CajaMisteriosaController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new CajaMisteriosaService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.CajaMisteriosaService(unitOfWork);
+
         var entity = await service.ReadOIDCajaMisteriosaDefaultAsync(id);
         if (entity is null) return NotFound();
+
         model.Probabilidades ??= new();
         if (model.Probabilidades.Count > 500) return BadRequest("Número de líneas no válido (máximo 500).");
         await LoadFormOptionsAsync(model, unitOfWork);
+
 
         if (model.Probabilidades is null) { model.Probabilidades = new(); ModelState.AddModelError(nameof(model.Probabilidades), "Debes indicar las líneas."); }
         if (model.Probabilidades.Count < 1 || model.Probabilidades.Count > 500)
@@ -183,36 +182,28 @@ public partial class CajaMisteriosaController : Controller
             if (!EqualityComparer<int>.Default.Equals(row.Id, default!) &&
                 (!entity.Probabilidades.Any(child => child.Id.Equals(row.Id)) || !seenProbabilidades.Add(row.Id)))
                 ModelState.AddModelError($"Probabilidades[{index}].Id", "La línea no pertenece a este registro o está repetida.");
-        if (row.ActivoRecompensaId is int selectedActivoRecompensa &&
-            !row.ActivoRecompensaOptions.Any(option => option.Value == Convert.ToString(selectedActivoRecompensa, System.Globalization.CultureInfo.InvariantCulture)))
+        if (row.ActivoRecompensaId is int selectedRowProbabilidadesActivoRecompensa &&
+            !row.ActivoRecompensaOptions.Any(option => option.Value == Convert.ToString(selectedRowProbabilidadesActivoRecompensa, System.Globalization.CultureInfo.InvariantCulture)))
             ModelState.AddModelError($"Probabilidades[{index}].ActivoRecompensaId", "Selecciona un registro existente de ActivoDigital.");
         if (row.ActivoRecompensaId is null) ModelState.AddModelError($"Probabilidades[{index}].ActivoRecompensaId", "Debes seleccionar una opción.");
         }
 
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.CajaMisteriosa.Edit");
+
         try
         {
-            var submittedProbabilidades = new List<ejemplo.Domain.Entities.ProbabilidadDrop>();
-            foreach (var row in model.Probabilidades)
-            {
-                var child = entity.Probabilidades.SingleOrDefault(item => item.Id.Equals(row.Id)) ?? ProbabilidadDropAssembler.Create(row);
-                ProbabilidadDropAssembler.ApplyToEntity(row, child);
-            child.ActivoRecompensa = row.ActivoRecompensaId is int referenceActivoRecompensa
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoRecompensa) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
-                submittedProbabilidades.Add(child);
-            }
-            await service.ModifyAsync(id, model.Nombre, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.PrecioAperturaValor, Divisa = model.PrecioAperturaDivisa }, model.Activa, submittedProbabilidades);
+            await unitOfWork.BeginTransactionAsync("MVC.CajaMisteriosa.Edit");
+            var submittedProbabilidades = await service.PrepareCajaMisteriosaProbabilidadesAsync(entity,
+                model.Probabilidades.Select(row => (row.Id, ProbabilidadDropAssembler.Create(row), row.ActivoRecompensaId)).ToList());
 
-            foreach (var removed in entity.Probabilidades.Where(child => !submittedProbabilidades.Contains(child)).ToList()) entity.Probabilidades.Remove(removed);
-            for (var index = 0; index < submittedProbabilidades.Count; index++)
-            {
-                var child = submittedProbabilidades[index];
-                child.Caja = entity;
-                if (!entity.Probabilidades.Contains(child)) entity.Probabilidades.Add(child);
-            }
+            await service.ModifyAsync(id, model.Nombre, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.PrecioAperturaValor, Divisa = model.PrecioAperturaDivisa }, model.Activa, submittedProbabilidades);
+            entity = await service.ReadOIDCajaMisteriosaDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyCajaMisteriosaRelationsAsync(entity, p_probabilidades: submittedProbabilidades);
+
             await service.ModifierCajaMisteriosaDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -224,6 +215,7 @@ public partial class CajaMisteriosaController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

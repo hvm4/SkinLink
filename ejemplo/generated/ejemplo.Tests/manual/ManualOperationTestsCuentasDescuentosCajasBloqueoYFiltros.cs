@@ -285,17 +285,26 @@ public sealed class ManualOperationTestsCuentasDescuentosCajasBloqueoYFiltros
             var hoy = DateTime.UtcNow;
             var deposito = new Transaccion { Tipo = TipoTransaccion.Deposito, Monto = new Moneda { Valor = 5, Divisa = "EUR" }, Fecha = hoy, Concepto = "dep", Monedero = activo.Monedero };
             var retiro = new Transaccion { Tipo = TipoTransaccion.Retiro, Monto = new Moneda { Valor = 5, Divisa = "EUR" }, Fecha = hoy.AddDays(-30), Concepto = "ret", Monedero = activo.Monedero };
+            // Deposito de OTRO usuario: no debe aparecer en el historial de "activo"
+            var depositoAjeno = new Transaccion { Tipo = TipoTransaccion.Deposito, Monto = new Moneda { Valor = 7, Divisa = "EUR" }, Fecha = hoy, Concepto = "dep ajeno", Monedero = suspendido.Monedero };
             await uow.TransaccionRepository.SaveAsync(deposito);
             await uow.TransaccionRepository.SaveAsync(retiro);
+            await uow.TransaccionRepository.SaveAsync(depositoAjeno);
 
             var transaccionService = new TransaccionService(uow);
-            var porTipo = await transaccionService.FiltrarTransaccionesPorTipoAsync(TipoTransaccion.Deposito);
+            var porTipo = await transaccionService.FiltrarTransaccionesPorTipoAsync(activo.Id, TipoTransaccion.Deposito);
             Assert.Contains(porTipo, t => t.Id == deposito.Id);
             Assert.DoesNotContain(porTipo, t => t.Id == retiro.Id);
+            Assert.DoesNotContain(porTipo, t => t.Id == depositoAjeno.Id);
 
-            var porFecha = await transaccionService.FiltrarTransaccionesPorRangoFechasAsync(hoy.AddDays(-1), hoy.AddDays(1));
+            var porFecha = await transaccionService.FiltrarTransaccionesPorRangoFechasAsync(activo.Id, hoy.AddDays(-1), hoy.AddDays(1));
             Assert.Contains(porFecha, t => t.Id == deposito.Id);
             Assert.DoesNotContain(porFecha, t => t.Id == retiro.Id);
+            Assert.DoesNotContain(porFecha, t => t.Id == depositoAjeno.Id);
+
+            var ajenas = await transaccionService.FiltrarTransaccionesPorTipoAsync(suspendido.Id, TipoTransaccion.Deposito);
+            Assert.Contains(ajenas, t => t.Id == depositoAjeno.Id);
+            Assert.DoesNotContain(ajenas, t => t.Id == deposito.Id);
         }
         finally
         {

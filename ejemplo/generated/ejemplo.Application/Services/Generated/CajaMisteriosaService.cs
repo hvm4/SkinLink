@@ -42,6 +42,37 @@ public sealed partial class CajaMisteriosaService : ServiceEntity<CajaMisteriosa
     public Task<CajaMisteriosa> ModifierCajaMisteriosaDefaultAsync(CajaMisteriosa entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyCajaMisteriosaRelationsAsync(CajaMisteriosa entity, IReadOnlyList<ProbabilidadDrop> p_probabilidades)
+    {
+        if (p_probabilidades.Count < 1 || p_probabilidades.Count > 500) throw new ModelException("Invalid number of Probabilidades rows.");
+        foreach (var removed in entity.Probabilidades.Where(child => !p_probabilidades.Contains(child)).ToList()) entity.Probabilidades.Remove(removed);
+        foreach (var child in p_probabilidades)
+        {
+            child.Caja = entity;
+            if (!entity.Probabilidades.Contains(child)) entity.Probabilidades.Add(child);
+        }
+    }
+
+    public async Task<List<ProbabilidadDrop>> PrepareCajaMisteriosaProbabilidadesAsync(CajaMisteriosa? parent, IReadOnlyList<(int Id, ProbabilidadDrop Values, int? ActivoRecompensaId)> rows)
+    {
+        if (rows.Count < 1 || rows.Count > 500) throw new ModelException("Invalid number of Probabilidades rows.");
+        var seen = new HashSet<int>();
+        var result = new List<ProbabilidadDrop>();
+        foreach (var row in rows)
+        {
+            var existing = !EqualityComparer<int>.Default.Equals(row.Id, default!);
+            if (existing && (parent is null || !seen.Add(row.Id) || !parent.Probabilidades.Any(child => child.Id.Equals(row.Id))))
+                throw new ModelException("The row does not belong to this record or is duplicated.");
+            var child = existing ? parent!.Probabilidades.Single(item => item.Id.Equals(row.Id)) : new ProbabilidadDrop();
+            child.PorcentajeDrop = row.Values.PorcentajeDrop;
+            if (row.ActivoRecompensaId is null) throw new ModelException("ProbabilidadDrop.ActivoRecompensa is required.");
+            child.ActivoRecompensa = row.ActivoRecompensaId is int selectedActivoRecompensa
+                ? await _unitOfWork.ActivoDigitalRepository.ReadAsync(selectedActivoRecompensa) ?? throw new ModelException("ActivoDigital not found for ProbabilidadDrop.ActivoRecompensa.") : null!;
+            result.Add(child);
+        }
+        return result;
+    }
+
     public async Task<CajaMisteriosa> NewAsync(string p_nombre, Moneda p_precioApertura, bool p_activa, IReadOnlyList<ProbabilidadDrop> p_probabilidades)
     {
         CajaMisteriosa entity = new CajaMisteriosa

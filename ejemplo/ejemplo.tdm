@@ -188,13 +188,15 @@ ConceptualModel SkinLink {
             // ========================================================
             // FILTROS DE LECTURA (ReadFilter) - Modulo Financiero y Auditoria
             // ========================================================
-            public filtrarTransaccionesPorTipo::ReadFilter (p_tipo : TipoTransaccion) : List<Object -> Transaccion>
+            // Historial propio: solo las transacciones del monedero del usuario indicado.
+            // p_usuarioId = 0 devuelve las de todos los usuarios (uso exclusivo del Administrador).
+            public filtrarTransaccionesPorTipo::ReadFilter (p_usuarioId : Integer, p_tipo : TipoTransaccion) : List<Object -> Transaccion>
             {
-                filterLinQ = "entity => entity.Tipo == p_tipo"
+                filterLinQ = "entity => (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && entity.Tipo == p_tipo"
             };
-            public filtrarTransaccionesPorRangoFechas::ReadFilter (p_fechaInicio : Date, p_fechaFin : Date) : List<Object -> Transaccion>
+            public filtrarTransaccionesPorRangoFechas::ReadFilter (p_usuarioId : Integer, p_fechaInicio : Date, p_fechaFin : Date) : List<Object -> Transaccion>
             {
-                filterLinQ = "entity => entity.Fecha >= p_fechaInicio && entity.Fecha <= p_fechaFin"
+                filterLinQ = "entity => (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && entity.Fecha >= p_fechaInicio && entity.Fecha <= p_fechaFin"
             };
         }
     };
@@ -238,13 +240,15 @@ ConceptualModel SkinLink {
             private habilitado : Boolean (1, 1);
             private porcentajeDescuento : Double (0, 1);
             private fechaFinDescuento : Date (0, 1);
+            // Imagen del articulo (subida de ficheros con HARIA Web, PNG/JPEG)
+            private imagen : File (0, 1);
         }
         
         operations
         {
-            public new::New (p_nombre : String, p_coleccion : String, p_rareza : Rareza, p_precioReferencia : Moneda, p_habilitado : Boolean, p_porcentajeDescuento : Double, p_fechaFinDescuento : Date) : Object -> ArticuloCatalogo;
+            public new::New (p_nombre : String, p_coleccion : String, p_rareza : Rareza, p_precioReferencia : Moneda, p_habilitado : Boolean, p_porcentajeDescuento : Double, p_fechaFinDescuento : Date, p_imagen : File) : Object -> ArticuloCatalogo;
             public destroy::Destroy (p_oid : OID -> ArticuloCatalogo) : Void;
-            public modify::Modifier (p_oid : OID -> ArticuloCatalogo, p_nombre : String, p_coleccion : String, p_rareza : Rareza, p_precioReferencia : Moneda, p_habilitado : Boolean, p_porcentajeDescuento : Double, p_fechaFinDescuento : Date) : Void;
+            public modify::Modifier (p_oid : OID -> ArticuloCatalogo, p_nombre : String, p_coleccion : String, p_rareza : Rareza, p_precioReferencia : Moneda, p_habilitado : Boolean, p_porcentajeDescuento : Double, p_fechaFinDescuento : Date, p_imagen : File) : Void;
             public readOID::ReadOID (p_oid : OID -> ArticuloCatalogo) : Object -> ArticuloCatalogo;
             public readAll::ReadAll () : List<Object -> ArticuloCatalogo>;
             
@@ -265,13 +269,15 @@ ConceptualModel SkinLink {
             private enVenta : Boolean (1, 1);
             // blanca
             private unique identificadorUnico : String (1, 1);
+            // Imagen de la skin (subida de ficheros con HARIA Web, PNG/JPEG)
+            private imagen : File (0, 1);
         }
         
         operations
         {
-            public new::New (p_nombre : String, p_coleccion : String, p_precioEstimado : Moneda, p_atributos : AtributosSkin, p_enVenta : Boolean, p_identificadorUnico : String, p_inventario_oid : OID -> InventarioPrivado) : Object -> ActivoDigital;
+            public new::New (p_nombre : String, p_coleccion : String, p_precioEstimado : Moneda, p_atributos : AtributosSkin, p_enVenta : Boolean, p_identificadorUnico : String, p_imagen : File, p_inventario_oid : OID -> InventarioPrivado) : Object -> ActivoDigital;
             public destroy::Destroy (p_oid : OID -> ActivoDigital) : Void;
-            public modify::Modifier (p_oid : OID -> ActivoDigital, p_nombre : String, p_coleccion : String, p_precioEstimado : Moneda, p_atributos : AtributosSkin, p_enVenta : Boolean, p_identificadorUnico : String) : Void;
+            public modify::Modifier (p_oid : OID -> ActivoDigital, p_nombre : String, p_coleccion : String, p_precioEstimado : Moneda, p_atributos : AtributosSkin, p_enVenta : Boolean, p_identificadorUnico : String, p_imagen : File) : Void;
             public readOID::ReadOID (p_oid : OID -> ActivoDigital) : Object -> ActivoDigital;
             public readAll::ReadAll () : List<Object -> ActivoDigital>;
             

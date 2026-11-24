@@ -42,7 +42,7 @@ public sealed partial class ArticuloCatalogoService : ServiceEntity<ArticuloCata
     public Task<ArticuloCatalogo> ModifierArticuloCatalogoDefaultAsync(ArticuloCatalogo entity) =>
         ModifierDefaultAsync(entity);
 
-    public async Task<ArticuloCatalogo> NewAsync(string p_nombre, string p_coleccion, Rareza p_rareza, Moneda p_precioReferencia, bool p_habilitado, double p_porcentajeDescuento, DateTime p_fechaFinDescuento)
+    public async Task<ArticuloCatalogo> NewAsync(string p_nombre, string p_coleccion, Rareza p_rareza, Moneda p_precioReferencia, bool p_habilitado, double p_porcentajeDescuento, DateTime p_fechaFinDescuento, string p_imagen)
     {
         ArticuloCatalogo entity = new ArticuloCatalogo
         {
@@ -53,6 +53,7 @@ public sealed partial class ArticuloCatalogoService : ServiceEntity<ArticuloCata
             Habilitado = p_habilitado,
             PorcentajeDescuento = p_porcentajeDescuento,
             FechaFinDescuento = p_fechaFinDescuento,
+            Imagen = p_imagen,
         };
 
         await _repository.SaveAsync(entity);
@@ -66,7 +67,7 @@ public sealed partial class ArticuloCatalogoService : ServiceEntity<ArticuloCata
         await _repository.DeleteAsync(entity);
     }
 
-    public async Task ModifyAsync(int p_oid, string p_nombre, string p_coleccion, Rareza p_rareza, Moneda p_precioReferencia, bool p_habilitado, double p_porcentajeDescuento, DateTime p_fechaFinDescuento)
+    public async Task ModifyAsync(int p_oid, string p_nombre, string p_coleccion, Rareza p_rareza, Moneda p_precioReferencia, bool p_habilitado, double p_porcentajeDescuento, DateTime p_fechaFinDescuento, string p_imagen)
     {
         ArticuloCatalogo entity = await _repository.ReadAsync(p_oid)
             ?? throw new ModelException("ArticuloCatalogo not found.");
@@ -77,6 +78,7 @@ public sealed partial class ArticuloCatalogoService : ServiceEntity<ArticuloCata
         entity.Habilitado = p_habilitado;
         entity.PorcentajeDescuento = p_porcentajeDescuento;
         entity.FechaFinDescuento = p_fechaFinDescuento;
+        entity.Imagen = p_imagen;
         await _repository.SaveAsync(entity);
     }
 

@@ -79,7 +79,9 @@ public partial class RegistroAuditoriaController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new RegistroAuditoriaService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.RegistroAuditoriaService(unitOfWork);
+
+
 
 
 
@@ -90,17 +92,22 @@ public partial class RegistroAuditoriaController : Controller
         if (model.AdministradorId is null) ModelState.AddModelError("AdministradorId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.RegistroAuditoria.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.RegistroAuditoria.Create");
+
 
             var entity = await service.NewAsync(model.Accion, model.Fecha, model.AdministradorId.GetValueOrDefault());
-            entity.Administrador = model.AdministradorId is int referenceAdministrador
-                ? await unitOfWork.AdministradorRepository.ReadAsync(referenceAdministrador) ?? throw new InvalidOperationException("El registro seleccionado de Administrador ya no existe.") : null!;
+
+            await service.ApplyRegistroAuditoriaRelationsAsync(entity, p_administrador_id: model.AdministradorId);
 
             await service.ModifierRegistroAuditoriaDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -112,6 +119,7 @@ public partial class RegistroAuditoriaController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

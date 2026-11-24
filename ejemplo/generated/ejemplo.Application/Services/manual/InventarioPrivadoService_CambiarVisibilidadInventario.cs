@@ -3,9 +3,9 @@ using ejemplo.Application.Exceptions;
 using ejemplo.Domain.Entities;
 using ejemplo.Domain.Enums;
 
-/*PROTECTED REGION ID(usingejemplo.Application.Services_InventarioPrivado_cambiarVisibilidadInventario) ENABLED START*/
+        /*PROTECTED REGION ID(usingejemplo.Application.Services_InventarioPrivado_cambiarVisibilidadInventario) ENABLED START*/
 // references to other libraries
-/*PROTECTED REGION END*/
+        /*PROTECTED REGION END*/
 
 namespace ejemplo.Application.Services;
 

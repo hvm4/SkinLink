@@ -41,6 +41,16 @@ public sealed partial class ResenaVendedorService : ServiceEntity<ResenaVendedor
     public Task<ResenaVendedor> ModifierResenaVendedorDefaultAsync(ResenaVendedor entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyResenaVendedorRelationsAsync(ResenaVendedor entity, int? p_comprador_id, int? p_vendedor_id)
+    {
+        if (p_comprador_id is null) throw new ModelException("ResenaVendedor.Comprador is required.");
+        entity.Comprador = p_comprador_id is int selectedComprador
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedComprador) ?? throw new ModelException("Usuario not found for ResenaVendedor.Comprador.") : null!;
+        if (p_vendedor_id is null) throw new ModelException("ResenaVendedor.Vendedor is required.");
+        entity.Vendedor = p_vendedor_id is int selectedVendedor
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedVendedor) ?? throw new ModelException("Usuario not found for ResenaVendedor.Vendedor.") : null!;
+    }
+
     public async Task<ResenaVendedor> NewAsync(int p_puntuacion, string p_comentario, DateTime p_fecha, bool p_oculta, int p_comprador_oid, int p_vendedor_oid)
     {
         Usuario compradorEntity = await _unitOfWork.UsuarioRepository.ReadAsync(p_comprador_oid)

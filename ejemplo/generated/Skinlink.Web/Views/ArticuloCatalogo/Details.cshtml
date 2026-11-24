@@ -1,4 +1,4 @@
-@* HARIA-WEB GENERATED sha256:93ea9929ad2a1e790905f10b94c7d9d4f0900e80b7fa1dd486757936955c7379 *@
+@* HARIA-WEB GENERATED sha256:5165cbc05b3d4e017ee9cc33246b8748062e97098307342a17ff1d01cc434c41 *@
 @model Skinlink.Web.ViewModels.ArticuloCatalogoViewModel
 
 @{
@@ -33,7 +33,17 @@
             <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.PorcentajeDescuento)</dd>
             <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.FechaFinDescuento)</dt>
             <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.FechaFinDescuento)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Imagen)</dt>
+            <dd class="col-sm-8 col-lg-9">@if (!string.IsNullOrWhiteSpace(Model.Imagen))
+                {
+                    <img src="@Url.Content("~/" + Model.Imagen.TrimStart('/'))" alt="@Html.DisplayNameFor(model => model.Imagen)" class="img-thumbnail img-fluid" style="max-width: 320px; max-height: 240px;" />
+                }
+                else
+                {
+                    <span class="text-body-secondary">Sin imagen</span>
+                }</dd>
                 </dl>
+
 
             </div>
             <div class="card-footer bg-body p-4">

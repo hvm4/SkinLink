@@ -80,7 +80,9 @@ public partial class IntercambioController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new IntercambioService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.IntercambioService(unitOfWork);
+
+
 
 
 
@@ -95,19 +97,22 @@ public partial class IntercambioController : Controller
         if (model.ReceptorId is null) ModelState.AddModelError("ReceptorId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Intercambio.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Intercambio.Create");
+
 
             var entity = await service.NewAsync(model.Estado, model.FechaCreacion, model.ProponenteId.GetValueOrDefault(), model.ReceptorId.GetValueOrDefault());
-            entity.Proponente = model.ProponenteId is int referenceProponente
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceProponente) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.Receptor = model.ReceptorId is int referenceReceptor
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceReceptor) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
+
+            await service.ApplyIntercambioRelationsAsync(entity, p_proponente_id: model.ProponenteId, p_receptor_id: model.ReceptorId);
 
             await service.ModifierIntercambioDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -119,6 +124,7 @@ public partial class IntercambioController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -149,9 +155,11 @@ public partial class IntercambioController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new IntercambioService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.IntercambioService(unitOfWork);
+
         var entity = await service.ReadOIDIntercambioDefaultAsync(id);
         if (entity is null) return NotFound();
+
 
 
         await LoadFormOptionsAsync(model, unitOfWork);
@@ -165,19 +173,22 @@ public partial class IntercambioController : Controller
         if (model.ReceptorId is null) ModelState.AddModelError("ReceptorId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Intercambio.Edit");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Intercambio.Edit");
+
 
             await service.ModifyAsync(id, model.Estado, model.FechaCreacion);
-            entity.Proponente = model.ProponenteId is int referenceProponente
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceProponente) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.Receptor = model.ReceptorId is int referenceReceptor
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceReceptor) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
+            entity = await service.ReadOIDIntercambioDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyIntercambioRelationsAsync(entity, p_proponente_id: model.ProponenteId, p_receptor_id: model.ReceptorId);
 
             await service.ModifierIntercambioDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -189,6 +200,7 @@ public partial class IntercambioController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

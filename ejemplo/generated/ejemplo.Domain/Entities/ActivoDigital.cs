@@ -13,6 +13,7 @@ public partial class ActivoDigital
     public AtributosSkin Atributos { get; set; } = null!;
     public bool EnVenta { get; set; }
     public string IdentificadorUnico { get; set; } = string.Empty;
+    public string? Imagen { get; set; }
     public InventarioPrivado Inventario { get; set; } = null!;
     public Venta? Venta { get; set; }
     public IList<ProbabilidadDrop> Probabilidad { get; set; } = new List<ProbabilidadDrop>();

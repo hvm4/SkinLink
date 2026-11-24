@@ -42,6 +42,13 @@ public sealed partial class MonederoService : ServiceEntity<Monedero>
     public Task<Monedero> ModifierMonederoDefaultAsync(Monedero entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyMonederoRelationsAsync(Monedero entity, int? p_usuario_id)
+    {
+        if (p_usuario_id is null) throw new ModelException("Monedero.Usuario is required.");
+        entity.Usuario = p_usuario_id is int selectedUsuario
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedUsuario) ?? throw new ModelException("Usuario not found for Monedero.Usuario.") : null!;
+    }
+
     public async Task<Monedero> NewAsync(Moneda p_saldoDisponible, Moneda p_saldoPendiente, int p_usuario_oid)
     {
         Usuario usuarioEntity = await _unitOfWork.UsuarioRepository.ReadAsync(p_usuario_oid)

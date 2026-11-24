@@ -10,4 +10,5 @@
     <ProjectReference Include="..\ejemplo.Domain\ejemplo.Domain.csproj" />
   </ItemGroup>
 
+  <Import Project=".haria/obsolete-manual.targets" Condition="Exists('.haria/obsolete-manual.targets')" />
 </Project>

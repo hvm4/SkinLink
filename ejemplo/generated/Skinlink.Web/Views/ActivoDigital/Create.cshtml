@@ -1,4 +1,4 @@
-@* HARIA-WEB GENERATED sha256:0b7eeb2445ba88f3fa907cb1c4bfa1ed65a5f661ae2c52d03b499b288d09b333 *@
+@* HARIA-WEB GENERATED sha256:2b12a2617ead3612e6132453655ae61aaf561c9996d04283ec0632c64c0b2673 *@
 @model Skinlink.Web.ViewModels.ActivoDigitalViewModel
 
 @{
@@ -13,7 +13,7 @@
                 <h1 class="h3 mb-1">ActivoDigital</h1>
                 <p class="text-body-secondary mb-0">Completa los campos y guarda los cambios.</p>
             </div>
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div class="card-body p-4">
                     <div asp-validation-summary="All" class="alert alert-danger py-2" role="alert"></div>
@@ -66,6 +66,11 @@
             <label asp-for="IdentificadorUnico" class="form-label"></label>
             <input asp-for="IdentificadorUnico" class="form-control" />
             <span asp-validation-for="IdentificadorUnico" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ImagenUpload" class="form-label"></label>
+            <input asp-for="ImagenUpload" type="file" accept=".png,image/png,.jpg,image/jpeg,.jpeg" class="form-control" />
+            <span asp-validation-for="ImagenUpload" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <label asp-for="InventarioId" class="form-label"></label>

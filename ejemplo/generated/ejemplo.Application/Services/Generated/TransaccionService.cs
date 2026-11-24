@@ -42,6 +42,17 @@ public sealed partial class TransaccionService : ServiceEntity<Transaccion>
     public Task<Transaccion> ModifierTransaccionDefaultAsync(Transaccion entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyTransaccionRelationsAsync(Transaccion entity, int? p_monedero_id, int? p_ventaCobro_id, int? p_ventaPago_id)
+    {
+        if (p_monedero_id is null) throw new ModelException("Transaccion.Monedero is required.");
+        entity.Monedero = p_monedero_id is int selectedMonedero
+            ? await _unitOfWork.MonederoRepository.ReadAsync(selectedMonedero) ?? throw new ModelException("Monedero not found for Transaccion.Monedero.") : null!;
+        entity.VentaCobro = p_ventaCobro_id is int selectedVentaCobro
+            ? await _unitOfWork.VentaRepository.ReadAsync(selectedVentaCobro) ?? throw new ModelException("Venta not found for Transaccion.VentaCobro.") : null!;
+        entity.VentaPago = p_ventaPago_id is int selectedVentaPago
+            ? await _unitOfWork.VentaRepository.ReadAsync(selectedVentaPago) ?? throw new ModelException("Venta not found for Transaccion.VentaPago.") : null!;
+    }
+
     public async Task<Transaccion> NewAsync(TipoTransaccion p_tipo, Moneda p_monto, DateTime p_fecha, string p_concepto, int p_monedero_oid)
     {
         Monedero monederoEntity = await _unitOfWork.MonederoRepository.ReadAsync(p_monedero_oid)
@@ -88,14 +99,14 @@ public sealed partial class TransaccionService : ServiceEntity<Transaccion>
         return await _repository.ReadAllAsync();
     }
 
-    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorTipoAsync(TipoTransaccion p_tipo)
+    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorTipoAsync(int p_usuarioId, TipoTransaccion p_tipo)
     {
-        return await _repository.FiltrarTransaccionesPorTipoAsync(p_tipo);
+        return await _repository.FiltrarTransaccionesPorTipoAsync(p_usuarioId, p_tipo);
     }
 
-    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorRangoFechasAsync(DateTime p_fechaInicio, DateTime p_fechaFin)
+    public async Task<IReadOnlyList<Transaccion>> FiltrarTransaccionesPorRangoFechasAsync(int p_usuarioId, DateTime p_fechaInicio, DateTime p_fechaFin)
     {
-        return await _repository.FiltrarTransaccionesPorRangoFechasAsync(p_fechaInicio, p_fechaFin);
+        return await _repository.FiltrarTransaccionesPorRangoFechasAsync(p_usuarioId, p_fechaInicio, p_fechaFin);
     }
 
 }

@@ -59,6 +59,16 @@ public sealed partial class UsuarioService : ServiceEntity<Usuario>
         }
     }
 
+    public async Task ApplyUsuarioRelationsAsync(Usuario entity, int? p_monedero_id, int? p_inventario_id)
+    {
+        if (p_monedero_id is null) throw new ModelException("Usuario.Monedero is required.");
+        entity.Monedero = p_monedero_id is int selectedMonedero
+            ? await _unitOfWork.MonederoRepository.ReadAsync(selectedMonedero) ?? throw new ModelException("Monedero not found for Usuario.Monedero.") : null!;
+        if (p_inventario_id is null) throw new ModelException("Usuario.Inventario is required.");
+        entity.Inventario = p_inventario_id is int selectedInventario
+            ? await _unitOfWork.InventarioPrivadoRepository.ReadAsync(selectedInventario) ?? throw new ModelException("InventarioPrivado not found for Usuario.Inventario.") : null!;
+    }
+
     public async Task<Usuario> NewAsync(string p_nombreUsuario, string p_correo, string p_contrasena, DateTime p_fechaNacimiento, EstadoCuenta p_estado, int p_nivel, int p_experiencia, DateTime p_fechaUltimoLogin, bool p_temaModoOscuro, string p_idioma, bool p_verificado, Monedero p_monedero, InventarioPrivado p_inventario)
     {
         Usuario entity = new Usuario

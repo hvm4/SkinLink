@@ -1,6 +1,7 @@
 ﻿# HARIA generated file manifest
 # Do not edit manually.
 .gitignore
+ejemplo.Application\.haria\obsolete-manual.targets
 ejemplo.Application\Abstractions\IActivoDigitalRepository.cs
 ejemplo.Application\Abstractions\IAdministradorRepository.cs
 ejemplo.Application\Abstractions\IArticuloCatalogoRepository.cs

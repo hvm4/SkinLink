@@ -20,6 +20,7 @@ public static class ActivoDigitalAssembler
             AtributosPatron = entity.Atributos?.Patron ?? default,
             EnVenta = entity.EnVenta,
             IdentificadorUnico = entity.IdentificadorUnico,
+            Imagen = entity.Imagen,
             InventarioId = entity.Inventario?.Id,
             InventarioLabel = entity.Inventario is null ? null : Convert.ToString(entity.Inventario.Id, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty,
             VentaId = entity.Venta?.Id,
@@ -52,6 +53,11 @@ public static class ActivoDigitalAssembler
         entity.IdentificadorUnico = model.IdentificadorUnico;
     }
     /*PROTECTED REGION END*/
+
+    /*PROTECTED REGION ID(ActivoDigitalAssembler_custom) ENABLED START*/
+    // Add custom properties, validation helpers or actions here.
+    /*PROTECTED REGION END*/
+
     /*PROTECTED REGION ID(ActivoDigitalAssembler_method_Create) START*/
     public static ActivoDigital Create(Skinlink.Web.ViewModels.ActivoDigitalViewModel model)
     {
@@ -60,7 +66,5 @@ public static class ActivoDigitalAssembler
         return entity;
     }
     /*PROTECTED REGION END*/
-    /*PROTECTED REGION ID(ActivoDigitalAssembler_custom) ENABLED START*/
-    // Add custom properties, validation helpers or actions here.
-    /*PROTECTED REGION END*/
+
 }

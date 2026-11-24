@@ -31,6 +31,17 @@ public sealed class ArticuloCatalogoViewModel : IValidatableObject
     [DataType(DataType.Date)]
     public DateTime? FechaFinDescuento { get; set; }
 
+    [Microsoft.AspNetCore.Mvc.ModelBinding.BindNever]
+    [Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ValidateNever]
+    [System.ComponentModel.ReadOnly(true)]
+    [UIHint("HariaImage")]
+    public string? Imagen { get; set; }
+
+    [DataType(DataType.Upload)]
+    [Display(Name = "imagen")]
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Microsoft.AspNetCore.Http.IFormFile? ImagenUpload { get; set; }
+
 
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

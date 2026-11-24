@@ -80,7 +80,9 @@ public partial class VentaController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new VentaService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.VentaService(unitOfWork);
+
+
 
 
 
@@ -105,27 +107,26 @@ public partial class VentaController : Controller
             !model.TransaccionPagoOptions.Any(option => option.Value == Convert.ToString(selectedTransaccionPago, System.Globalization.CultureInfo.InvariantCulture)))
             ModelState.AddModelError("TransaccionPagoId", "Selecciona un registro existente de Transaccion.");
 
+        if (model.CompradorId is null) ModelState.AddModelError(nameof(model.CompradorId), "Debes seleccionar una opción.");
+        if (model.TransaccionCobroId is null) ModelState.AddModelError(nameof(model.TransaccionCobroId), "Debes seleccionar una opción.");
+        if (model.TransaccionPagoId is null) ModelState.AddModelError(nameof(model.TransaccionPagoId), "Debes seleccionar una opción.");
+
 
 
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Venta.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Venta.Create");
+
 
             var entity = await service.NewAsync(new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.PrecioVentaValor, Divisa = model.PrecioVentaDivisa }, model.FechaPublicacion, model.EstadoVenta, model.VendedorId.GetValueOrDefault(), model.CompradorId.GetValueOrDefault(), model.ActivoDigitalId.GetValueOrDefault(), model.TransaccionCobroId.GetValueOrDefault(), model.TransaccionPagoId.GetValueOrDefault());
-            entity.Vendedor = model.VendedorId is int referenceVendedor
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceVendedor) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.Comprador = model.CompradorId is int referenceComprador
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceComprador) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.ActivoDigital = model.ActivoDigitalId is int referenceActivoDigital
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoDigital) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
-            entity.TransaccionCobro = model.TransaccionCobroId is int referenceTransaccionCobro
-                ? await unitOfWork.TransaccionRepository.ReadAsync(referenceTransaccionCobro) ?? throw new InvalidOperationException("El registro seleccionado de Transaccion ya no existe.") : null!;
-            entity.TransaccionPago = model.TransaccionPagoId is int referenceTransaccionPago
-                ? await unitOfWork.TransaccionRepository.ReadAsync(referenceTransaccionPago) ?? throw new InvalidOperationException("El registro seleccionado de Transaccion ya no existe.") : null!;
+
+            await service.ApplyVentaRelationsAsync(entity, p_vendedor_id: model.VendedorId, p_comprador_id: model.CompradorId, p_activoDigital_id: model.ActivoDigitalId, p_transaccionCobro_id: model.TransaccionCobroId, p_transaccionPago_id: model.TransaccionPagoId);
 
             await service.ModifierVentaDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -137,6 +138,7 @@ public partial class VentaController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -167,9 +169,11 @@ public partial class VentaController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new VentaService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.VentaService(unitOfWork);
+
         var entity = await service.ReadOIDVentaDefaultAsync(id);
         if (entity is null) return NotFound();
+
 
 
         await LoadFormOptionsAsync(model, unitOfWork);
@@ -195,25 +199,22 @@ public partial class VentaController : Controller
 
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Venta.Edit");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Venta.Edit");
+
 
             await service.ModifyAsync(id, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.PrecioVentaValor, Divisa = model.PrecioVentaDivisa }, model.FechaPublicacion, model.EstadoVenta, model.ActivoDigitalId.GetValueOrDefault());
-            entity.Vendedor = model.VendedorId is int referenceVendedor
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceVendedor) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.Comprador = model.CompradorId is int referenceComprador
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceComprador) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
-            entity.ActivoDigital = model.ActivoDigitalId is int referenceActivoDigital
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoDigital) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
-            entity.TransaccionCobro = model.TransaccionCobroId is int referenceTransaccionCobro
-                ? await unitOfWork.TransaccionRepository.ReadAsync(referenceTransaccionCobro) ?? throw new InvalidOperationException("El registro seleccionado de Transaccion ya no existe.") : null!;
-            entity.TransaccionPago = model.TransaccionPagoId is int referenceTransaccionPago
-                ? await unitOfWork.TransaccionRepository.ReadAsync(referenceTransaccionPago) ?? throw new InvalidOperationException("El registro seleccionado de Transaccion ya no existe.") : null!;
+            entity = await service.ReadOIDVentaDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyVentaRelationsAsync(entity, p_vendedor_id: model.VendedorId, p_comprador_id: model.CompradorId, p_activoDigital_id: model.ActivoDigitalId, p_transaccionCobro_id: model.TransaccionCobroId, p_transaccionPago_id: model.TransaccionPagoId);
 
             await service.ModifierVentaDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -225,6 +226,7 @@ public partial class VentaController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

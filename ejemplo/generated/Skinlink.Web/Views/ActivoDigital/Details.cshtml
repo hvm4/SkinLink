@@ -1,4 +1,4 @@
-@* HARIA-WEB GENERATED sha256:21c3bd59bc732794cb66906365d3e7551dfcc87c40535e8f33b6bba7c5d6eff0 *@
+@* HARIA-WEB GENERATED sha256:733633c5399c51b69cc8687ac8c3a2352591ff10fd17f0e2b4371840cdf11a04 *@
 @model Skinlink.Web.ViewModels.ActivoDigitalViewModel
 
 @{
@@ -37,6 +37,15 @@
             <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.EnVenta)</dd>
             <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.IdentificadorUnico)</dt>
             <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.IdentificadorUnico)</dd>
+            <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.Imagen)</dt>
+            <dd class="col-sm-8 col-lg-9">@if (!string.IsNullOrWhiteSpace(Model.Imagen))
+                {
+                    <img src="@Url.Content("~/" + Model.Imagen.TrimStart('/'))" alt="@Html.DisplayNameFor(model => model.Imagen)" class="img-thumbnail img-fluid" style="max-width: 320px; max-height: 240px;" />
+                }
+                else
+                {
+                    <span class="text-body-secondary">Sin imagen</span>
+                }</dd>
             <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.InventarioLabel)</dt>
             <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.InventarioLabel)</dd>
             <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.VentaLabel)</dt>
@@ -46,6 +55,7 @@
             <dt class="col-sm-4 col-lg-3 text-body-secondary">@Html.DisplayNameFor(model => model.IntercambioSolicitadoLabel)</dt>
             <dd class="col-sm-8 col-lg-9">@Html.DisplayFor(model => model.IntercambioSolicitadoLabel)</dd>
                 </dl>
+
 
             </div>
             <div class="card-footer bg-body p-4">

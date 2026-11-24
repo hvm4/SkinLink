@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ejemplo.Domain.Entities;
+using ejemplo.Domain.Enums;
 
 namespace ejemplo.Infrastructure.Data;
 
@@ -191,6 +192,9 @@ public sealed class ejemploDbContext : DbContext
                 .HasColumnName("fechaFinDescuento")
                 .HasColumnType("date")
                 .IsRequired(false);
+            entity.Property(e => e.Imagen)
+                .HasColumnName("imagen")
+                .IsRequired(false);
             entity.OwnsOne(e => e.PrecioReferencia, ownedPrecioReferencia =>
             {
                 ownedPrecioReferencia.Property(e => e.Valor)
@@ -221,6 +225,9 @@ public sealed class ejemploDbContext : DbContext
             entity.Property(e => e.IdentificadorUnico)
                 .HasColumnName("identificadorUnico")
                 .IsRequired();
+            entity.Property(e => e.Imagen)
+                .HasColumnName("imagen")
+                .IsRequired(false);
             entity.OwnsOne(e => e.PrecioEstimado, ownedPrecioEstimado =>
             {
                 ownedPrecioEstimado.Property(e => e.Valor)

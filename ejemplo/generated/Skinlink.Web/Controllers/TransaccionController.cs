@@ -81,7 +81,9 @@ public partial class TransaccionController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new TransaccionService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.TransaccionService(unitOfWork);
+
+
 
 
 
@@ -100,21 +102,22 @@ public partial class TransaccionController : Controller
 
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Transaccion.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Transaccion.Create");
+
 
             var entity = await service.NewAsync(model.Tipo, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.MontoValor, Divisa = model.MontoDivisa }, model.Fecha, model.Concepto, model.MonederoId.GetValueOrDefault());
-            entity.Monedero = model.MonederoId is int referenceMonedero
-                ? await unitOfWork.MonederoRepository.ReadAsync(referenceMonedero) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.") : null!;
-            entity.VentaCobro = model.VentaCobroId is int referenceVentaCobro
-                ? await unitOfWork.VentaRepository.ReadAsync(referenceVentaCobro) ?? throw new InvalidOperationException("El registro seleccionado de Venta ya no existe.") : null!;
-            entity.VentaPago = model.VentaPagoId is int referenceVentaPago
-                ? await unitOfWork.VentaRepository.ReadAsync(referenceVentaPago) ?? throw new InvalidOperationException("El registro seleccionado de Venta ya no existe.") : null!;
+
+            await service.ApplyTransaccionRelationsAsync(entity, p_monedero_id: model.MonederoId, p_ventaCobro_id: model.VentaCobroId, p_ventaPago_id: model.VentaPagoId);
 
             await service.ModifierTransaccionDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -126,6 +129,7 @@ public partial class TransaccionController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -156,9 +160,11 @@ public partial class TransaccionController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new TransaccionService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.TransaccionService(unitOfWork);
+
         var entity = await service.ReadOIDTransaccionDefaultAsync(id);
         if (entity is null) return NotFound();
+
 
 
         await LoadFormOptionsAsync(model, unitOfWork);
@@ -176,21 +182,22 @@ public partial class TransaccionController : Controller
 
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Transaccion.Edit");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Transaccion.Edit");
+
 
             await service.ModifyAsync(id, model.Tipo, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.MontoValor, Divisa = model.MontoDivisa }, model.Fecha, model.Concepto);
-            entity.Monedero = model.MonederoId is int referenceMonedero
-                ? await unitOfWork.MonederoRepository.ReadAsync(referenceMonedero) ?? throw new InvalidOperationException("El registro seleccionado de Monedero ya no existe.") : null!;
-            entity.VentaCobro = model.VentaCobroId is int referenceVentaCobro
-                ? await unitOfWork.VentaRepository.ReadAsync(referenceVentaCobro) ?? throw new InvalidOperationException("El registro seleccionado de Venta ya no existe.") : null!;
-            entity.VentaPago = model.VentaPagoId is int referenceVentaPago
-                ? await unitOfWork.VentaRepository.ReadAsync(referenceVentaPago) ?? throw new InvalidOperationException("El registro seleccionado de Venta ya no existe.") : null!;
+            entity = await service.ReadOIDTransaccionDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyTransaccionRelationsAsync(entity, p_monedero_id: model.MonederoId, p_ventaCobro_id: model.VentaCobroId, p_ventaPago_id: model.VentaPagoId);
 
             await service.ModifierTransaccionDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -202,6 +209,7 @@ public partial class TransaccionController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -238,11 +246,11 @@ public partial class TransaccionController : Controller
     [HttpGet]
     /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorTipo_GET_attributes) START*/
     /*PROTECTED REGION END*/
-    public async Task<IActionResult> FiltrarTransaccionesPorTipo(TipoTransaccion p_tipo)
+    public async Task<IActionResult> FiltrarTransaccionesPorTipo(int p_usuarioId, TipoTransaccion p_tipo)
     {
     /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorTipo_GET_body) START*/
 
-        var result = await _transaccionService.FiltrarTransaccionesPorTipoAsync(p_tipo);
+        var result = await _transaccionService.FiltrarTransaccionesPorTipoAsync(p_usuarioId, p_tipo);
         return Ok(result.Select(TransaccionAssembler.ToViewModel).ToList());
     /*PROTECTED REGION END*/
     }
@@ -250,12 +258,13 @@ public partial class TransaccionController : Controller
     [HttpGet]
     /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorRangoFechas_GET_attributes) START*/
     /*PROTECTED REGION END*/
-    public async Task<IActionResult> FiltrarTransaccionesPorRangoFechas(DateTime p_fechaInicio, DateTime p_fechaFin)
+    public async Task<IActionResult> FiltrarTransaccionesPorRangoFechas(int p_usuarioId, DateTime p_fechaInicio, DateTime p_fechaFin)
     {
     /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorRangoFechas_GET_body) ENABLED START*/
 
         // ReadFilter filtrarTransaccionesPorRangoFechas
-        // (filterLinQ: entity => entity.Fecha >= p_fechaInicio && entity.Fecha <= p_fechaFin).
+        // (filterLinQ: (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && rango de fechas).
+        // p_usuarioId NUNCA se toma de la URL: se calcula a partir del usuario autenticado.
         var model = new TransaccionFiltroFechasViewModel
         {
             FechaInicio = DateTime.Today.AddDays(-30),
@@ -280,26 +289,24 @@ public partial class TransaccionController : Controller
             return View(model);
         }
 
+        // Administrador: 0 = movimientos de todos. Usuario normal: solo su propio monedero.
+        int usuarioFiltro = 0;
+        if (!User.EsAdministrador())
+        {
+            var usuarioId = User.GetUsuarioId();
+            if (usuarioId is null) return Challenge();
+            usuarioFiltro = usuarioId.Value;
+            model.SoloMisMovimientos = true;
+        }
+
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
         // Se cargan los monederos en el mismo contexto para que EF enlace Transaccion.Monedero.
         await unitOfWork.MonederoRepository.ReadAllAsync();
         var service = new TransaccionService(unitOfWork);
 
         // El filtro usa "<=": se pasa el último instante del día de fin para incluir ese día entero.
-        var result = await service.FiltrarTransaccionesPorRangoFechasAsync(
-            model.FechaInicio, model.FechaFin.AddDays(1).AddTicks(-1));
-
-        IEnumerable<Transaccion> visibles = result;
-        if (!User.EsAdministrador())
-        {
-            // Un usuario normal solo ve los movimientos de su propio monedero.
-            var usuarioId = User.GetUsuarioId();
-            if (usuarioId is null) return Challenge();
-            var usuario = await unitOfWork.UsuarioRepository.ReadAsync(usuarioId.Value);
-            var monederoId = usuario?.Monedero?.Id;
-            visibles = result.Where(t => monederoId is not null && t.Monedero?.Id == monederoId);
-            model.SoloMisMovimientos = true;
-        }
+        IEnumerable<Transaccion> visibles = await service.FiltrarTransaccionesPorRangoFechasAsync(
+            usuarioFiltro, model.FechaInicio, model.FechaFin.AddDays(1).AddTicks(-1));
 
         model.Buscado = true;
         model.Resultados = visibles

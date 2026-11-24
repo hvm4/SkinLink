@@ -41,6 +41,16 @@ public sealed partial class FavoritoService : ServiceEntity<Favorito>
     public Task<Favorito> ModifierFavoritoDefaultAsync(Favorito entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyFavoritoRelationsAsync(Favorito entity, int? p_usuario_id, int? p_activoDigital_id)
+    {
+        if (p_usuario_id is null) throw new ModelException("Favorito.Usuario is required.");
+        entity.Usuario = p_usuario_id is int selectedUsuario
+            ? await _unitOfWork.UsuarioRepository.ReadAsync(selectedUsuario) ?? throw new ModelException("Usuario not found for Favorito.Usuario.") : null!;
+        if (p_activoDigital_id is null) throw new ModelException("Favorito.ActivoDigital is required.");
+        entity.ActivoDigital = p_activoDigital_id is int selectedActivoDigital
+            ? await _unitOfWork.ActivoDigitalRepository.ReadAsync(selectedActivoDigital) ?? throw new ModelException("ActivoDigital not found for Favorito.ActivoDigital.") : null!;
+    }
+
     public async Task<Favorito> NewAsync(DateTime p_fechaMarcado, int p_usuario_oid, int p_activoDigital_oid)
     {
         Usuario usuarioEntity = await _unitOfWork.UsuarioRepository.ReadAsync(p_usuario_oid)

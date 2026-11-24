@@ -1,4 +1,4 @@
-@* HARIA-WEB GENERATED sha256:1bdbbe0091fdac2a8cecdf6b5ca2f3cf715076ad571d3f25e61d420f8b09bffd *@
+@* HARIA-WEB GENERATED sha256:3021ba8d46dfd6ec600e225e1bf467c53c7b3ad113a01c14f750127c7d085088 *@
 @model Skinlink.Web.ViewModels.InventarioPrivadoViewModel
 
 @{
@@ -38,6 +38,11 @@
             <span asp-validation-for="UsuarioId" class="text-danger"></span>
         </div>
         <partial name="_Activos" model="Model" />
+                <aside class="alert alert-info">
+                    <h2 class="h6">Activos</h2>
+                    <p>Guarda este registro y gestiona Activos desde ActivoDigital, seleccionando Inventario en su formulario.</p>
+                    <a asp-controller="ActivoDigital" asp-action="Index" class="btn btn-outline-primary">Gestionar Activos</a>
+                </aside>
                 </div>
                 <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
                     <button type="submit" class="btn btn-primary">Guardar cambios</button>

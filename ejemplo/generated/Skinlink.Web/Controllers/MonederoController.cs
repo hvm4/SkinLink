@@ -80,7 +80,9 @@ public partial class MonederoController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new MonederoService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.MonederoService(unitOfWork);
+
+
 
 
 
@@ -91,17 +93,22 @@ public partial class MonederoController : Controller
         if (model.UsuarioId is null) ModelState.AddModelError("UsuarioId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Monedero.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Monedero.Create");
+
 
             var entity = await service.NewAsync(new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.SaldoDisponibleValor, Divisa = model.SaldoDisponibleDivisa }, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.SaldoPendienteValor, Divisa = model.SaldoPendienteDivisa }, model.UsuarioId.GetValueOrDefault());
-            entity.Usuario = model.UsuarioId is int referenceUsuario
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceUsuario) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
+
+            await service.ApplyMonederoRelationsAsync(entity, p_usuario_id: model.UsuarioId);
 
             await service.ModifierMonederoDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -113,6 +120,7 @@ public partial class MonederoController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -143,9 +151,11 @@ public partial class MonederoController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new MonederoService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.MonederoService(unitOfWork);
+
         var entity = await service.ReadOIDMonederoDefaultAsync(id);
         if (entity is null) return NotFound();
+
 
 
         await LoadFormOptionsAsync(model, unitOfWork);
@@ -155,17 +165,22 @@ public partial class MonederoController : Controller
         if (model.UsuarioId is null) ModelState.AddModelError("UsuarioId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.Monedero.Edit");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.Monedero.Edit");
+
 
             await service.ModifyAsync(id, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.SaldoDisponibleValor, Divisa = model.SaldoDisponibleDivisa }, new global::ejemplo.Domain.ValueObjects.Moneda { Valor = model.SaldoPendienteValor, Divisa = model.SaldoPendienteDivisa });
-            entity.Usuario = model.UsuarioId is int referenceUsuario
-                ? await unitOfWork.UsuarioRepository.ReadAsync(referenceUsuario) ?? throw new InvalidOperationException("El registro seleccionado de Usuario ya no existe.") : null!;
+            entity = await service.ReadOIDMonederoDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyMonederoRelationsAsync(entity, p_usuario_id: model.UsuarioId);
 
             await service.ModifierMonederoDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -177,6 +192,7 @@ public partial class MonederoController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

@@ -79,7 +79,9 @@ public partial class ProbabilidadDropController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new ProbabilidadDropService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.ProbabilidadDropService(unitOfWork);
+
+
 
 
 
@@ -94,19 +96,22 @@ public partial class ProbabilidadDropController : Controller
         if (model.ActivoRecompensaId is null) ModelState.AddModelError("ActivoRecompensaId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.ProbabilidadDrop.Create");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.ProbabilidadDrop.Create");
+
 
             var entity = await service.NewAsync(model.PorcentajeDrop, model.CajaId.GetValueOrDefault(), model.ActivoRecompensaId.GetValueOrDefault());
-            entity.Caja = model.CajaId is int referenceCaja
-                ? await unitOfWork.CajaMisteriosaRepository.ReadAsync(referenceCaja) ?? throw new InvalidOperationException("El registro seleccionado de CajaMisteriosa ya no existe.") : null!;
-            entity.ActivoRecompensa = model.ActivoRecompensaId is int referenceActivoRecompensa
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoRecompensa) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
+
+            await service.ApplyProbabilidadDropRelationsAsync(entity, p_caja_id: model.CajaId, p_activoRecompensa_id: model.ActivoRecompensaId);
 
             await service.ModifierProbabilidadDropDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -118,6 +123,7 @@ public partial class ProbabilidadDropController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
@@ -148,9 +154,11 @@ public partial class ProbabilidadDropController : Controller
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
-        var service = new ProbabilidadDropService(unitOfWork);
+        var service = new global::ejemplo.Application.Services.ProbabilidadDropService(unitOfWork);
+
         var entity = await service.ReadOIDProbabilidadDropDefaultAsync(id);
         if (entity is null) return NotFound();
+
 
 
         await LoadFormOptionsAsync(model, unitOfWork);
@@ -164,19 +172,22 @@ public partial class ProbabilidadDropController : Controller
         if (model.ActivoRecompensaId is null) ModelState.AddModelError("ActivoRecompensaId", "Debes seleccionar una opción.");
 
 
+
+
         if (!ModelState.IsValid) return View(model);
 
-        await unitOfWork.BeginTransactionAsync("MVC.ProbabilidadDrop.Edit");
+
         try
         {
+            await unitOfWork.BeginTransactionAsync("MVC.ProbabilidadDrop.Edit");
+
 
             await service.ModifyAsync(id, model.PorcentajeDrop, model.ActivoRecompensaId.GetValueOrDefault());
-            entity.Caja = model.CajaId is int referenceCaja
-                ? await unitOfWork.CajaMisteriosaRepository.ReadAsync(referenceCaja) ?? throw new InvalidOperationException("El registro seleccionado de CajaMisteriosa ya no existe.") : null!;
-            entity.ActivoRecompensa = model.ActivoRecompensaId is int referenceActivoRecompensa
-                ? await unitOfWork.ActivoDigitalRepository.ReadAsync(referenceActivoRecompensa) ?? throw new InvalidOperationException("El registro seleccionado de ActivoDigital ya no existe.") : null!;
+            entity = await service.ReadOIDProbabilidadDropDefaultAsync(id) ?? throw new InvalidOperationException("Entity disappeared during update.");
+            await service.ApplyProbabilidadDropRelationsAsync(entity, p_caja_id: model.CajaId, p_activoRecompensa_id: model.ActivoRecompensaId);
 
             await service.ModifierProbabilidadDropDefaultAsync(entity);
+
 
             await unitOfWork.CommitAsync();
         }
@@ -188,6 +199,7 @@ public partial class ProbabilidadDropController : Controller
             ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
             return View(model);
         }
+
 
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/

@@ -41,6 +41,13 @@ public sealed partial class RegistroAuditoriaService : ServiceEntity<RegistroAud
     public Task<RegistroAuditoria> ModifierRegistroAuditoriaDefaultAsync(RegistroAuditoria entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyRegistroAuditoriaRelationsAsync(RegistroAuditoria entity, int? p_administrador_id)
+    {
+        if (p_administrador_id is null) throw new ModelException("RegistroAuditoria.Administrador is required.");
+        entity.Administrador = p_administrador_id is int selectedAdministrador
+            ? await _unitOfWork.AdministradorRepository.ReadAsync(selectedAdministrador) ?? throw new ModelException("Administrador not found for RegistroAuditoria.Administrador.") : null!;
+    }
+
     public async Task<RegistroAuditoria> NewAsync(string p_accion, DateTime p_fecha, int p_administrador_oid)
     {
         Administrador administradorEntity = await _unitOfWork.AdministradorRepository.ReadAsync(p_administrador_oid)

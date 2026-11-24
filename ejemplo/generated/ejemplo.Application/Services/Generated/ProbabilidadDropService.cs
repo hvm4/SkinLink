@@ -41,6 +41,16 @@ public sealed partial class ProbabilidadDropService : ServiceEntity<Probabilidad
     public Task<ProbabilidadDrop> ModifierProbabilidadDropDefaultAsync(ProbabilidadDrop entity) =>
         ModifierDefaultAsync(entity);
 
+    public async Task ApplyProbabilidadDropRelationsAsync(ProbabilidadDrop entity, int? p_caja_id, int? p_activoRecompensa_id)
+    {
+        if (p_caja_id is null) throw new ModelException("ProbabilidadDrop.Caja is required.");
+        entity.Caja = p_caja_id is int selectedCaja
+            ? await _unitOfWork.CajaMisteriosaRepository.ReadAsync(selectedCaja) ?? throw new ModelException("CajaMisteriosa not found for ProbabilidadDrop.Caja.") : null!;
+        if (p_activoRecompensa_id is null) throw new ModelException("ProbabilidadDrop.ActivoRecompensa is required.");
+        entity.ActivoRecompensa = p_activoRecompensa_id is int selectedActivoRecompensa
+            ? await _unitOfWork.ActivoDigitalRepository.ReadAsync(selectedActivoRecompensa) ?? throw new ModelException("ActivoDigital not found for ProbabilidadDrop.ActivoRecompensa.") : null!;
+    }
+
     public async Task<ProbabilidadDrop> NewAsync(double p_porcentajeDrop, int p_caja_oid, int p_activoRecompensa_oid)
     {
         CajaMisteriosa cajaEntity = await _unitOfWork.CajaMisteriosaRepository.ReadAsync(p_caja_oid)

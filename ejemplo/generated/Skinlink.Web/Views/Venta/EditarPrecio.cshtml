@@ -1,0 +1,68 @@
+@model Skinlink.Web.ViewModels.OperacionVentaViewModel
+@{
+    ViewData["Title"] = "Editar precio";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Editar precio</h1>
+        <p class="text-body-secondary mb-0">Cambia el precio de una venta disponible. No se puede editar una venta completada o cancelada.</p>
+    </div>
+    <form asp-action="EditarPrecio" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card-body p-4">
+            <partial name="_AlertasOperacion" />
+
+            @if (!Model.Ventas.Any())
+            {
+                <div class="alert alert-info mb-0">No hay ventas disponibles cuyo precio puedas editar.</div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label for="p_oid" class="form-label">Venta</label>
+                    <select id="p_oid" name="p_oid" class="form-select" required>
+                        <option value="">Selecciona...</option>
+                        @foreach (var v in Model.Ventas)
+                        {
+                            <option value="@v.VentaId" data-activo="@v.ActivoId" data-precio="@v.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-divisa="@v.Divisa" selected="@(Model.VentaId == v.VentaId)">@v.Texto</option>
+                        }
+                    </select>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label for="p_nuevoPrecio_Valor" class="form-label">Nuevo precio</label>
+                        <input id="p_nuevoPrecio_Valor" name="p_nuevoPrecio.Valor" type="text" inputmode="decimal" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" required />
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="p_nuevoPrecio_Divisa" class="form-label">Divisa</label>
+                        <input id="p_nuevoPrecio_Divisa" name="p_nuevoPrecio.Divisa" class="form-control" value="EUR" required />
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.Ventas.Any())
+        {
+            <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                <button type="submit" class="btn btn-primary">Guardar precio</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+            </div>
+        }
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/haria-numbers.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            var select = document.getElementById('p_oid');
+            var divisa = document.getElementById('p_nuevoPrecio_Divisa');
+            if (!select || !divisa) return;
+            select.addEventListener('change', function () {
+                var option = select.options[select.selectedIndex];
+                if (option && option.dataset.divisa) divisa.value = option.dataset.divisa;
+            });
+        })();
+    </script>
+}

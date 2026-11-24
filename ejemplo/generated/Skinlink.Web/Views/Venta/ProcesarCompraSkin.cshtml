@@ -1,0 +1,59 @@
+@model Skinlink.Web.ViewModels.OperacionVentaViewModel
+@{
+    ViewData["Title"] = "Comprar skin";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Comprar skin</h1>
+        <p class="text-body-secondary mb-0">Compra una skin publicada. El importe se descuenta de tu monedero y se abona al vendedor.</p>
+    </div>
+    <form asp-action="ProcesarCompraSkin" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card-body p-4">
+            <partial name="_AlertasOperacion" />
+
+            @if (!Model.Ventas.Any())
+            {
+                <div class="alert alert-info mb-0">No hay skins disponibles para comprar ahora mismo.</div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label for="p_oid" class="form-label">Venta</label>
+                    <select id="p_oid" name="p_oid" class="form-select" required>
+                        <option value="">Selecciona...</option>
+                        @foreach (var v in Model.Ventas)
+                        {
+                            <option value="@v.VentaId" data-activo="@v.ActivoId" data-precio="@v.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-divisa="@v.Divisa" selected="@(Model.VentaId == v.VentaId)">@v.Texto</option>
+                        }
+                    </select>
+                </div>
+                @if (Model.EsAdministrador)
+                {
+                    <div class="mb-3">
+                        <label for="p_comprador_oid" class="form-label">Comprador</label>
+                        <select id="p_comprador_oid" name="p_comprador_oid" asp-items="Model.Compradores" class="form-select" required>
+                            <option value="">Selecciona...</option>
+                        </select>
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Comprador</label>
+                        <input type="text" class="form-control" value="@Model.CompradorNombre" readonly />
+                        <input type="hidden" name="p_comprador_oid" value="@Model.CompradorId" />
+                    </div>
+                }
+            }
+        </div>
+        @if (Model.Ventas.Any())
+        {
+            <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                <button type="submit" class="btn btn-success">Comprar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+            </div>
+        }
+    </form>
+</div>

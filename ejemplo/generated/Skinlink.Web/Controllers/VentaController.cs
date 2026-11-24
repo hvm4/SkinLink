@@ -267,10 +267,28 @@ public partial class VentaController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarVentasPorEstado(EstadoVenta p_estado)
     {
-    /*PROTECTED REGION ID(VentaController_FiltrarVentasPorEstado_GET_body) START*/
+    /*PROTECTED REGION ID(VentaController_FiltrarVentasPorEstado_GET_body) ENABLED START*/
 
-        var result = await _ventaService.FiltrarVentasPorEstadoAsync(p_estado);
-        return Ok(result.Select(VentaAssembler.ToViewModel).ToList());
+        // ReadFilter filtrarVentasPorEstado (filterLinQ: entity => entity.EstadoVenta == p_estado).
+        var model = new Skinlink.Web.ViewModels.VentaFiltroEstadoViewModel { Estado = p_estado };
+
+        // Sin parámetros en la URL: solo se muestra el formulario.
+        if (!Request.Query.ContainsKey("p_estado"))
+            return View(model);
+
+        await using var unitOfWork = _formUnitOfWorkFactory.Create();
+        // Se cargan los conjuntos relacionados en el mismo contexto para que EF enlace Venta.Vendedor/Comprador/ActivoDigital.
+        await unitOfWork.UsuarioRepository.ReadAllAsync();
+        await unitOfWork.ActivoDigitalRepository.ReadAllAsync();
+        var service = new VentaService(unitOfWork);
+        var result = await service.FiltrarVentasPorEstadoAsync(p_estado);
+
+        model.Buscado = true;
+        model.Resultados = result
+            .OrderByDescending(v => v.FechaPublicacion)
+            .Select(VentaAssembler.ToViewModel)
+            .ToList();
+        return View(model);
     /*PROTECTED REGION END*/
     }
 
@@ -279,10 +297,41 @@ public partial class VentaController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarVentasPorPrecioMaximo(double p_precioMaximo)
     {
-    /*PROTECTED REGION ID(VentaController_FiltrarVentasPorPrecioMaximo_GET_body) START*/
+    /*PROTECTED REGION ID(VentaController_FiltrarVentasPorPrecioMaximo_GET_body) ENABLED START*/
 
-        var result = await _ventaService.FiltrarVentasPorPrecioMaximoAsync(p_precioMaximo);
-        return Ok(result.Select(VentaAssembler.ToViewModel).ToList());
+        // ReadFilter filtrarVentasPorPrecioMaximo (filterLinQ: entity => entity.PrecioVenta.Valor <= p_precioMaximo).
+        var model = new Skinlink.Web.ViewModels.VentaFiltroPrecioViewModel();
+
+        // Sin parámetros en la URL: solo se muestra el formulario.
+        if (!Request.Query.ContainsKey("p_precioMaximo"))
+            return View(model);
+
+        // Se lee el texto a mano para admitir coma o punto decimal (cultura es-ES).
+        var texto = (Request.Query["p_precioMaximo"].ToString() ?? string.Empty).Trim();
+        model.PrecioMaximo = texto;
+        if (!double.TryParse(texto.Replace(',', '.'),
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out var precioMaximo)
+            || double.IsNaN(precioMaximo) || double.IsInfinity(precioMaximo) || precioMaximo < 0)
+        {
+            ModelState.AddModelError(string.Empty, "Indica un precio máximo válido (número igual o mayor que 0).");
+            return View(model);
+        }
+
+        await using var unitOfWork = _formUnitOfWorkFactory.Create();
+        // Se cargan los conjuntos relacionados en el mismo contexto para que EF enlace Venta.Vendedor/Comprador/ActivoDigital.
+        await unitOfWork.UsuarioRepository.ReadAllAsync();
+        await unitOfWork.ActivoDigitalRepository.ReadAllAsync();
+        var service = new VentaService(unitOfWork);
+        var result = await service.FiltrarVentasPorPrecioMaximoAsync(precioMaximo);
+
+        model.Buscado = true;
+        model.Resultados = result
+            .OrderBy(v => v.PrecioVenta.Valor)
+            .Select(VentaAssembler.ToViewModel)
+            .ToList();
+        return View(model);
     /*PROTECTED REGION END*/
     }
 

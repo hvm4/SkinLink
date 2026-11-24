@@ -1,0 +1,66 @@
+@model Skinlink.Web.ViewModels.OperacionMonederoViewModel
+@{
+    ViewData["Title"] = "Depositar fondos";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Depositar fondos</h1>
+        <p class="text-body-secondary mb-0">Añade saldo a un monedero. Cada depósito necesita una referencia de pago única y la confirmación del pago.</p>
+    </div>
+    <form asp-action="DepositarFondos" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card-body p-4">
+            <partial name="_AlertasOperacion" />
+
+            @if (!Model.Monederos.Any())
+            {
+                <div class="alert alert-warning mb-0">No hay ningún monedero disponible para operar.</div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label for="p_oid" class="form-label">Monedero</label>
+                    <select id="p_oid" name="p_oid" asp-items="Model.Monederos" class="form-select" required>
+                        @if (!Model.MonederoFijo)
+                        {
+                            <option value="">Selecciona...</option>
+                        }
+                    </select>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label for="p_monto_Valor" class="form-label">Importe</label>
+                        <input id="p_monto_Valor" name="p_monto.Valor" type="text" inputmode="decimal" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" required />
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="p_monto_Divisa" class="form-label">Divisa</label>
+                        <input id="p_monto_Divisa" name="p_monto.Divisa" class="form-control" value="@Model.Divisa" required />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="p_referenciaPago" class="form-label">Referencia de pago</label>
+                    <input id="p_referenciaPago" name="p_referenciaPago" class="form-control" maxlength="100" required />
+                    <div class="form-text">No se puede repetir una referencia ya utilizada.</div>
+                </div>
+                <div class="form-check mb-3">
+                    <input type="hidden" name="p_pagoConfirmado" value="false" />
+                    <input id="p_pagoConfirmado" name="p_pagoConfirmado" type="checkbox" value="true" class="form-check-input" />
+                    <label for="p_pagoConfirmado" class="form-check-label">El pago está confirmado</label>
+                </div>
+            }
+        </div>
+        @if (Model.Monederos.Any())
+        {
+            <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                <button type="submit" class="btn btn-primary">Depositar</button>
+                <a asp-controller="Monedero" asp-action="Index" class="btn btn-outline-secondary">Volver a monederos</a>
+            </div>
+        }
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/haria-numbers.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,28 @@
+@model Skinlink.Web.ViewModels.VentaFiltroPrecioViewModel
+@{
+    ViewData["Title"] = "Ventas por precio máximo";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Ventas por precio máximo</h1>
+        <p class="text-body-secondary mb-0">Se muestran las ventas cuyo precio es menor o igual al indicado.</p>
+    </div>
+    <div class="card-body p-4">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <form asp-action="FiltrarVentasPorPrecioMaximo" method="get" class="row g-3 align-items-end mb-4">
+            <div class="col-sm-6">
+                <label for="p_precioMaximo" class="form-label">Precio máximo</label>
+                <input id="p_precioMaximo" name="p_precioMaximo" type="text" inputmode="decimal" class="form-control"
+                       value="@Model.PrecioMaximo" placeholder="Ej.: 50,00" required />
+            </div>
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Ver todas</a>
+            </div>
+        </form>
+
+        @await Html.PartialAsync("_ResultadosVentas", Model.Resultados, new ViewDataDictionary(ViewData) { { "Buscado", Model.Buscado } })
+    </div>
+</div>

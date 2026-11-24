@@ -1,0 +1,42 @@
+@model Skinlink.Web.ViewModels.OperacionVentaViewModel
+@{
+    ViewData["Title"] = "Cancelar venta";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Cancelar venta</h1>
+        <p class="text-body-secondary mb-0">Cancela una venta disponible o en proceso. El activo vuelve a quedar fuera de venta.</p>
+    </div>
+    <form asp-action="CancelarVenta" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card-body p-4">
+            <partial name="_AlertasOperacion" />
+
+            @if (!Model.Ventas.Any())
+            {
+                <div class="alert alert-info mb-0">No hay ventas que puedas cancelar.</div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label for="p_oid" class="form-label">Venta</label>
+                    <select id="p_oid" name="p_oid" class="form-select" required>
+                        <option value="">Selecciona...</option>
+                        @foreach (var v in Model.Ventas)
+                        {
+                            <option value="@v.VentaId" data-activo="@v.ActivoId" data-precio="@v.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-divisa="@v.Divisa" selected="@(Model.VentaId == v.VentaId)">@v.Texto</option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+        @if (Model.Ventas.Any())
+        {
+            <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                <button type="submit" class="btn btn-danger">Cancelar venta</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+            </div>
+        }
+    </form>
+</div>

@@ -1,0 +1,28 @@
+@model Skinlink.Web.ViewModels.VentaFiltroEstadoViewModel
+@using ejemplo.Domain.Enums
+@{
+    ViewData["Title"] = "Ventas por estado";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Ventas por estado</h1>
+        <p class="text-body-secondary mb-0">Elige el estado de las ventas que quieres ver.</p>
+    </div>
+    <div class="card-body p-4">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <form asp-action="FiltrarVentasPorEstado" method="get" class="row g-3 align-items-end mb-4">
+            <div class="col-sm-6">
+                <label for="p_estado" class="form-label">Estado</label>
+                <select id="p_estado" name="p_estado" class="form-select" asp-for="Estado" asp-items="Html.GetEnumSelectList<EstadoVenta>()"></select>
+            </div>
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Ver todas</a>
+            </div>
+        </form>
+
+        @await Html.PartialAsync("_ResultadosVentas", Model.Resultados, new ViewDataDictionary(ViewData) { { "Buscado", Model.Buscado } })
+    </div>
+</div>

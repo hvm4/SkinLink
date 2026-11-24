@@ -1,0 +1,60 @@
+@model Skinlink.Web.ViewModels.OperacionMonederoViewModel
+@{
+    ViewData["Title"] = "Retirar saldo";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Retirar saldo</h1>
+        <p class="text-body-secondary mb-0">Retira saldo del monedero hacia un destino externo. No se puede retirar más del saldo disponible.</p>
+    </div>
+    <form asp-action="RetirarSaldoWallet" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card-body p-4">
+            <partial name="_AlertasOperacion" />
+
+            @if (!Model.Monederos.Any())
+            {
+                <div class="alert alert-warning mb-0">No hay ningún monedero disponible para operar.</div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label for="p_oid" class="form-label">Monedero</label>
+                    <select id="p_oid" name="p_oid" asp-items="Model.Monederos" class="form-select" required>
+                        @if (!Model.MonederoFijo)
+                        {
+                            <option value="">Selecciona...</option>
+                        }
+                    </select>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label for="p_monto_Valor" class="form-label">Importe</label>
+                        <input id="p_monto_Valor" name="p_monto.Valor" type="text" inputmode="decimal" data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator" class="form-control" required />
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="p_monto_Divisa" class="form-label">Divisa</label>
+                        <input id="p_monto_Divisa" name="p_monto.Divisa" class="form-control" value="@Model.Divisa" required />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="p_destino" class="form-label">Destino</label>
+                    <input id="p_destino" name="p_destino" class="form-control" maxlength="200" placeholder="Cuenta o monedero externo" required />
+                </div>
+            }
+        </div>
+        @if (Model.Monederos.Any())
+        {
+            <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                <button type="submit" class="btn btn-primary">Retirar</button>
+                <a asp-controller="Monedero" asp-action="Index" class="btn btn-outline-secondary">Volver a monederos</a>
+            </div>
+        }
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/haria-numbers.js" asp-append-version="true"></script>
+}

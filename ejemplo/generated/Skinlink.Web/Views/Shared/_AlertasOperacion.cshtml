@@ -1,0 +1,9 @@
+@* Fichero manual (no lo genera HARIA Web): mensajes de resultado de las operaciones (TempData). *@
+@if (TempData["Ok"] is string ok && !string.IsNullOrWhiteSpace(ok))
+{
+    <div class="alert alert-success" role="status">@ok</div>
+}
+@if (TempData["Error"] is string error && !string.IsNullOrWhiteSpace(error))
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}

@@ -256,10 +256,39 @@ public partial class TransaccionController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarTransaccionesPorTipo(int p_usuarioId, TipoTransaccion p_tipo)
     {
-    /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorTipo_GET_body) START*/
+    /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorTipo_GET_body) ENABLED START*/
 
-        var result = await _transaccionService.FiltrarTransaccionesPorTipoAsync(p_usuarioId, p_tipo);
-        return Ok(result.Select(TransaccionAssembler.ToViewModel).ToList());
+        // ReadFilter filtrarTransaccionesPorTipo
+        // (filterLinQ: (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && entity.Tipo == p_tipo).
+        // p_usuarioId NUNCA se toma de la URL: se calcula a partir del usuario autenticado.
+        var model = new TransaccionFiltroTipoViewModel { Tipo = p_tipo };
+
+        // Sin parámetros en la URL: solo se muestra el formulario.
+        if (!Request.Query.ContainsKey("p_tipo"))
+            return View(model);
+
+        // Administrador: 0 = movimientos de todos. Usuario normal: solo su propio monedero.
+        int usuarioFiltro = 0;
+        if (!User.EsAdministrador())
+        {
+            var usuarioId = User.GetUsuarioId();
+            if (usuarioId is null) return Challenge();
+            usuarioFiltro = usuarioId.Value;
+            model.SoloMisMovimientos = true;
+        }
+
+        await using var unitOfWork = _formUnitOfWorkFactory.Create();
+        // Se cargan los monederos en el mismo contexto para que EF enlace Transaccion.Monedero.
+        await unitOfWork.MonederoRepository.ReadAllAsync();
+        var service = new TransaccionService(unitOfWork);
+        var result = await service.FiltrarTransaccionesPorTipoAsync(usuarioFiltro, p_tipo);
+
+        model.Buscado = true;
+        model.Resultados = result
+            .OrderByDescending(x => x.Fecha)
+            .Select(TransaccionAssembler.ToViewModel)
+            .ToList();
+        return View(model);
     /*PROTECTED REGION END*/
     }
 

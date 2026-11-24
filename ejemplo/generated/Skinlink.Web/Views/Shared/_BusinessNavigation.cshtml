@@ -167,4 +167,40 @@
         }
     </div>
 </section>
+<section class="mt-5" aria-labelledby="operaciones-compraventa-title">
+    <h2 id="operaciones-compraventa-title" class="h4 mb-3">Monedero y compraventa</h2>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card h-100"><div class="card-body">
+                <h3 class="h6">Monedero</h3>
+                <ul class="list-unstyled mb-0">
+                    <li><a asp-controller="Monedero" asp-action="DepositarFondos">Depositar fondos</a></li>
+                    <li><a asp-controller="Monedero" asp-action="RetirarSaldoWallet">Retirar saldo</a></li>
+                </ul>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100"><div class="card-body">
+                <h3 class="h6">Ventas</h3>
+                <ul class="list-unstyled mb-0">
+                    <li><a asp-controller="Venta" asp-action="PublicarVenta">Publicar venta</a></li>
+                    <li><a asp-controller="Venta" asp-action="EditarPrecio">Editar precio</a></li>
+                    <li><a asp-controller="Venta" asp-action="ProcesarCompraSkin">Comprar skin</a></li>
+                    <li><a asp-controller="Venta" asp-action="CancelarVenta">Cancelar venta</a></li>
+                </ul>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100"><div class="card-body">
+                <h3 class="h6">Filtros</h3>
+                <ul class="list-unstyled mb-0">
+                    <li><a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorTipo">Transacciones por tipo</a></li>
+                    <li><a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas">Transacciones por fechas</a></li>
+                    <li><a asp-controller="Venta" asp-action="FiltrarVentasPorEstado">Ventas por estado</a></li>
+                    <li><a asp-controller="Venta" asp-action="FiltrarVentasPorPrecioMaximo">Ventas por precio máximo</a></li>
+                </ul>
+            </div></div>
+        </div>
+    </div>
+</section>
 @* PROTECTED REGION END *@

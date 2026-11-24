@@ -1,0 +1,68 @@
+@model Skinlink.Web.ViewModels.TransaccionFiltroTipoViewModel
+@using ejemplo.Domain.Enums
+@using Skinlink.Web.ViewModels
+@{
+    ViewData["Title"] = "Transacciones por tipo";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Transacciones por tipo</h1>
+        <p class="text-body-secondary mb-0">
+            @(Model.Buscado && Model.SoloMisMovimientos
+                ? "Se muestran solo los movimientos de tu monedero."
+                : "Elige un tipo de transacción.")
+        </p>
+    </div>
+    <div class="card-body p-4">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <form asp-action="FiltrarTransaccionesPorTipo" method="get" class="row g-3 align-items-end mb-4">
+            <div class="col-sm-6">
+                <label for="p_tipo" class="form-label">Tipo</label>
+                <select id="p_tipo" name="p_tipo" class="form-select" asp-items="Html.GetEnumSelectList<TipoTransaccion>()"></select>
+            </div>
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Ver todas</a>
+            </div>
+        </form>
+
+        @if (Model.Buscado)
+        {
+            @if (!Model.Resultados.Any())
+            {
+                <div class="alert alert-info mb-0">No hay transacciones de tipo @Model.Tipo.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Concepto</th>
+                                <th>Monedero</th>
+                                <th class="text-end">Importe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var t in Model.Resultados)
+                            {
+                                <tr>
+                                    <td>@t.Fecha.ToString("d")</td>
+                                    <td>@t.Concepto</td>
+                                    <td>@t.MonederoLabel</td>
+                                    <td class="text-end">@t.MontoValor.ToString("N2") @t.MontoDivisa</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr><th colspan="3" class="text-end">Total (@Model.Resultados.Count)</th><th class="text-end">@Model.Total.ToString("N2") @Model.Divisa</th></tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+        }
+    </div>
+</div>

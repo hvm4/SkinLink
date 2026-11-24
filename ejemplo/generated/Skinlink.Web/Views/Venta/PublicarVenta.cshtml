@@ -1,0 +1,59 @@
+@model Skinlink.Web.ViewModels.OperacionVentaViewModel
+@{
+    ViewData["Title"] = "Publicar venta";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Publicar venta</h1>
+        <p class="text-body-secondary mb-0">Pon a la venta un activo de tu inventario. El activo debe ser tuyo y no estar en un intercambio pendiente.</p>
+    </div>
+    <form asp-action="PublicarVenta" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card-body p-4">
+            <partial name="_AlertasOperacion" />
+
+            @if (!Model.Ventas.Any())
+            {
+                <div class="alert alert-info mb-0">No tienes ventas pendientes de publicar. Crea una venta desde el listado de ventas.</div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label for="p_oid" class="form-label">Venta</label>
+                    <select id="p_oid" name="p_oid" class="form-select" required>
+                        <option value="">Selecciona...</option>
+                        @foreach (var v in Model.Ventas)
+                        {
+                            <option value="@v.VentaId" data-activo="@v.ActivoId" data-precio="@v.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-divisa="@v.Divisa" selected="@(Model.VentaId == v.VentaId)">@v.Texto</option>
+                        }
+                    </select>
+                </div>
+                <input type="hidden" id="p_activoDigital_oid" name="p_activoDigital_oid" value="" />
+            }
+        </div>
+        @if (Model.Ventas.Any())
+        {
+            <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+                <button type="submit" class="btn btn-primary">Publicar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+            </div>
+        }
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var select = document.getElementById('p_oid');
+            var hidden = document.getElementById('p_activoDigital_oid');
+            if (!select || !hidden) return;
+            function sync() {
+                var option = select.options[select.selectedIndex];
+                hidden.value = option && option.dataset.activo ? option.dataset.activo : '';
+            }
+            select.addEventListener('change', sync);
+            sync();
+        })();
+    </script>
+}

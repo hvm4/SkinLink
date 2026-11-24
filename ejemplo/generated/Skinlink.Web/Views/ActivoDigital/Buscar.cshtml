@@ -1,0 +1,122 @@
+@* Fichero manual (no lo genera HARIA Web): filtros de ActivoDigital (CU-10, RF-11).
+   filtrarActivosPorRareza, filtrarActivosPorColeccion, filtrarActivosPorCondicion y filtrarActivosEnVenta. *@
+@model ActivoBusquedaViewModel
+@{
+    ViewData["Title"] = "Buscar activos";
+}
+
+<h1 class="h3 mb-3">Buscar activos</h1>
+<partial name="_MensajesOperacion" />
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <form asp-action="FiltrarActivosPorRareza" method="get" class="card card-body h-100">
+            <label for="p_rareza" class="form-label">Rareza</label>
+            <select id="p_rareza" name="p_rareza" class="form-select mb-2"
+                    asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.Rareza>()">
+            </select>
+            <button type="submit" class="btn btn-primary">Filtrar por rareza</button>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <form asp-action="FiltrarActivosPorColeccion" method="get" class="card card-body h-100">
+            <label for="p_coleccion" class="form-label">Colección</label>
+            <input id="p_coleccion" name="p_coleccion" value="@Model.Coleccion" class="form-control mb-2" placeholder="p. ej. Phoenix" />
+            <span asp-validation-for="Coleccion" class="text-danger"></span>
+            <button type="submit" class="btn btn-primary">Filtrar por colección</button>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <form asp-action="FiltrarActivosPorCondicion" method="get" class="card card-body h-100">
+            <label for="p_condicion" class="form-label">Condición</label>
+            <select id="p_condicion" name="p_condicion" class="form-select mb-2"
+                    asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.Condicion>()">
+            </select>
+            <button type="submit" class="btn btn-primary">Filtrar por condición</button>
+        </form>
+    </div>
+</div>
+
+@if (Model.Autenticado)
+{
+    <form asp-action="FiltrarActivosEnVenta" method="get" class="card card-body mb-4">
+        <div class="row g-2 align-items-end">
+            @if (Model.EsAdministrador)
+            {
+                <div class="col-sm-3">
+                    <label for="p_usuarioId" class="form-label">Usuario (Id)</label>
+                    <input id="p_usuarioId" name="p_usuarioId" type="number" min="1" value="@Model.UsuarioId" class="form-control" />
+                </div>
+            }
+            else
+            {
+                <input type="hidden" name="p_usuarioId" value="0" />
+                <div class="col-sm-3"><span class="form-label d-block">Mi inventario</span></div>
+            }
+            <div class="col-sm-3">
+                <label for="p_enVenta" class="form-label">Mostrar</label>
+                <select id="p_enVenta" name="p_enVenta" class="form-select">
+                    <option value="true" selected="@(Model.EnVenta)">En venta</option>
+                    <option value="false" selected="@(!Model.EnVenta)">Guardados (no en venta)</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" class="btn btn-primary">Filtrar activos en venta</button>
+            </div>
+        </div>
+    </form>
+}
+
+@if (Model.FiltroAplicado is not null)
+{
+    <h2 class="h5">@Model.FiltroAplicado <span class="text-body-secondary">(@Model.Resultados.Count resultados)</span></h2>
+    @if (Model.Resultados.Count == 0)
+    {
+        <p class="text-body-secondary">No hay activos que cumplan el filtro.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Colección</th>
+                        <th>Rareza</th>
+                        <th>Condición</th>
+                        <th>Precio estimado</th>
+                        <th>En venta</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var activo in Model.Resultados)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(activo.Imagen))
+                            {
+                                <img src="@Url.Content("~/" + activo.Imagen.TrimStart('/'))" alt="@activo.Nombre" class="img-thumbnail" style="width: 72px; height: 54px; object-fit: cover;" loading="lazy" />
+                            }
+                        </td>
+                        <td>@activo.Nombre</td>
+                        <td>@activo.Coleccion</td>
+                        <td>@activo.AtributosRareza</td>
+                        <td>@activo.AtributosCondicion</td>
+                        <td>@activo.PrecioEstimadoValor.ToString("0.00") @activo.PrecioEstimadoDivisa</td>
+                        <td>@(activo.EnVenta ? "Sí" : "No")</td>
+                        <td class="text-end text-nowrap">
+                            @if (Model.Autenticado)
+                            {
+                                <a asp-action="Details" asp-route-id="@activo.Id" class="btn btn-sm btn-outline-primary">Detalles</a>
+                                <a asp-action="Operaciones" asp-route-id="@activo.Id" class="btn btn-sm btn-outline-secondary">Operaciones</a>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+}

@@ -1,0 +1,57 @@
+@* Fichero manual (no lo genera HARIA Web): operación actualizarDescuentoArticulo (solo administradores). *@
+@model ArticuloDescuentoViewModel
+@{
+    ViewData["Title"] = "Descuento de artículo";
+}
+
+<h1 class="h3 mb-3">Descuento temporal de un artículo</h1>
+<partial name="_MensajesOperacion" />
+
+@if (Model.Articulos.Count == 0)
+{
+    <p class="text-body-secondary">No hay artículos en el catálogo.</p>
+}
+else
+{
+    <form asp-action="ActualizarDescuentoArticulo" method="post" class="card card-body mb-4" style="max-width: 40rem;">
+        <div class="mb-3">
+            <label for="p_oid" class="form-label">Artículo</label>
+            <select id="p_oid" name="p_oid" class="form-select">
+                @foreach (var art in Model.Articulos)
+                {
+                    <option value="@art.Id" selected="@(art.Id == Model.ArticuloId)">@art.Nombre (@art.Coleccion) · @art.PrecioReferenciaValor.ToString("0.00") @art.PrecioReferenciaDivisa</option>
+                }
+            </select>
+        </div>
+        <div class="row g-2 mb-3">
+            <div class="col-sm-6">
+                <label for="p_porcentaje" class="form-label">Descuento (%)</label>
+                <input id="p_porcentaje" name="p_porcentaje" type="text" inputmode="decimal"
+                       value="@Model.Porcentaje.ToString(System.Globalization.CultureInfo.CurrentCulture)"
+                       data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator"
+                       class="form-control" required />
+            </div>
+            <div class="col-sm-6">
+                <label for="p_fechaFin" class="form-label">Válido hasta</label>
+                <input id="p_fechaFin" name="p_fechaFin" type="date" value="@Model.FechaFin.ToString("yyyy-MM-dd")" class="form-control" required />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Aplicar descuento</button>
+    </form>
+
+    <h2 class="h5">Descuentos actuales</h2>
+    <table class="table table-sm">
+        <thead class="table-light"><tr><th>Artículo</th><th>Precio</th><th>Descuento</th><th>Hasta</th></tr></thead>
+        <tbody>
+        @foreach (var art in Model.Articulos)
+        {
+            <tr>
+                <td>@art.Nombre</td>
+                <td>@art.PrecioReferenciaValor.ToString("0.00") @art.PrecioReferenciaDivisa</td>
+                <td>@(art.PorcentajeDescuento is double d && d > 0 ? d.ToString("0.##") + " %" : "—")</td>
+                <td>@(art.FechaFinDescuento?.ToString("dd/MM/yyyy") ?? "—")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

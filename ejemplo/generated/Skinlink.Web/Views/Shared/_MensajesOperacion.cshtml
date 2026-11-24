@@ -1,0 +1,12 @@
+@* Fichero manual (no lo genera HARIA Web): mensajes de resultado de las operaciones.
+   Uso en cualquier vista: <partial name="_MensajesOperacion" />
+   En el controlador: TempData["Exito"] = "..."; o TempData["Error"] = "..."; *@
+@if (TempData["Exito"] is string exito && !string.IsNullOrWhiteSpace(exito))
+{
+    <div class="alert alert-success" role="status">@exito</div>
+}
+@if (TempData["Error"] is string error && !string.IsNullOrWhiteSpace(error))
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>

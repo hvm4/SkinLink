@@ -297,38 +297,52 @@ public partial class ActivoDigitalController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorRareza_GET_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorRareza_GET_attributes) ENABLED START*/
+    [AllowAnonymous] // catálogo público (CU-10)
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarActivosPorRareza(Rareza p_rareza)
     {
-    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorRareza_GET_body) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorRareza_GET_body) ENABLED START*/
 
+        var model = NuevaBusqueda();
+        model.Rareza = p_rareza;
         var result = await _activoDigitalService.FiltrarActivosPorRarezaAsync(p_rareza);
-        return Ok(result.Select(ActivoDigitalAssembler.ToViewModel).ToList());
+        return MostrarBusqueda(model, $"Rareza: {p_rareza}", result);
     /*PROTECTED REGION END*/
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorColeccion_GET_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorColeccion_GET_attributes) ENABLED START*/
+    [AllowAnonymous] // catálogo público (CU-10)
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarActivosPorColeccion(string p_coleccion)
     {
-    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorColeccion_GET_body) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorColeccion_GET_body) ENABLED START*/
 
-        var result = await _activoDigitalService.FiltrarActivosPorColeccionAsync(p_coleccion);
-        return Ok(result.Select(ActivoDigitalAssembler.ToViewModel).ToList());
+        var model = NuevaBusqueda();
+        model.Coleccion = p_coleccion?.Trim();
+        if (string.IsNullOrWhiteSpace(model.Coleccion))
+        {
+            ModelState.AddModelError(nameof(model.Coleccion), "Indica el nombre de la colección.");
+            return View("Buscar", model);
+        }
+        var result = await _activoDigitalService.FiltrarActivosPorColeccionAsync(model.Coleccion);
+        return MostrarBusqueda(model, $"Colección: {model.Coleccion}", result);
     /*PROTECTED REGION END*/
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorCondicion_GET_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorCondicion_GET_attributes) ENABLED START*/
+    [AllowAnonymous] // catálogo público (CU-10)
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarActivosPorCondicion(Condicion p_condicion)
     {
-    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorCondicion_GET_body) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorCondicion_GET_body) ENABLED START*/
 
+        var model = NuevaBusqueda();
+        model.Condicion = p_condicion;
         var result = await _activoDigitalService.FiltrarActivosPorCondicionAsync(p_condicion);
-        return Ok(result.Select(ActivoDigitalAssembler.ToViewModel).ToList());
+        return MostrarBusqueda(model, $"Condición: {p_condicion}", result);
     /*PROTECTED REGION END*/
     }
 
@@ -337,10 +351,16 @@ public partial class ActivoDigitalController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarActivosEnVenta(int p_usuarioId, bool p_enVenta)
     {
-    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosEnVenta_GET_body) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosEnVenta_GET_body) ENABLED START*/
 
-        var result = await _activoDigitalService.FiltrarActivosEnVentaAsync(p_usuarioId, p_enVenta);
-        return Ok(result.Select(ActivoDigitalAssembler.ToViewModel).ToList());
+        // Un usuario normal solo puede consultar su propio inventario; el administrador, el de cualquiera.
+        var model = NuevaBusqueda();
+        var usuarioId = EsAdministrador() && p_usuarioId > 0 ? p_usuarioId : UsuarioActualId();
+        if (usuarioId is null) return Challenge();
+        model.UsuarioId = usuarioId;
+        model.EnVenta = p_enVenta;
+        var result = await _activoDigitalService.FiltrarActivosEnVentaAsync(usuarioId.Value, p_enVenta);
+        return MostrarBusqueda(model, $"Activos {(p_enVenta ? "en venta" : "guardados")} del usuario #{usuarioId}", result);
     /*PROTECTED REGION END*/
     }
 

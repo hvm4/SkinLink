@@ -155,4 +155,16 @@
 
 @* PROTECTED REGION ID(HariaBusinessNavigation_manual) ENABLED START *@
 @* Añade aquí tus enlaces y condiciones de visibilidad. El menú no autoriza el acceso. *@
+@* --- Jorge: activos, catálogo y cajas --- *@
+<section class="mt-4" aria-labelledby="enlaces-jorge">
+    <h2 id="enlaces-jorge" class="h5">Mercado y cajas</h2>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-primary" asp-controller="ActivoDigital" asp-action="Buscar">Buscar activos</a>
+        <a class="btn btn-outline-primary" asp-controller="CajaMisteriosa" asp-action="Buscar">Cajas misteriosas</a>
+        @if (User.IsInRole(Skinlink.Web.Utils.Security.Roles.Administrador))
+        {
+            <a class="btn btn-outline-secondary" asp-controller="ArticuloCatalogo" asp-action="Descuento">Descuentos del catálogo</a>
+        }
+    </div>
+</section>
 @* PROTECTED REGION END *@

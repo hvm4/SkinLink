@@ -28,9 +28,17 @@ public partial class CajaMisteriosaController
     {
     /*PROTECTED REGION ID(CajaMisteriosaController_SimularApertura_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _cajaMisteriosaService.SimularAperturaAsync(p_oid);
-        return Ok(result);
+        // Modo prueba (RF-22): no cobra ni guarda nada; se muestra el resultado en la misma página.
+        try
+        {
+            var result = await _cajaMisteriosaService.SimularAperturaAsync(p_oid);
+            return await MostrarAperturaAsync(p_oid, result, esSimulacion: true);
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = MensajesOperacion.De(ex);
+            return RedirectToAction(nameof(Abrir), new { id = p_oid });
+        }
     /*PROTECTED REGION END*/
     }
 
@@ -42,11 +50,22 @@ public partial class CajaMisteriosaController
     {
     /*PROTECTED REGION ID(CajaMisteriosaController_AbrirCajaSorpresa_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
-        var useCase = new ejemplo.Application.UseCases.CajaMisteriosa.CajaMisteriosaUseCase(unitOfWork);
-        var result = await useCase.AbrirCajaSorpresaAsync(p_oid, p_usuario_oid);
-        return Ok(result);
+        // La caja se abre SIEMPRE para el usuario autenticado; p_usuario_oid del formulario se ignora.
+        var usuarioId = UsuarioActualId();
+        if (usuarioId is null) return Challenge();
+        try
+        {
+            await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
+            var useCase = new ejemplo.Application.UseCases.CajaMisteriosa.CajaMisteriosaUseCase(unitOfWork);
+            var result = await useCase.AbrirCajaSorpresaAsync(p_oid, usuarioId.Value);
+            TempData["Exito"] = $"¡Has obtenido {result.Nombre} ({result.Atributos?.Rareza})! Ya está en tu inventario.";
+            TempData["CajaActivoObtenidoId"] = result.Id;
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = MensajesOperacion.De(ex);
+        }
+        return RedirectToAction(nameof(Abrir), new { id = p_oid });
     /*PROTECTED REGION END*/
     }
 }

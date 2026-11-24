@@ -22,15 +22,23 @@ public partial class ArticuloCatalogoController
 {
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ArticuloCatalogoController_ActualizarDescuentoArticulo_POST_attributes) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_ActualizarDescuentoArticulo_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> ActualizarDescuentoArticulo(int p_oid, double p_porcentaje, DateTime p_fechaFin)
     {
     /*PROTECTED REGION ID(ArticuloCatalogoController_ActualizarDescuentoArticulo_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _articuloCatalogoService.ActualizarDescuentoArticuloAsync(p_oid, p_porcentaje, p_fechaFin);
-        return NoContent();
+        try
+        {
+            await _articuloCatalogoService.ActualizarDescuentoArticuloAsync(p_oid, p_porcentaje, p_fechaFin);
+            TempData["Exito"] = $"Descuento del {p_porcentaje:0.##} % aplicado hasta el {p_fechaFin:dd/MM/yyyy}.";
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = MensajesOperacion.De(ex);
+        }
+        return RedirectToAction(nameof(Descuento), new { id = p_oid });
     /*PROTECTED REGION END*/
     }
 }

@@ -76,7 +76,7 @@ public partial class CajaMisteriosaController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.CajaMisteriosaViewModel model)
     {
-    /*PROTECTED REGION ID(CajaMisteriosaController_Create_POST_body) START*/
+    /*PROTECTED REGION ID(CajaMisteriosaController_Create_POST_body) ENABLED START*/
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
@@ -105,6 +105,8 @@ public partial class CajaMisteriosaController : Controller
         }
 
 
+        // Regla de negocio (CU-19): las probabilidades de la caja deben sumar exactamente 100 %.
+        ValidarSumaProbabilidades(model);
         if (!ModelState.IsValid) return View(model);
 
 
@@ -158,7 +160,7 @@ public partial class CajaMisteriosaController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.CajaMisteriosaViewModel model)
     {
-    /*PROTECTED REGION ID(CajaMisteriosaController_Edit_POST_body) START*/
+    /*PROTECTED REGION ID(CajaMisteriosaController_Edit_POST_body) ENABLED START*/
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
@@ -189,6 +191,8 @@ public partial class CajaMisteriosaController : Controller
         }
 
 
+        // Regla de negocio (CU-19): las probabilidades de la caja deben sumar exactamente 100 %.
+        ValidarSumaProbabilidades(model);
         if (!ModelState.IsValid) return View(model);
 
 
@@ -250,26 +254,37 @@ public partial class CajaMisteriosaController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasActivas_GET_attributes) START*/
+    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasActivas_GET_attributes) ENABLED START*/
+    [AllowAnonymous] // listado público de cajas
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarCajasActivas()
     {
-    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasActivas_GET_body) START*/
+    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasActivas_GET_body) ENABLED START*/
 
         var result = await _cajaMisteriosaService.FiltrarCajasActivasAsync();
-        return Ok(result.Select(CajaMisteriosaAssembler.ToViewModel).ToList());
+        return MostrarBusquedaCajas(new Skinlink.Web.ViewModels.CajaBusquedaViewModel(), "Cajas activas", result);
     /*PROTECTED REGION END*/
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasPorPrecioApertura_GET_attributes) START*/
+    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasPorPrecioApertura_GET_attributes) ENABLED START*/
+    [AllowAnonymous] // listado público de cajas
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarCajasPorPrecioApertura(double p_precioMinimo, double p_precioMaximo)
     {
-    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasPorPrecioApertura_GET_body) START*/
+    /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasPorPrecioApertura_GET_body) ENABLED START*/
 
-        var result = await _cajaMisteriosaService.FiltrarCajasPorPrecioAperturaAsync(p_precioMinimo, p_precioMaximo);
-        return Ok(result.Select(CajaMisteriosaAssembler.ToViewModel).ToList());
+        // Se releen los valores de la URL para aceptar también la coma decimal (es-ES).
+        var minimo = LeerDecimalDeQuery("p_precioMinimo") ?? p_precioMinimo;
+        var maximo = LeerDecimalDeQuery("p_precioMaximo") ?? p_precioMaximo;
+        var model = new Skinlink.Web.ViewModels.CajaBusquedaViewModel { PrecioMinimo = minimo, PrecioMaximo = maximo };
+        if (minimo < 0 || maximo < minimo)
+        {
+            ModelState.AddModelError(string.Empty, "El rango de precios no es válido: el mínimo debe ser 0 o más y no superar al máximo.");
+            return View("Buscar", model);
+        }
+        var result = await _cajaMisteriosaService.FiltrarCajasPorPrecioAperturaAsync(minimo, maximo);
+        return MostrarBusquedaCajas(model, $"Precio de apertura entre {minimo:0.##} y {maximo:0.##}", result);
     /*PROTECTED REGION END*/
     }
 

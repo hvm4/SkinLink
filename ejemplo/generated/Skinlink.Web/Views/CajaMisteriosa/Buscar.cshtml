@@ -1,0 +1,76 @@
+@* Fichero manual (no lo genera HARIA Web): filtros de CajaMisteriosa.
+   filtrarCajasActivas y filtrarCajasPorPrecioApertura. *@
+@model CajaBusquedaViewModel
+@{
+    ViewData["Title"] = "Cajas misteriosas";
+}
+
+<h1 class="h3 mb-3">Cajas misteriosas</h1>
+<partial name="_MensajesOperacion" />
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <form asp-action="FiltrarCajasActivas" method="get" class="card card-body h-100">
+            <p class="mb-2">Cajas disponibles ahora mismo.</p>
+            <button type="submit" class="btn btn-primary mt-auto">Ver cajas activas</button>
+        </form>
+    </div>
+    <div class="col-md-8">
+        <form asp-action="FiltrarCajasPorPrecioApertura" method="get" class="card card-body h-100">
+            <div class="row g-2 align-items-end">
+                <div class="col-sm-4">
+                    <label for="p_precioMinimo" class="form-label">Precio mínimo</label>
+                    <input id="p_precioMinimo" name="p_precioMinimo" type="text" inputmode="decimal"
+                           value="@(Model.PrecioMinimo?.ToString("0.##") ?? "0")" class="form-control" required />
+                </div>
+                <div class="col-sm-4">
+                    <label for="p_precioMaximo" class="form-label">Precio máximo</label>
+                    <input id="p_precioMaximo" name="p_precioMaximo" type="text" inputmode="decimal"
+                           value="@(Model.PrecioMaximo?.ToString("0.##") ?? "100")" class="form-control" required />
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary w-100">Filtrar por precio</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.FiltroAplicado is not null)
+{
+    <h2 class="h5">@Model.FiltroAplicado <span class="text-body-secondary">(@Model.Resultados.Count resultados)</span></h2>
+    @if (Model.Resultados.Count == 0)
+    {
+        <p class="text-body-secondary">No hay cajas que cumplan el filtro.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio de apertura</th>
+                        <th>Activa</th>
+                        <th>Posibles recompensas</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var caja in Model.Resultados)
+                {
+                    <tr>
+                        <td>@caja.Nombre</td>
+                        <td>@caja.PrecioAperturaValor.ToString("0.00") @caja.PrecioAperturaDivisa</td>
+                        <td>@(caja.Activa ? "Sí" : "No")</td>
+                        <td>@caja.Probabilidades.Count</td>
+                        <td class="text-end">
+                            <a asp-action="Abrir" asp-route-id="@caja.Id" class="btn btn-sm btn-outline-primary">Ver probabilidades y abrir</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+}

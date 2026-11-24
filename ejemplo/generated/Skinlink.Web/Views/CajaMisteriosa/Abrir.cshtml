@@ -1,0 +1,98 @@
+@* Fichero manual (no lo genera HARIA Web): operaciones de CajaMisteriosa.
+   Probabilidades legibles antes de abrir (RF-20), simularApertura (RF-22) y abrirCajaSorpresa (RF-19). *@
+@model CajaAperturaViewModel
+@{
+    ViewData["Title"] = Model.Caja.Nombre;
+    var caja = Model.Caja;
+    var puedePagar = Model.SaldoUsuario is double saldo
+        && saldo >= caja.PrecioAperturaValor
+        && string.Equals(Model.DivisaUsuario, caja.PrecioAperturaDivisa, StringComparison.OrdinalIgnoreCase);
+}
+
+<h1 class="h3 mb-1">@caja.Nombre</h1>
+<p class="text-body-secondary">
+    Precio de apertura: <strong>@caja.PrecioAperturaValor.ToString("0.00") @caja.PrecioAperturaDivisa</strong>
+    @if (!caja.Activa) { <span class="badge text-bg-secondary ms-2">No disponible</span> }
+</p>
+<partial name="_MensajesOperacion" />
+
+@if (Model.Resultado is ActivoDigitalViewModel r)
+{
+    <div class="card card-body mb-4 @(Model.ResultadoEsSimulacion ? "border-info" : "border-success")">
+        <h2 class="h5 mb-2">@(Model.ResultadoEsSimulacion ? "Resultado de la simulación (no se ha cobrado ni guardado nada)" : "Has obtenido")</h2>
+        <div class="d-flex gap-3 align-items-center">
+            @if (!string.IsNullOrWhiteSpace(r.Imagen))
+            {
+                <img src="@Url.Content("~/" + r.Imagen.TrimStart('/'))" alt="@r.Nombre" class="img-thumbnail" style="width: 120px;" />
+            }
+            <div>
+                <div class="fw-semibold">@r.Nombre</div>
+                <div>@r.Coleccion · @r.AtributosRareza · @r.AtributosCondicion (float @r.AtributosFloatVal.ToString("0.0000"))</div>
+                <div>Valor estimado: @r.PrecioEstimadoValor.ToString("0.00") @r.PrecioEstimadoDivisa</div>
+            </div>
+        </div>
+    </div>
+}
+
+<h2 class="h5">Probabilidades</h2>
+<div class="table-responsive mb-2">
+    <table class="table align-middle">
+        <thead class="table-light">
+            <tr><th></th><th>Activo</th><th>Colección</th><th>Rareza</th><th class="text-end">Probabilidad</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var p in Model.Probabilidades)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(p.Imagen))
+                    {
+                        <img src="@Url.Content("~/" + p.Imagen.TrimStart('/'))" alt="@p.Nombre" style="width: 48px; height: 36px; object-fit: cover;" />
+                    }
+                </td>
+                <td>@p.Nombre</td>
+                <td>@p.Coleccion</td>
+                <td>@p.Rareza</td>
+                <td class="text-end">@p.Porcentaje.ToString("0.##") %</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+            <tr><th colspan="4">Total</th><th class="text-end">@Model.SumaPorcentajes.ToString("0.##") %</th></tr>
+        </tfoot>
+    </table>
+</div>
+@if (Model.Probabilidades.Count > 0 && Math.Abs(Model.SumaPorcentajes - 100) > 0.01)
+{
+    <div class="alert alert-warning">Las probabilidades de esta caja no suman 100 %: el administrador debe revisarlas.</div>
+}
+
+@if (!Model.Autenticado)
+{
+    <p><a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Inicia sesión</a> para simular o abrir la caja.</p>
+}
+else if (caja.Activa && Model.Probabilidades.Count > 0)
+{
+    <p class="text-body-secondary">
+        Tu saldo: @(Model.SaldoUsuario?.ToString("0.00") ?? "—") @Model.DivisaUsuario
+    </p>
+    <div class="d-flex gap-2">
+        <form asp-action="SimularApertura" method="post">
+            <input type="hidden" name="p_oid" value="@caja.Id" />
+            <button type="submit" class="btn btn-outline-primary">Simular apertura (gratis)</button>
+        </form>
+        <form asp-action="AbrirCajaSorpresa" method="post">
+            <input type="hidden" name="p_oid" value="@caja.Id" />
+            <input type="hidden" name="p_usuario_oid" value="0" />
+            <button type="submit" class="btn btn-primary" disabled="@(!puedePagar)">
+                Abrir por @caja.PrecioAperturaValor.ToString("0.00") @caja.PrecioAperturaDivisa
+            </button>
+        </form>
+    </div>
+    @if (!puedePagar)
+    {
+        <p class="text-danger small mt-2">No tienes saldo suficiente (o en la misma divisa) para abrir esta caja.</p>
+    }
+}
+
+<a asp-action="Buscar" class="btn btn-link px-0 mt-3">Volver a las cajas</a>

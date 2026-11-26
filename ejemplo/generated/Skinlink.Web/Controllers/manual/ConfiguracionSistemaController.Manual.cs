@@ -28,9 +28,8 @@ public partial class ConfiguracionSistemaController
     {
     /*PROTECTED REGION ID(ConfiguracionSistemaController_CalcularComisionMercado_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _configuracionSistemaService.CalcularComisionMercadoAsync(p_oid, p_precio);
-        return Ok(result);
+        // Miembro 4: muestra el resultado en la vista Comision (el controlador ya es solo para Administrador).
+        return await CalcularComisionEnVistaAsync(p_oid);
     /*PROTECTED REGION END*/
     }
 }

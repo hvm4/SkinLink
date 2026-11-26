@@ -236,14 +236,15 @@ public partial class ResenaVendedorController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ResenaVendedorController_FiltrarResenasVisiblesPorVendedor_GET_attributes) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_FiltrarResenasVisiblesPorVendedor_GET_attributes) ENABLED START*/
+    // La reputación de un vendedor es pública (Miembro 4).
+    [AllowAnonymous]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarResenasVisiblesPorVendedor(int p_vendedorId)
     {
-    /*PROTECTED REGION ID(ResenaVendedorController_FiltrarResenasVisiblesPorVendedor_GET_body) START*/
-
-        var result = await _resenaVendedorService.FiltrarResenasVisiblesPorVendedorAsync(p_vendedorId);
-        return Ok(result.Select(ResenaVendedorAssembler.ToViewModel).ToList());
+    /*PROTECTED REGION ID(ResenaVendedorController_FiltrarResenasVisiblesPorVendedor_GET_body) ENABLED START*/
+        // Miembro 4: vista HTML en lugar de JSON (ver ResenaVendedorController.Vistas.cs).
+        return await MostrarResenasVendedorAsync(p_vendedorId > 0 ? p_vendedorId : null);
     /*PROTECTED REGION END*/
     }
 

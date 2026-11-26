@@ -1,0 +1,64 @@
+@* Fichero manual (no lo genera HARIA Web) — Miembro 4.
+   iniciarIntercambio: se elige el usuario y se marcan los activos que se ofrecen y los que se piden.
+   Solo aparecen activos que no están en venta ni comprometidos en otro intercambio. *@
+@model ProponerIntercambioViewModel
+@{
+    ViewData["Title"] = "Proponer un intercambio";
+}
+
+<h1 class="h3 mb-3">Proponer un intercambio</h1>
+<partial name="_MensajesOperacion" />
+
+<form asp-action="Proponer" method="get" class="card card-body mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-sm-8">
+            <label for="receptorId" class="form-label">Usuario con quien intercambiar</label>
+            <select id="receptorId" name="receptorId" class="form-select" asp-items="Model.Receptores" required>
+                <option value="">Selecciona un usuario…</option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <button type="submit" class="btn btn-outline-primary w-100">Ver sus activos</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.ReceptorId is int receptorId && Model.ReceptorNombre is not null)
+{
+    <form asp-action="IniciarIntercambio" method="post">
+        <input type="hidden" name="p_receptor_oid" value="@receptorId" />
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <h2 class="h5">Ofreces</h2>
+                <partial name="_SeleccionActivos" model="@(("p_activosOfrecidos_oids", Model.MisActivos, "No tienes activos disponibles para intercambiar (los que están en venta o en otro intercambio no cuentan)."))" />
+            </div>
+            <div class="col-lg-6">
+                <h2 class="h5">Pides a @Model.ReceptorNombre</h2>
+                <partial name="_SeleccionActivos" model="@(("p_activosSolicitados_oids", Model.ActivosReceptor, "Este usuario no tiene activos disponibles para intercambiar."))" />
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary" disabled="@(Model.MisActivos.Count == 0 || Model.ActivosReceptor.Count == 0)">Enviar propuesta</button>
+            <a asp-action="MisIntercambios" class="btn btn-link">Cancelar</a>
+        </div>
+        <p class="small text-muted mt-2">Hay que marcar al menos un activo en cada lado. Mientras la propuesta esté pendiente, esos activos no se pueden vender ni ofrecer en otro intercambio.</p>
+    </form>
+}
+
+@section Scripts {
+    <script>
+        // Validación en el cliente: al menos un activo marcado en cada lado (el servidor lo vuelve a comprobar).
+        document.querySelectorAll('form[action$="IniciarIntercambio"]').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                var ofrecidos = form.querySelectorAll('input[name="p_activosOfrecidos_oids"]:checked').length;
+                var pedidos = form.querySelectorAll('input[name="p_activosSolicitados_oids"]:checked').length;
+                if (ofrecidos === 0 || pedidos === 0) {
+                    e.preventDefault();
+                    alert('Marca al menos un activo que ofreces y uno que pides.');
+                }
+            });
+        });
+    </script>
+}

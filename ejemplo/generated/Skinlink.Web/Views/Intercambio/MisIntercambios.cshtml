@@ -1,0 +1,91 @@
+@* Fichero manual (no lo genera HARIA Web) — Miembro 4.
+   Ciclo de Intercambio: propuestas recibidas (aceptar / rechazar), enviadas (cancelar) e historial. *@
+@model MisIntercambiosViewModel
+@{
+    ViewData["Title"] = "Mis intercambios";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0">Mis intercambios</h1>
+    <a asp-action="Proponer" class="btn btn-primary">Proponer un intercambio</a>
+</div>
+<partial name="_MensajesOperacion" />
+
+<h2 class="h5 mt-4">Recibidos <span class="badge text-bg-warning">@Model.Recibidos.Count</span></h2>
+@if (Model.Recibidos.Count == 0)
+{
+    <p class="text-muted">No tienes propuestas pendientes de responder.</p>
+}
+else
+{
+    @foreach (var i in Model.Recibidos)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="mb-2"><strong>@i.ProponenteNombre</strong> te propone un intercambio <span class="text-muted">(#@i.Id · @i.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))</span></p>
+                <partial name="_ActivosIntercambio" model="@(("Recibes", i.Ofrecidos, "Entregas", i.Solicitados))" />
+                <div class="d-flex gap-2 mt-3">
+                    <form asp-action="AceptarIntercambio" method="post">
+                        <input type="hidden" name="p_oid" value="@i.Id" />
+                        <button type="submit" class="btn btn-success">Aceptar</button>
+                    </form>
+                    <form asp-action="CancelarIntercambio" method="post">
+                        <input type="hidden" name="p_oid" value="@i.Id" />
+                        <button type="submit" class="btn btn-outline-danger">Rechazar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<h2 class="h5 mt-4">Enviados <span class="badge text-bg-secondary">@Model.Enviados.Count</span></h2>
+@if (Model.Enviados.Count == 0)
+{
+    <p class="text-muted">No tienes propuestas enviadas pendientes.</p>
+}
+else
+{
+    @foreach (var i in Model.Enviados)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="mb-2">Propuesta a <strong>@i.ReceptorNombre</strong> <span class="text-muted">(#@i.Id · @i.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))</span> · esperando respuesta</p>
+                <partial name="_ActivosIntercambio" model="@(("Ofreces", i.Ofrecidos, "Pides", i.Solicitados))" />
+                <form asp-action="CancelarIntercambio" method="post" class="mt-3">
+                    <input type="hidden" name="p_oid" value="@i.Id" />
+                    <button type="submit" class="btn btn-outline-danger">Cancelar propuesta</button>
+                </form>
+            </div>
+        </div>
+    }
+}
+
+<h2 class="h5 mt-4">Historial</h2>
+@if (Model.Historial.Count == 0)
+{
+    <p class="text-muted">Todavía no hay intercambios cerrados.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>#</th><th>Fecha</th><th>Proponente</th><th>Receptor</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model.Historial)
+                {
+                    <tr>
+                        <td>@i.Id</td>
+                        <td>@i.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                        <td>@i.ProponenteNombre</td>
+                        <td>@i.ReceptorNombre</td>
+                        <td><span class="badge @TextosDominio.ClaseEstadoIntercambio(i.Estado)">@TextosDominio.EstadoIntercambio(i.Estado)</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="small text-muted">Al cerrarse un intercambio sus activos quedan liberados (o ya han cambiado de dueño), así que el historial no los enumera.</p>
+}

@@ -1,0 +1,26 @@
+@* Fichero manual (no lo genera HARIA Web) — Miembro 4.
+   Dos columnas con los activos de cada lado de un intercambio. *@
+@model (string TituloIzquierda, List<ActivoIntercambioViewModel> Izquierda, string TituloDerecha, List<ActivoIntercambioViewModel> Derecha)
+
+<div class="row g-3">
+    @foreach (var (titulo, activos) in new[] { (Model.TituloIzquierda, Model.Izquierda), (Model.TituloDerecha, Model.Derecha) })
+    {
+        <div class="col-md-6">
+            <div class="text-muted small text-uppercase mb-1">@titulo</div>
+            @if (activos.Count == 0)
+            {
+                <div class="text-muted">—</div>
+            }
+            <ul class="list-unstyled mb-0">
+                @foreach (var a in activos)
+                {
+                    <li class="mb-1">
+                        <span class="badge @TextosDominio.ClaseRareza(a.Rareza)">@TextosDominio.Rareza(a.Rareza)</span>
+                        @a.Nombre
+                        <span class="text-muted small">· @TextosDominio.Condicion(a.Condicion) · @TextosDominio.Precio(a.Precio, a.Divisa)</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>

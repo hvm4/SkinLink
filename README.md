@@ -7,23 +7,25 @@ Plataforma de comercialización de activos digitales coleccionables (*skins*), c
 ```
 SkinLink/
 ├── README.md
-└── SkinLink/                      <- proyecto HARIA
-    ├── SkinLink.tdm               <- modelo (fuente de verdad)
-    ├── SkinLink.puml              <- diagrama PlantUML del modelo
-    ├── haria.config.json          <- configuración de generación (nombre, ORM, BD)
+└── ejemplo/                         <- proyecto HARIA (el nombre interno del proyecto es "ejemplo")
+    ├── ejemplo.tdm                  <- modelo (fuente de verdad)
+    ├── ejemplo.puml                 <- diagrama PlantUML del modelo
+    ├── haria.config.json            <- configuración de generación (nombre, ORM, BD)
+    ├── SkinLink.sln                 <- solución completa (incluye Skinlink.Web)
     └── generated/
-        ├── SkinLink.sln
-        ├── SkinLink.Domain/       <- entidades, enumerados, value objects
-        ├── SkinLink.Application/  <- servicios y casos de uso
-        │   ├── Services/Generated    (CRUD, filtros: no editar)
-        │   ├── Services/manual       (operaciones Custom)
+        ├── ejemplo.sln              <- solución generada por HARIA (sin la web; no editar)
+        ├── ejemplo.Domain/          <- entidades, enumerados, value objects
+        ├── ejemplo.Application/     <- servicios y casos de uso
+        │   ├── Services/Generated      (CRUD, filtros: no editar)
+        │   ├── Services/manual         (operaciones Custom)
         │   ├── UseCases/Generated
-        │   └── UseCases/manual       (operaciones CustomTransaction)
-        ├── SkinLink.Infrastructure/ <- repositorios, UnitOfWork, DbContext
-        ├── SkinLink.Tests/
-        │   ├── Generated/            (pruebas generadas)
-        │   └── manual/               (pruebas de las operaciones a mano)
-        └── InitializeDB/          <- crea y rellena la base de datos SQLite
+        │   └── UseCases/manual         (operaciones CustomTransaction)
+        ├── ejemplo.Infrastructure/  <- repositorios, UnitOfWork, DbContext
+        ├── ejemplo.Tests/
+        │   ├── Generated/              (pruebas generadas)
+        │   └── manual/                 (pruebas de las operaciones a mano)
+        ├── InitializeDB/            <- crea la base de datos SQLite y carga los datos de demostración
+        └── Skinlink.Web/            <- capa web ASP.NET Core MVC generada con HARIA Web
 ```
 
 ## Requisitos
@@ -33,19 +35,24 @@ SkinLink/
 
 ## Puesta en marcha
 
-Desde `SkinLink/generated`:
+Desde `ejemplo/generated`:
 
 ```powershell
-# 1) Crear (o recrear) la base de datos con el esquema actual y los datos de ejemplo
+# 1) Crear (o recrear) la base de datos con el esquema actual y los datos de demostración (~20 s)
 cd InitializeDB
 dotnet run
 cd ..
 
 # 2) Compilar y ejecutar todas las pruebas
-dotnet test
+dotnet test ejemplo.sln
+
+# 3) Arrancar la web (con HTTPS: la cookie de sesión es segura y no viaja por http)
+dotnet run --project Skinlink.Web --launch-profile https
 ```
 
-La base de datos es `InitializeDB/SkinLinkBDD.db`. Hay que volver a ejecutar `InitializeDB` cada vez que cambie el modelo (`SkinLink.tdm`); si no, las pruebas que usan la base de datos de archivo fallan con errores del tipo `table ... has no column named ...`.
+La web se abre en https://localhost:7046. La base de datos es `InitializeDB/ejemploBDD.db` y la web la usa directamente (`Skinlink.Web/appsettings.Haria.json`). Hay que volver a ejecutar `InitializeDB` cada vez que cambie el modelo (`ejemplo.tdm`); si no, las pruebas que usan la base de datos de archivo fallan con errores del tipo `table ... has no column named ...`. Ejecutarlo también devuelve los datos de la demo a su estado inicial.
+
+Si `InitializeDB` va muy lento, borra `InitializeDB/logs/ejemplo.json`: el registrador generado por HARIA reescribe ese fichero entero en cada mensaje y, cuando pesa varios MB, cada paso tarda segundos.
 
 Si `dotnet test` da `UnauthorizedAccessException` sobre `.dotnet` en Windows:
 
@@ -53,6 +60,29 @@ Si `dotnet test` da `UnauthorizedAccessException` sobre `.dotnet` en Windows:
 $env:DOTNET_CLI_HOME = "$env:TEMP\dotnet-home"
 New-Item -ItemType Directory -Force $env:DOTNET_CLI_HOME | Out-Null
 ```
+
+## Datos de demostración (`InitializeDB/SeedData.cs`)
+
+El login es con el **id** del usuario. Los ids salen por consola al final de `InitializeDB` (con la base recién creada son estos):
+
+| Id | Usuario | Contraseña | Para qué sirve en la demo |
+|---|---|---|---|
+| 3 | `admin` (Administrador) | `Admin123!` | Paneles de administración, moderación, auditoría, comisión |
+| 4 | NeoRift | `Demo1234!` | Comprador y coleccionista: compras, cajas abiertas, retirada, favoritos, intercambio pendiente |
+| 5 | NovaTrade | `Demo1234!` | Vendedor con buena reputación, varias ventas publicadas, inventario público |
+| 6 | PixelWolf | `Demo1234!` | Comprador y vendedor; tiene un intercambio por responder |
+| 7 | LunaByte | `Demo1234!` | Ha usado la recompensa diaria; un intercambio aceptado y otro cancelado |
+| 8 | ZeroLag | `Demo1234!` | Ha abierto una caja; venta cancelada |
+| 9 | xRaptor | `Demo1234!` | Cuenta sin verificar (no puede retirar); autor de una reseña moderada |
+| 10 | Tramposo99 | `Demo1234!` | Cuenta suspendida por el administrador (queda en auditoría) |
+
+Todo se crea con las operaciones reales del modelo, así que los saldos, comisiones, transacciones y auditoría son coherentes:
+
+- Configuración del sistema: comisión del 5 % hasta 50 €, 4 % hasta 500 € y 3 % por encima; retirada mínima 10 € y máximo diario 2.000 €.
+- 10 artículos de catálogo (uno con descuento del 10 %), 23 activos de todas las rarezas y condiciones.
+- 5 cajas con probabilidades que suman 100 % (una inactiva y una gratuita para la recompensa diaria).
+- 7 depósitos, 7 ventas (3 completadas, 3 disponibles, 1 cancelada, 1 con el precio rebajado), 1 retirada, 3 aperturas de caja.
+- 8 reseñas (una moderada por el admin y otra ocultada por el vendedor), 5 favoritos, 3 intercambios (pendiente, aceptado y cancelado).
 
 ## Modelo
 
@@ -127,14 +157,49 @@ Los roles se asignan al iniciar sesión en `Utils/Security/UsuarioClaims.cs` (pu
 - Los roles van en la cookie: si se suspende a alguien con la sesión abierta, pierde el acceso al volver a iniciar sesión.
 - `Views/Home/Index.cshtml` es generado: si se regenera con "Update Home Page", hay que volver a poner el `if` que separa la portada del administrador (`_BusinessNavigation`) de la del resto (`_InicioUsuario`).
 
+## Páginas de social y sistema (Skinlink.Web)
+
+En todas estas operaciones el usuario que actúa sale de la sesión, nunca del formulario: aunque las acciones generadas sigan recibiendo `p_proponente_oid`, `p_admin_oid`, etc., esos valores se ignoran.
+
+| URL | Quién | Operación |
+|---|---|---|
+| `/ResenaVendedor/FiltrarResenasVisiblesPorVendedor?p_vendedorId=5` | Público | `filtrarResenasVisiblesPorVendedor`: reseñas visibles y nota media del vendedor; el propio vendedor puede `ocultarResena` |
+| `/ResenaVendedor/Moderacion` | Administrador | `moderarResena`: ocultar o restaurar cualquier reseña (queda en auditoría) |
+| `/Intercambio/MisIntercambios` | Usuario | Recibidos (aceptar o rechazar), enviados (cancelar) e historial |
+| `/Intercambio/Proponer` | Usuario | `iniciarIntercambio`: elegir usuario y activos de cada lado |
+| `/Favorito/MisFavoritos` | Usuario | Favoritos propios; `POST /Favorito/Alternar` (`activoId`, `returnUrl`) marca o quita desde cualquier vista |
+| `/InventarioPrivado/Visibilidad` | Usuario / Administrador | `cambiarVisibilidadInventario` del inventario propio (el admin, de cualquiera) |
+| `/ConfiguracionSistema/Comision` | Administrador | `calcularComisionMercado`: tramos y cálculo de comisión e importe neto |
+
+`/Intercambio` y `/Favorito` (listados completos) redirigen a las páginas "Mis…" salvo para el administrador. La nota de una reseña se valida entre 1 y 5 y nadie puede valorarse a sí mismo (`ResenaVendedorViewModel`, región manual).
+
+## Cobertura de requisitos de la propuesta
+
+| Requisito | Dónde está |
+|---|---|
+| Navegar y clasificar activos por precio, rareza, tipo y condición | Filtros de `ActivoDigital`, `filtrarVentasPorPrecioMaximo`, `filtrarCajasPorPrecioApertura`; skins y cajas son entidades separadas |
+| Registro, perfil e inventario privado | `Usuario` (registro y login), `InventarioPrivado`, `cambiarVisibilidadInventario` |
+| Depósitos, retiros y transacciones de saldo | `depositarFondos`, `retirarSaldoWallet`, `incrementarSaldo`/`decrementarSaldo`, filtros de `Transaccion` |
+| Compra y venta directa | `publicarVenta`, `editarPrecio`, `cancelarVenta`, `procesarCompraSkin` |
+| Cajas basadas en el azar | `abrirCajaSorpresa`, `simularApertura`, `ProbabilidadDrop` |
+| Historial de transacciones | Filtros de `Transaccion` por tipo y por fechas |
+| Historial de resultados de azar | **Parcial**: queda la transacción `CosteCaja`, pero no qué activo salió |
+| Roles Administrador / Usuario y paneles de administración | `[Authorize(Roles = ...)]`, CRUD de usuarios, catálogo y cajas solo para el admin |
+| Búsquedas con filtros | 12 `readFilter` |
+| Validación en cliente y servidor | Data annotations de los ViewModels, `ModelState` y validaciones de los servicios |
+| Niveles de usuario y bonificación diaria | `sumarExperiencia`, `reclamarRecompensaDiaria` |
+| Valoración numérica de vendedores | `ResenaVendedor.puntuacion` (1–5), nota media en la página del vendedor, moderación |
+| Notificar al usuario las transacciones | **Pendiente**: no hay entidad `Notificacion` (requiere cambiar el `.tdm`) |
+| Recomendaciones en la portada según valoraciones y actividad | **Pendiente**: no hay operación de recomendación (requiere cambiar el `.tdm`) |
+
 ## Pruebas
 
-- `SkinLink.Tests/Generated/ModelGeneratedTests.cs`: pruebas generadas (CRUD y asociaciones contra la base de datos, literales de enumerados y contrato de los filtros).
-- `SkinLink.Tests/manual/`: pruebas de las operaciones Custom, CustomTransaction y filtros implementados a mano, con SQLite en memoria (`OperacionesPendientesTests.cs` cubre las 10 operaciones completadas en esta entrega y la experiencia por actividad).
+- `ejemplo.Tests/Generated/ModelGeneratedTests.cs`: pruebas generadas (CRUD y asociaciones contra la base de datos, literales de enumerados y contrato de los filtros).
+- `ejemplo.Tests/manual/`: pruebas de las operaciones Custom, CustomTransaction y filtros implementados a mano, con SQLite en memoria (`OperacionesPendientesTests.cs` cubre las 10 operaciones completadas en esta entrega y la experiencia por actividad).
 
 ## Normas de trabajo con HARIA
 
 - Nunca se edita nada fuera de las regiones `/*PROTECTED REGION ID(...) ENABLED START*/ ... /*PROTECTED REGION END*/`: al regenerar se pierde.
 - La lógica propia va en `Services/manual` y `UseCases/manual`, un archivo por operación (`<Entidad>Service_<Operacion>.cs` o `<Entidad>UseCase_<Operacion>.cs`).
-- Tras cambiar `SkinLink.tdm`: regenerar con HARIA, ejecutar `InitializeDB` y lanzar `dotnet test` antes de subir los cambios.
+- Tras cambiar `ejemplo.tdm`: regenerar con HARIA, ejecutar `InitializeDB` y lanzar `dotnet test` antes de subir los cambios.
 - Si una región protegida desaparece del modelo, HARIA guarda su código en `generated/.haria/orphans`.

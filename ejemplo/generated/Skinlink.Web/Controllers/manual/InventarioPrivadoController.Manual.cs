@@ -28,9 +28,8 @@ public partial class InventarioPrivadoController
     {
     /*PROTECTED REGION ID(InventarioPrivadoController_CambiarVisibilidadInventario_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        var result = await _inventarioPrivadoService.CambiarVisibilidadInventarioAsync(p_oid);
-        return Ok(result);
+        // Miembro 4: un usuario solo cambia la visibilidad de su inventario; el administrador, la de cualquiera.
+        return await CambiarVisibilidadDesdeSesionAsync(p_oid);
     /*PROTECTED REGION END*/
     }
 }

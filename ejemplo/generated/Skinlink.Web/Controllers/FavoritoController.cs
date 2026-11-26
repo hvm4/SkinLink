@@ -37,7 +37,10 @@ public partial class FavoritoController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
-    /*PROTECTED REGION ID(FavoritoController_Index_GET_body) START*/
+    /*PROTECTED REGION ID(FavoritoController_Index_GET_body) ENABLED START*/
+        // Miembro 4: un usuario solo ve sus favoritos; el listado completo es del administrador.
+        if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User))
+            return RedirectToAction(nameof(MisFavoritos));
 
         var entities = await _favoritoService.ReadAllAsync();
         return View(entities.Select(FavoritoAssembler.ToViewModel).ToList());

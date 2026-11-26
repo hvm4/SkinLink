@@ -24,8 +24,11 @@
                 <li><a asp-controller="ActivoDigital" asp-action="Buscar">Buscar activos</a></li>
                 <li><a asp-controller="CajaMisteriosa" asp-action="Buscar">Cajas misteriosas</a></li>
                 <li><a asp-controller="Venta" asp-action="Index">Ventas</a></li>
-                <li><a asp-controller="Intercambio" asp-action="Index">Intercambios</a></li>
-                <li><a asp-controller="Favorito" asp-action="Index">Favoritos</a></li>
+                @* Miembro 4 *@
+                <li><a asp-controller="Intercambio" asp-action="MisIntercambios">Mis intercambios</a></li>
+                <li><a asp-controller="Favorito" asp-action="MisFavoritos">Mis favoritos</a></li>
+                <li><a asp-controller="InventarioPrivado" asp-action="Visibilidad">Visibilidad de mi inventario</a></li>
+                <li><a asp-controller="ResenaVendedor" asp-action="FiltrarResenasVisiblesPorVendedor">Reputación de vendedores</a></li>
             </ul>
         }
     </div>

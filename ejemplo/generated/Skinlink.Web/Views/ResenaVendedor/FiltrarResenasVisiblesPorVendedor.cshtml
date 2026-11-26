@@ -1,0 +1,91 @@
+@* Fichero manual (no lo genera HARIA Web) — Miembro 4.
+   filtrarResenasVisiblesPorVendedor: reputación pública de un vendedor (reseñas no ocultas y nota media)
+   y ocultarResena para el propio vendedor o un administrador. *@
+@model ResenasVendedorPaginaViewModel
+@{
+    ViewData["Title"] = Model.VendedorNombre is null ? "Reputación de vendedores" : $"Reseñas de {Model.VendedorNombre}";
+}
+
+<h1 class="h3 mb-3">Reputación de vendedores</h1>
+<partial name="_MensajesOperacion" />
+
+<form asp-action="FiltrarResenasVisiblesPorVendedor" method="get" class="card card-body mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-sm-8">
+            <label for="p_vendedorId" class="form-label">Vendedor</label>
+            <select id="p_vendedorId" name="p_vendedorId" class="form-select" asp-items="Model.Vendedores" required>
+                <option value="">Selecciona un vendedor…</option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary w-100">Ver reseñas</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.VendedorNombre is not null)
+{
+    <div class="card mb-4">
+        <div class="card-body d-flex flex-wrap align-items-center gap-4">
+            <div>
+                <div class="text-muted small">Vendedor</div>
+                <div class="h4 mb-0">@Model.VendedorNombre</div>
+            </div>
+            <div>
+                <div class="text-muted small">Nota media</div>
+                @if (Model.NotaMedia is double media)
+                {
+                    <div class="h4 mb-0">
+                        @media.ToString("0.00") <span class="text-muted fs-6">/ 5</span>
+                        <span class="text-warning" aria-hidden="true">@(new string('★', (int)Math.Round(media)))@(new string('☆', 5 - (int)Math.Round(media)))</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="h5 mb-0 text-muted">Sin valoraciones</div>
+                }
+            </div>
+            <div>
+                <div class="text-muted small">Reseñas visibles</div>
+                <div class="h4 mb-0">@Model.Resenas.Count</div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Resenas.Count == 0)
+    {
+        <p class="text-muted">Este vendedor todavía no tiene reseñas visibles.</p>
+    }
+    else
+    {
+        <div class="list-group mb-4">
+            @foreach (var resena in Model.Resenas)
+            {
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+                        <div>
+                            <div class="fw-semibold">
+                                @(resena.CompradorLabel ?? "Comprador")
+                                <span class="text-warning ms-2" aria-label="@resena.Puntuacion de 5">@(new string('★', Math.Clamp(resena.Puntuacion, 0, 5)))@(new string('☆', 5 - Math.Clamp(resena.Puntuacion, 0, 5)))</span>
+                            </div>
+                            <p class="mb-1">@resena.Comentario</p>
+                            <small class="text-muted">@resena.Fecha.ToLocalTime().ToString("d MMM yyyy")</small>
+                        </div>
+                        @if (Model.PuedeOcultar)
+                        {
+                            <form asp-action="OcultarResena" method="post" class="flex-shrink-0">
+                                <input type="hidden" name="p_oid" value="@resena.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Ocultar de mi perfil</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+
+@if (Model.EsAdministrador)
+{
+    <a asp-action="Moderacion" class="btn btn-outline-dark">Ir a moderación de reseñas</a>
+}

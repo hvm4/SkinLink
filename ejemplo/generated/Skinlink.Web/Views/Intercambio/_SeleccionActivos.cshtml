@@ -1,0 +1,26 @@
+@* Fichero manual (no lo genera HARIA Web) — Miembro 4.
+   Lista de casillas para elegir activos en un intercambio. *@
+@model (string Nombre, List<ActivoIntercambioViewModel> Activos, string MensajeVacio)
+
+@if (Model.Activos.Count == 0)
+{
+    <p class="text-muted">@Model.MensajeVacio</p>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var a in Model.Activos)
+        {
+            var id = $"{Model.Nombre}_{a.Id}";
+            <label class="list-group-item d-flex gap-2 align-items-center" for="@id">
+                <input class="form-check-input flex-shrink-0" type="checkbox" id="@id" name="@Model.Nombre" value="@a.Id" />
+                <span class="flex-grow-1">
+                    <span class="badge @TextosDominio.ClaseRareza(a.Rareza)">@TextosDominio.Rareza(a.Rareza)</span>
+                    @a.Nombre
+                    <span class="d-block small text-muted">@a.Coleccion · @TextosDominio.Condicion(a.Condicion)</span>
+                </span>
+                <span class="text-nowrap">@TextosDominio.Precio(a.Precio, a.Divisa)</span>
+            </label>
+        }
+    </div>
+}

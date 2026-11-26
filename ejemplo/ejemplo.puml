@@ -39,6 +39,13 @@ package "SkinLink" {
     Cancelada
   }
 
+  enum EstadoIntercambio {
+    Pendiente
+    Aceptado
+    Rechazado
+    Cancelado
+  }
+
   class AtributosSkin <<ValueObject>> {
     -rareza: Rareza
     -condicion: Condicion
@@ -63,22 +70,28 @@ package "SkinLink" {
     -fechaUltimoLogin: Date
     -temaModoOscuro: bool
     -idioma: string
+    -verificado: bool
+    -fechaUltimaRecompensa: Date?
     --
-    +new(p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado): Usuario <<New>>
+    +new(p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_verificado: bool, p_monedero: Monedero, p_inventario: InventarioPrivado): Usuario <<New>>
     +destroy(p_oid: long <<oid>>): void <<Destroy>>
-    +modify(p_oid: long <<oid>>, p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado): void <<Modifier>>
+    +modify(p_oid: long <<oid>>, p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_verificado: bool, p_monedero: Monedero, p_inventario: InventarioPrivado): void <<Modifier>>
     +readOID(p_oid: long <<oid>>): Usuario <<ReadOID>>
     +readAll(): Usuario[*] <<ReadAll>>
     +login(p_oid: long <<oid>>, p_password: string <<password>>): string <<Login>>
     +sumarExperiencia(p_oid: long <<oid>>, p_puntos: int): void <<Custom>>
+    +suspenderCuentaUsuario(p_oid: long <<oid>>): void <<Custom>>
+    +verificarUsuario(p_oid: long <<oid>>): void <<Custom>>
+    +reclamarRecompensaDiaria(p_oid: long <<oid>>, p_caja_oid: long <<oid>>): ActivoDigital <<CustomTransaction>>
+    +filtrarUsuariosPorEstado(p_estado: EstadoCuenta): Usuario[*] <<ReadFilter>>
   }
 
   class Administrador {
     -codigoAuditor: string
     --
-    +new(p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado, p_codigoAuditor: string): Administrador <<New>>
+    +new(p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_verificado: bool, p_monedero: Monedero, p_inventario: InventarioPrivado, p_codigoAuditor: string): Administrador <<New>>
     +destroy(p_oid: long <<oid>>): void <<Destroy>>
-    +modify(p_oid: long <<oid>>, p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_monedero: Monedero, p_inventario: InventarioPrivado, p_codigoAuditor: string): void <<Modifier>>
+    +modify(p_oid: long <<oid>>, p_nombreUsuario: string, p_correo: string, p_contrasena: string <<password>>, p_fechaNacimiento: Date, p_estado: EstadoCuenta, p_nivel: int, p_experiencia: int, p_fechaUltimoLogin: Date, p_temaModoOscuro: bool, p_idioma: string, p_verificado: bool, p_monedero: Monedero, p_inventario: InventarioPrivado, p_codigoAuditor: string): void <<Modifier>>
     +readOID(p_oid: long <<oid>>): Administrador <<ReadOID>>
     +readAll(): Administrador[*] <<ReadAll>>
     +actualizarEstadoKYC(p_oid: long <<oid>>, p_usuario_oid: long <<oid>>, p_nuevoEstado: EstadoCuenta): void <<Custom>>
@@ -96,6 +109,8 @@ package "SkinLink" {
     +readAll(): Monedero[*] <<ReadAll>>
     +incrementarSaldo(p_oid: long <<oid>>, p_montoAnadir: Moneda): void <<Custom>>
     +decrementarSaldo(p_oid: long <<oid>>, p_montoRestar: Moneda): void <<Custom>>
+    +depositarFondos(p_oid: long <<oid>>, p_monto: Moneda, p_referenciaPago: string, p_pagoConfirmado: bool): Transaccion <<CustomTransaction>>
+    +retirarSaldoWallet(p_oid: long <<oid>>, p_monto: Moneda, p_destino: string): Transaccion <<CustomTransaction>>
   }
 
   class Transaccion {
@@ -111,17 +126,40 @@ package "SkinLink" {
     +readOID(p_oid: long <<oid>>): Transaccion <<ReadOID>>
     +readAll(): Transaccion[*] <<ReadAll>>
     +validarSaldoMonedero(p_oid: long <<oid>>, p_monedero_oid: long <<oid>>, p_montoRequerido: Moneda): bool <<Custom>>
+    +filtrarTransaccionesPorTipo(p_usuarioId: int, p_tipo: TipoTransaccion): Transaccion[*] <<ReadFilter>>
+    +filtrarTransaccionesPorRangoFechas(p_usuarioId: int, p_fechaInicio: Date, p_fechaFin: Date): Transaccion[*] <<ReadFilter>>
   }
 
   class InventarioPrivado {
     -id: long <<oid>>
     -valorEstimadoTotal: Moneda
+    -esPublico: bool
     --
-    +new(p_valorEstimadoTotal: Moneda, p_usuario_oid: long <<oid>>, p_activos: ActivoDigital[*]): InventarioPrivado <<New>>
+    +new(p_valorEstimadoTotal: Moneda, p_esPublico: bool, p_usuario_oid: long <<oid>>, p_activos: ActivoDigital[*]): InventarioPrivado <<New>>
     +destroy(p_oid: long <<oid>>): void <<Destroy>>
-    +modify(p_oid: long <<oid>>, p_valorEstimadoTotal: Moneda): void <<Modifier>>
+    +modify(p_oid: long <<oid>>, p_valorEstimadoTotal: Moneda, p_esPublico: bool): void <<Modifier>>
     +readOID(p_oid: long <<oid>>): InventarioPrivado <<ReadOID>>
     +readAll(): InventarioPrivado[*] <<ReadAll>>
+    +cambiarVisibilidadInventario(p_oid: long <<oid>>): bool <<Custom>>
+  }
+
+  class ArticuloCatalogo {
+    -id: long <<oid>>
+    -nombre: string
+    -coleccion: string
+    -rareza: Rareza
+    -precioReferencia: Moneda
+    -habilitado: bool
+    -porcentajeDescuento: double?
+    -fechaFinDescuento: Date?
+    -imagen: string?
+    --
+    +new(p_nombre: string, p_coleccion: string, p_rareza: Rareza, p_precioReferencia: Moneda, p_habilitado: bool, p_porcentajeDescuento: double, p_fechaFinDescuento: Date, p_imagen: string): ArticuloCatalogo <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_nombre: string, p_coleccion: string, p_rareza: Rareza, p_precioReferencia: Moneda, p_habilitado: bool, p_porcentajeDescuento: double, p_fechaFinDescuento: Date, p_imagen: string): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): ArticuloCatalogo <<ReadOID>>
+    +readAll(): ArticuloCatalogo[*] <<ReadAll>>
+    +actualizarDescuentoArticulo(p_oid: long <<oid>>, p_porcentaje: double, p_fechaFin: Date): void <<Custom>>
   }
 
   class ActivoDigital {
@@ -131,17 +169,50 @@ package "SkinLink" {
     -precioEstimado: Moneda
     -atributos: AtributosSkin
     -enVenta: bool
+    -identificadorUnico: string
+    -imagen: string?
     --
-    +new(p_nombre: string, p_coleccion: string, p_precioEstimado: Moneda, p_atributos: AtributosSkin, p_enVenta: bool, p_inventario_oid: long <<oid>>): ActivoDigital <<New>>
+    +new(p_nombre: string, p_coleccion: string, p_precioEstimado: Moneda, p_atributos: AtributosSkin, p_enVenta: bool, p_identificadorUnico: string, p_imagen: string, p_inventario_oid: long <<oid>>): ActivoDigital <<New>>
     +destroy(p_oid: long <<oid>>): void <<Destroy>>
-    +modify(p_oid: long <<oid>>, p_nombre: string, p_coleccion: string, p_precioEstimado: Moneda, p_atributos: AtributosSkin, p_enVenta: bool): void <<Modifier>>
+    +modify(p_oid: long <<oid>>, p_nombre: string, p_coleccion: string, p_precioEstimado: Moneda, p_atributos: AtributosSkin, p_enVenta: bool, p_identificadorUnico: string, p_imagen: string): void <<Modifier>>
     +readOID(p_oid: long <<oid>>): ActivoDigital <<ReadOID>>
     +readAll(): ActivoDigital[*] <<ReadAll>>
     +bloquearParaVenta(p_oid: long <<oid>>): void <<Custom>>
     +desbloquear(p_oid: long <<oid>>): void <<Custom>>
+    +actualizarPrecio(p_oid: long <<oid>>, p_nuevoPrecio: Moneda): void <<Custom>>
+    +marcarComoFavorito(p_oid: long <<oid>>, p_usuario_oid: long <<oid>>): bool <<Custom>>
+    +verificarAutenticidad(p_oid: long <<oid>>): bool <<Custom>>
+    +generarReporteActividad(p_oid: long <<oid>>): string <<Custom>>
     +filtrarActivosPorRareza(p_rareza: Rareza): ActivoDigital[*] <<ReadFilter>>
     +filtrarActivosPorColeccion(p_coleccion: string): ActivoDigital[*] <<ReadFilter>>
     +filtrarActivosPorCondicion(p_condicion: Condicion): ActivoDigital[*] <<ReadFilter>>
+    +filtrarActivosEnVenta(p_usuarioId: int, p_enVenta: bool): ActivoDigital[*] <<ReadFilter>>
+  }
+
+  class Favorito {
+    -id: long <<oid>>
+    -fechaMarcado: Date
+    --
+    +new(p_fechaMarcado: Date, p_usuario_oid: long <<oid>>, p_activoDigital_oid: long <<oid>>): Favorito <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_fechaMarcado: Date): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): Favorito <<ReadOID>>
+    +readAll(): Favorito[*] <<ReadAll>>
+  }
+
+  class Intercambio {
+    -id: long <<oid>>
+    -estado: EstadoIntercambio
+    -fechaCreacion: Date
+    --
+    +new(p_estado: EstadoIntercambio, p_fechaCreacion: Date, p_proponente_oid: long <<oid>>, p_receptor_oid: long <<oid>>): Intercambio <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_estado: EstadoIntercambio, p_fechaCreacion: Date): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): Intercambio <<ReadOID>>
+    +readAll(): Intercambio[*] <<ReadAll>>
+    +iniciarIntercambio(p_proponente_oid: long <<oid>>, p_receptor_oid: long <<oid>>, p_activosOfrecidos_oids: long[*] <<oid>>, p_activosSolicitados_oids: long[*] <<oid>>): Intercambio <<CustomTransaction>>
+    +aceptarIntercambio(p_oid: long <<oid>>, p_receptor_oid: long <<oid>>): void <<CustomTransaction>>
+    +cancelarIntercambio(p_oid: long <<oid>>, p_usuario_oid: long <<oid>>): void <<CustomTransaction>>
   }
 
   class Venta {
@@ -158,7 +229,9 @@ package "SkinLink" {
     +publicarVenta(p_oid: long <<oid>>, p_activoDigital_oid: long <<oid>>): void <<Custom>>
     +editarPrecio(p_oid: long <<oid>>, p_nuevoPrecio: Moneda): void <<Custom>>
     +cancelarVenta(p_oid: long <<oid>>): void <<Custom>>
-    +ejecutarCompra(p_oid: long <<oid>>, p_comprador_oid: long <<oid>>): void <<Custom>>
+    +procesarCompraSkin(p_oid: long <<oid>>, p_comprador_oid: long <<oid>>): void <<CustomTransaction>>
+    +filtrarVentasPorEstado(p_estado: EstadoVenta): Venta[*] <<ReadFilter>>
+    +filtrarVentasPorPrecioMaximo(p_precioMaximo: double): Venta[*] <<ReadFilter>>
   }
 
   class ResenaVendedor {
@@ -175,6 +248,7 @@ package "SkinLink" {
     +readAll(): ResenaVendedor[*] <<ReadAll>>
     +moderarResena(p_oid: long <<oid>>, p_admin_oid: long <<oid>>): void <<Custom>>
     +ocultarResena(p_oid: long <<oid>>): void <<Custom>>
+    +filtrarResenasVisiblesPorVendedor(p_vendedorId: int): ResenaVendedor[*] <<ReadFilter>>
   }
 
   class CajaMisteriosa {
@@ -189,7 +263,9 @@ package "SkinLink" {
     +readOID(p_oid: long <<oid>>): CajaMisteriosa <<ReadOID>>
     +readAll(): CajaMisteriosa[*] <<ReadAll>>
     +simularApertura(p_oid: long <<oid>>): ActivoDigital <<Custom>>
-    +abrirCaja(p_oid: long <<oid>>, p_usuario_oid: long <<oid>>): void <<Custom>>
+    +abrirCajaSorpresa(p_oid: long <<oid>>, p_usuario_oid: long <<oid>>): ActivoDigital <<CustomTransaction>>
+    +filtrarCajasActivas(): CajaMisteriosa[*] <<ReadFilter>>
+    +filtrarCajasPorPrecioApertura(p_precioMinimo: double, p_precioMaximo: double): CajaMisteriosa[*] <<ReadFilter>>
   }
 
   class ProbabilidadDrop {
@@ -201,6 +277,24 @@ package "SkinLink" {
     +modify(p_oid: long <<oid>>, p_porcentajeDrop: double, p_activoRecompensa_oid: long <<oid>>): void <<Modifier>>
     +readOID(p_oid: long <<oid>>): ProbabilidadDrop <<ReadOID>>
     +readAll(): ProbabilidadDrop[*] <<ReadAll>>
+  }
+
+  class ConfiguracionSistema {
+    -id: long <<oid>>
+    -limitePrecioBajo: double
+    -limitePrecioMedio: double
+    -comisionPrecioBajo: double
+    -comisionPrecioMedio: double
+    -comisionPrecioAlto: double
+    -retiroMinimo: double
+    -retiroMaximoDiario: double
+    --
+    +new(p_limitePrecioBajo: double, p_limitePrecioMedio: double, p_comisionPrecioBajo: double, p_comisionPrecioMedio: double, p_comisionPrecioAlto: double, p_retiroMinimo: double, p_retiroMaximoDiario: double): ConfiguracionSistema <<New>>
+    +destroy(p_oid: long <<oid>>): void <<Destroy>>
+    +modify(p_oid: long <<oid>>, p_limitePrecioBajo: double, p_limitePrecioMedio: double, p_comisionPrecioBajo: double, p_comisionPrecioMedio: double, p_comisionPrecioAlto: double, p_retiroMinimo: double, p_retiroMaximoDiario: double): void <<Modifier>>
+    +readOID(p_oid: long <<oid>>): ConfiguracionSistema <<ReadOID>>
+    +readAll(): ConfiguracionSistema[*] <<ReadAll>>
+    +calcularComisionMercado(p_oid: long <<oid>>, p_precio: double): double <<Custom>>
   }
 
   class RegistroAuditoria {
@@ -232,5 +326,11 @@ package "SkinLink" {
   CajaMisteriosa "caja\n1" *-- "probabilidades\n1..*" ProbabilidadDrop
   ProbabilidadDrop "probabilidad\n0..*" -- "activoRecompensa\n1" ActivoDigital
   Administrador "administrador\n1" -- "registrosAuditoria\n0..*" RegistroAuditoria
+  Usuario "usuario\n1" -- "favoritos\n0..*" Favorito
+  Favorito "favoritosActivo\n0..*" -- "activoDigital\n1" ActivoDigital
+  Usuario "proponente\n1" -- "intercambiosPropuestos\n0..*" Intercambio
+  Usuario "receptor\n1" -- "intercambiosRecibidos\n0..*" Intercambio
+  Intercambio "intercambioOfrecido\n0..1" -- "activosOfrecidos\n0..*" ActivoDigital
+  Intercambio "intercambioSolicitado\n0..1" -- "activosSolicitados\n0..*" ActivoDigital
 }
 @enduml

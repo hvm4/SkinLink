@@ -22,15 +22,24 @@ public partial class ResenaVendedorController
 {
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ResenaVendedorController_ModerarResena_POST_attributes) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_ModerarResena_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> ModerarResena(int p_oid, int p_admin_oid)
     {
     /*PROTECTED REGION ID(ResenaVendedorController_ModerarResena_POST_body) ENABLED START*/
-
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _resenaVendedorService.ModerarResenaAsync(p_oid, p_admin_oid);
-        return NoContent();
+        // Miembro 4: el administrador que modera es siempre el de la sesión; p_admin_oid se ignora.
+        if (Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User) is not int adminId) return Challenge();
+        try
+        {
+            await _resenaVendedorService.ModerarResenaAsync(p_oid, adminId);
+            TempData["Exito"] = $"Reseña #{p_oid} moderada. El cambio queda en el registro de auditoría.";
+        }
+        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        {
+            TempData["Error"] = MensajesError.Mensaje(ex);
+        }
+        return RedirectToAction(nameof(Moderacion));
     /*PROTECTED REGION END*/
     }
 
@@ -41,10 +50,8 @@ public partial class ResenaVendedorController
     public async Task<IActionResult> OcultarResena(int p_oid)
     {
     /*PROTECTED REGION ID(ResenaVendedorController_OcultarResena_POST_body) ENABLED START*/
-
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await _resenaVendedorService.OcultarResenaAsync(p_oid);
-        return NoContent();
+        // Miembro 4: solo el vendedor reseñado (o un administrador) puede ocultar la reseña de su perfil.
+        return await OcultarResenaDeMiPerfilAsync(p_oid);
     /*PROTECTED REGION END*/
     }
 }

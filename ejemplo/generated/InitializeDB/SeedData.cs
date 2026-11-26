@@ -220,7 +220,267 @@ public static class SeedData
             Ensure(await cajaMisteriosaService.ReadOIDCajaMisteriosaDefaultAsync(sampleCajaMisteriosa.Id) is null, "CajaMisteriosa seed cleanup completed.");
             Ensure(await registroAuditoriaService.ReadOIDRegistroAuditoriaDefaultAsync(sampleRegistroAuditoria.Id) is null, "RegistroAuditoria seed cleanup completed.");
             /*PROTECTED REGION ID(initializeDataMethod) ENABLED START*/
-            // Add custom seed data here.
+            // ============================================================
+            // DATOS DE DEMOSTRACIÓN (miembro 4)
+            // Se crean usando las operaciones reales del modelo (depositar,
+            // publicar, comprar, abrir caja, intercambiar, moderar...), cada
+            // paso con su propia UnitOfWork, como si fuera una petición web.
+            // Contraseña de todos los usuarios de la demo: Demo1234!
+            // Administrador: admin / Admin123! (su id se muestra al final)
+            // ============================================================
+            Console.WriteLine("-------------------------------------------------------");
+            Console.WriteLine("Cargando datos de demostración de SkinLink...");
+            Console.WriteLine("-------------------------------------------------------");
+
+            static Moneda Eur(double valor) => new Moneda { Valor = valor, Divisa = "EUR" };
+
+            // Misma base de datos pero sin registrador: el FileLoggerProvider generado reescribe
+            // logs/ejemplo.json entero con cada mensaje y con cientos de pasos el seed tardaba minutos.
+            var cadenaConexion = options.Extensions
+                .OfType<Microsoft.EntityFrameworkCore.Infrastructure.RelationalOptionsExtension>()
+                .Select(e => e.ConnectionString)
+                .First(c => !string.IsNullOrWhiteSpace(c));
+            var opcionesDemo = new DbContextOptionsBuilder<ejemploDbContext>().UseSqlite(cadenaConexion).Options;
+
+            async Task<T> Paso<T>(Func<UnitOfWork, Task<T>> accion)
+            {
+                await using var uow = new UnitOfWork(new ejemploDbContext(opcionesDemo));
+                return await accion(uow);
+            }
+
+            async Task Hacer(Func<UnitOfWork, Task> accion)
+            {
+                await using var uow = new UnitOfWork(new ejemploDbContext(opcionesDemo));
+                await accion(uow);
+            }
+
+            const string ClaveDemo = "Demo1234!";
+
+            // --- Configuración del sistema (comisiones en %, límites de retirada en EUR) ---
+            var configuracion = await Paso(u => new ConfiguracionSistemaService(u)
+                .NewAsync(50, 500, 5, 4, 3, 10, 2000));
+
+            // --- Catálogo de artículos de referencia ---
+            var catalogo = new (string Nombre, string Coleccion, Rareza Rareza, double Precio)[]
+            {
+                ("AK-47 | Emperatriz", "Spectrum 2", Rareza.Raro, 101.24),
+                ("M4A1-S | Printstream", "Operación Fractura", Rareza.Raro, 318.50),
+                ("Guantes | Vice", "Guantes Broken Fang", Rareza.Extraordinario, 1048.00),
+                ("AWP | Asiimov", "Operación Phoenix", Rareza.Especial, 141.25),
+                ("Desert Eagle | Blaze", "Colección Dust", Rareza.Especial, 548.90),
+                ("USP-S | Kill Confirmed", "Shadow", Rareza.Raro, 82.10),
+                ("M4A4 | Neo-Noir", "Spectrum 2", Rareza.Especial, 28.60),
+                ("Karambit | Autotrónico", "Chroma 2", Rareza.Extraordinario, 1124.30),
+                ("P250 | Circuito", "Revolution", Rareza.PocoComun, 4.80),
+                ("MP9 | Pulso", "Revolution", Rareza.Comun, 1.20),
+            };
+            int primerArticuloId = 0;
+            foreach (var art in catalogo)
+            {
+                var creado = await Paso(u => new ArticuloCatalogoService(u).NewAsync(
+                    art.Nombre, art.Coleccion, art.Rareza, Eur(art.Precio), true, 0, DateTime.UtcNow, string.Empty));
+                if (primerArticuloId == 0) primerArticuloId = creado.Id;
+            }
+            // Descuento temporal del 10 % en el primer artículo durante 15 días.
+            await Hacer(u => new ArticuloCatalogoService(u)
+                .ActualizarDescuentoArticuloAsync(primerArticuloId, 10, DateTime.UtcNow.AddDays(15)));
+
+            // --- Usuarios ---
+            Monedero MonederoVacio() => new Monedero { SaldoDisponible = Eur(0), SaldoPendiente = Eur(0) };
+            InventarioPrivado InventarioVacio(bool publico) => new InventarioPrivado { ValorEstimadoTotal = Eur(0), EsPublico = publico };
+
+            var admin = await Paso(u => new AdministradorService(u).NewAsync(
+                "admin", "admin@skinlink.gg", "Admin123!", new DateTime(1995, 3, 14), EstadoCuenta.Activo,
+                1, 0, DateTime.UtcNow, true, "es", true, MonederoVacio(), InventarioVacio(false), "AUD-0001"));
+
+            Task<Usuario> NuevoUsuario(string nombre, DateTime nacimiento, int experiencia, bool verificado, bool inventarioPublico) =>
+                Paso(u => new UsuarioService(u).NewAsync(
+                    nombre, $"{nombre.ToLowerInvariant()}@skinlink.gg", ClaveDemo, nacimiento, EstadoCuenta.Activo,
+                    experiencia / 100 + 1, experiencia, DateTime.UtcNow.AddDays(-1), true, "es", verificado,
+                    MonederoVacio(), InventarioVacio(inventarioPublico)));
+
+            var neoRift = await NuevoUsuario("NeoRift", new DateTime(2000, 6, 12), 420, true, false);
+            var novaTrade = await NuevoUsuario("NovaTrade", new DateTime(1997, 11, 2), 860, true, false);
+            var pixelWolf = await NuevoUsuario("PixelWolf", new DateTime(2002, 1, 25), 150, true, true);
+            var lunaByte = await NuevoUsuario("LunaByte", new DateTime(1999, 8, 9), 230, true, true);
+            var zeroLag = await NuevoUsuario("ZeroLag", new DateTime(2003, 4, 30), 60, true, false);
+            var xRaptor = await NuevoUsuario("xRaptor", new DateTime(2004, 9, 17), 0, false, false);
+            var tramposo = await NuevoUsuario("Tramposo99", new DateTime(2001, 2, 3), 10, false, false);
+
+            // --- Activos en los inventarios ---
+            Task<ActivoDigital> NuevoActivo(Usuario dueno, string nombre, string coleccion, double precio,
+                Rareza rareza, Condicion condicion, double floatVal, int patron) =>
+                Paso(u => new ActivoDigitalService(u).NewAsync(
+                    nombre, coleccion, Eur(precio),
+                    new AtributosSkin { Rareza = rareza, Condicion = condicion, FloatVal = floatVal, Patron = patron },
+                    false, Guid.NewGuid().ToString(), string.Empty, dueno.Inventario.Id));
+
+            // NovaTrade: vendedor con buena reputación
+            var akEmperatriz = await NuevoActivo(novaTrade, "AK-47 | Emperatriz", "Spectrum 2", 101.24, Rareza.Raro, Condicion.DesgasteMinimo, 0.078421, 661);
+            var awpAsiimov = await NuevoActivo(novaTrade, "AWP | Asiimov", "Operación Phoenix", 141.25, Rareza.Especial, Condicion.AlgoDesgastado, 0.214, 318);
+            var deagleBlaze = await NuevoActivo(novaTrade, "Desert Eagle | Blaze", "Colección Dust", 548.90, Rareza.Especial, Condicion.RecienFabricado, 0.011, 77);
+            var guantesVice = await NuevoActivo(novaTrade, "Guantes | Vice", "Guantes Broken Fang", 1048.00, Rareza.Extraordinario, Condicion.DesgasteMinimo, 0.092, 412);
+            // NeoRift: coleccionista
+            var printstream = await NuevoActivo(neoRift, "M4A1-S | Printstream", "Operación Fractura", 318.50, Rareza.Raro, Condicion.RecienFabricado, 0.031, 905);
+            var karambit = await NuevoActivo(neoRift, "Karambit | Autotrónico", "Chroma 2", 1124.30, Rareza.Extraordinario, Condicion.DesgasteMinimo, 0.071, 233);
+            var uspKill = await NuevoActivo(neoRift, "USP-S | Kill Confirmed", "Shadow", 82.10, Rareza.Raro, Condicion.BastanteDesgastado, 0.402, 154);
+            // PixelWolf
+            var m4a4NeoNoir = await NuevoActivo(pixelWolf, "M4A4 | Neo-Noir", "Spectrum 2", 28.60, Rareza.Especial, Condicion.AlgoDesgastado, 0.187, 590);
+            var mp9Pulso = await NuevoActivo(pixelWolf, "MP9 | Pulso", "Revolution", 1.20, Rareza.Comun, Condicion.RecienFabricado, 0.044, 12);
+            // LunaByte
+            var p250Circuito = await NuevoActivo(lunaByte, "P250 | Circuito", "Revolution", 4.80, Rareza.PocoComun, Condicion.DesgasteMinimo, 0.120, 731);
+            var awpNeoNoir = await NuevoActivo(lunaByte, "AWP | Neo-Noir", "Spectrum 2", 39.90, Rareza.Especial, Condicion.AlgoDesgastado, 0.256, 47);
+            // ZeroLag
+            var glockFade = await NuevoActivo(zeroLag, "Glock-18 | Fade", "Colección Assault", 1250.00, Rareza.Extraordinario, Condicion.RecienFabricado, 0.009, 1);
+            var famasRoll = await NuevoActivo(zeroLag, "FAMAS | Roll Cage", "Wildfire", 3.40, Rareza.PocoComun, Condicion.Deplorable, 0.812, 600);
+            // xRaptor (cuenta sin verificar)
+            await NuevoActivo(xRaptor, "Nova | Antique", "Phoenix", 2.10, Rareza.Comun, Condicion.BastanteDesgastado, 0.430, 88);
+
+            // --- Activos base de las cajas (en el inventario de la plataforma, el del admin) ---
+            var dropKarambit = await NuevoActivo(admin, "Karambit | Autotrónico", "Chroma 2", 1124.30, Rareza.Extraordinario, Condicion.RecienFabricado, 0.05, 1);
+            var dropPrintstream = await NuevoActivo(admin, "M4A1-S | Printstream", "Operación Fractura", 318.50, Rareza.Raro, Condicion.RecienFabricado, 0.05, 1);
+            var dropAsiimov = await NuevoActivo(admin, "AWP | Asiimov", "Operación Phoenix", 141.25, Rareza.Especial, Condicion.AlgoDesgastado, 0.25, 1);
+            var dropCircuito = await NuevoActivo(admin, "P250 | Circuito", "Revolution", 4.80, Rareza.PocoComun, Condicion.DesgasteMinimo, 0.10, 1);
+            var dropPulso = await NuevoActivo(admin, "MP9 | Pulso", "Revolution", 1.20, Rareza.Comun, Condicion.RecienFabricado, 0.05, 1);
+
+            // --- Cajas misteriosas con sus probabilidades (suman 100 %) ---
+            async Task<CajaMisteriosa> NuevaCaja(string nombre, double precio, bool activa, params (double Porcentaje, ActivoDigital Activo)[] drops)
+            {
+                return await Paso(async u =>
+                {
+                    var probabilidades = new List<ProbabilidadDrop>();
+                    foreach (var d in drops)
+                    {
+                        var activoBase = await u.ActivoDigitalRepository.ReadAsync(d.Activo.Id)
+                            ?? throw new InvalidOperationException($"Activo base {d.Activo.Id} no encontrado.");
+                        probabilidades.Add(new ProbabilidadDrop { PorcentajeDrop = d.Porcentaje, ActivoRecompensa = activoBase });
+                    }
+                    return await new CajaMisteriosaService(u).NewAsync(nombre, Eur(precio), activa, probabilidades);
+                });
+            }
+
+            var fuegoIgneo = await NuevaCaja("Fuego Ígneo", 3.90, true,
+                (0.26, dropKarambit), (0.64, dropPrintstream), (3.20, dropAsiimov), (15.90, dropCircuito), (80.00, dropPulso));
+            await NuevaCaja("Neón Nocturno", 5.50, true,
+                (0.50, dropKarambit), (1.50, dropPrintstream), (8.00, dropAsiimov), (30.00, dropCircuito), (60.00, dropPulso));
+            await NuevaCaja("Colección 2026", 8.00, true,
+                (1.00, dropKarambit), (4.00, dropPrintstream), (15.00, dropAsiimov), (30.00, dropCircuito), (50.00, dropPulso));
+            await NuevaCaja("Órbita Cero", 12.40, false,
+                (2.00, dropKarambit), (8.00, dropPrintstream), (20.00, dropAsiimov), (70.00, dropCircuito));
+            var cajaBienvenida = await NuevaCaja("Caja de bienvenida", 0, true,
+                (5.00, dropAsiimov), (25.00, dropCircuito), (70.00, dropPulso));
+
+            // --- Depósitos (pasarela de pago confirmada) ---
+            async Task Depositar(Usuario usuario, double importe, string referencia) =>
+                await Paso(u => new ejemplo.Application.UseCases.Monedero.MonederoUseCase(u)
+                    .DepositarFondosAsync(usuario.Monedero.Id, Eur(importe), referencia, true));
+
+            await Depositar(neoRift, 500, "PAY-DEMO-0001");
+            await Depositar(neoRift, 1000, "PAY-DEMO-0002");
+            await Depositar(pixelWolf, 800, "PAY-DEMO-0003");
+            await Depositar(lunaByte, 400, "PAY-DEMO-0004");
+            await Depositar(zeroLag, 300, "PAY-DEMO-0005");
+            await Depositar(novaTrade, 150, "PAY-DEMO-0006");
+            await Depositar(xRaptor, 50, "PAY-DEMO-0007");
+
+            // --- Ventas publicadas en el mercado ---
+            async Task<Venta> Publicar(Usuario vendedor, ActivoDigital activo, double precio)
+            {
+                var venta = await Paso(u => new VentaService(u).NewAsync(
+                    Eur(precio), DateTime.UtcNow, EstadoVenta.Disponible, vendedor.Id, 0, activo.Id, 0, 0));
+                await Hacer(u => new VentaService(u).PublicarVentaAsync(venta.Id, activo.Id));
+                return venta;
+            }
+
+            var ventaEmperatriz = await Publicar(novaTrade, akEmperatriz, 96.40);
+            var ventaAsiimov = await Publicar(novaTrade, awpAsiimov, 141.25);
+            await Publicar(novaTrade, deagleBlaze, 548.90);
+            var ventaGuantes = await Publicar(novaTrade, guantesVice, 1100.00);
+            await Publicar(neoRift, printstream, 312.80);
+            var ventaNeoNoir = await Publicar(pixelWolf, m4a4NeoNoir, 28.60);
+            var ventaGlock = await Publicar(zeroLag, glockFade, 1290.00);
+
+            // Rebaja de precio y una venta retirada del mercado.
+            await Hacer(u => new VentaService(u).EditarPrecioAsync(ventaGuantes.Id, Eur(1048.00)));
+            await Hacer(u => new VentaService(u).CancelarVentaAsync(ventaGlock.Id));
+
+            // --- Compras completadas (mueven saldos, activos y comisiones) ---
+            async Task Comprar(Venta venta, Usuario comprador) =>
+                await Hacer(u => new ejemplo.Application.UseCases.Venta.VentaUseCase(u)
+                    .ProcesarCompraSkinAsync(venta.Id, comprador.Id));
+
+            await Comprar(ventaEmperatriz, neoRift);
+            await Comprar(ventaAsiimov, pixelWolf);
+            await Comprar(ventaNeoNoir, lunaByte);
+
+            // --- Retirada de saldo (usuario verificado) ---
+            await Paso(u => new ejemplo.Application.UseCases.Monedero.MonederoUseCase(u)
+                .RetirarSaldoWalletAsync(neoRift.Monedero.Id, Eur(120), "Visa •••• 4281"));
+
+            // --- Aperturas de cajas y recompensa diaria ---
+            async Task AbrirCaja(CajaMisteriosa caja, Usuario usuario) =>
+                await Paso(u => new ejemplo.Application.UseCases.CajaMisteriosa.CajaMisteriosaUseCase(u)
+                    .AbrirCajaSorpresaAsync(caja.Id, usuario.Id));
+
+            await AbrirCaja(fuegoIgneo, neoRift);
+            await AbrirCaja(fuegoIgneo, neoRift);
+            await AbrirCaja(fuegoIgneo, zeroLag);
+            await Paso(u => new ejemplo.Application.UseCases.Usuario.UsuarioUseCase(u)
+                .ReclamarRecompensaDiariaAsync(lunaByte.Id, cajaBienvenida.Id));
+
+            // --- Reseñas de vendedores (nota de 1 a 5) ---
+            Task<ResenaVendedor> Resenar(Usuario comprador, Usuario vendedor, int nota, string comentario, int haceDias) =>
+                Paso(u => new ResenaVendedorService(u).NewAsync(
+                    nota, comentario, DateTime.UtcNow.AddDays(-haceDias), false, comprador.Id, vendedor.Id));
+
+            await Resenar(neoRift, novaTrade, 5, "Entrega rapidísima y el artículo coincidía exactamente con las capturas.", 1);
+            await Resenar(pixelWolf, novaTrade, 5, "Todo perfecto. La skin coincide con la descripción.", 2);
+            await Resenar(zeroLag, novaTrade, 4, "Buen vendedor, aunque tardó un poco en responder.", 9);
+            await Resenar(lunaByte, pixelWolf, 5, "Buena comunicación y proceso sencillo. Volvería a comprar.", 3);
+            await Resenar(pixelWolf, neoRift, 5, "Vendedor de confianza. Artículo recibido sin incidencias.", 12);
+            await Resenar(lunaByte, neoRift, 4, "Todo correcto.", 20);
+            var resenaOfensiva = await Resenar(xRaptor, novaTrade, 1, "ESTAFADORES!!! no compréis aquí", 5);
+            var resenaRetirada = await Resenar(zeroLag, pixelWolf, 2, "El precio me pareció alto.", 6);
+
+            // Moderación del administrador (queda en auditoría) y reseña ocultada.
+            await Hacer(u => new ResenaVendedorService(u).ModerarResenaAsync(resenaOfensiva.Id, admin.Id));
+            await Hacer(u => new ResenaVendedorService(u).OcultarResenaAsync(resenaRetirada.Id));
+
+            // --- Favoritos ---
+            await Paso(u => new ActivoDigitalService(u).MarcarComoFavoritoAsync(deagleBlaze.Id, neoRift.Id));
+            await Paso(u => new ActivoDigitalService(u).MarcarComoFavoritoAsync(guantesVice.Id, neoRift.Id));
+            await Paso(u => new ActivoDigitalService(u).MarcarComoFavoritoAsync(guantesVice.Id, pixelWolf.Id));
+            await Paso(u => new ActivoDigitalService(u).MarcarComoFavoritoAsync(karambit.Id, zeroLag.Id));
+            await Paso(u => new ActivoDigitalService(u).MarcarComoFavoritoAsync(deagleBlaze.Id, lunaByte.Id));
+
+            // --- Intercambios: uno pendiente, uno aceptado y uno cancelado ---
+            Task<Intercambio> Proponer(Usuario proponente, Usuario receptor, ActivoDigital ofrecido, ActivoDigital solicitado) =>
+                Paso(u => new ejemplo.Application.UseCases.Intercambio.IntercambioUseCase(u)
+                    .IniciarIntercambioAsync(proponente.Id, receptor.Id, new List<int> { ofrecido.Id }, new List<int> { solicitado.Id }));
+
+            await Proponer(neoRift, pixelWolf, uspKill, mp9Pulso);
+            var intercambioAceptado = await Proponer(zeroLag, lunaByte, famasRoll, p250Circuito);
+            await Hacer(u => new ejemplo.Application.UseCases.Intercambio.IntercambioUseCase(u)
+                .AceptarIntercambioAsync(intercambioAceptado.Id, lunaByte.Id));
+            var intercambioCancelado = await Proponer(lunaByte, neoRift, awpNeoNoir, karambit);
+            await Hacer(u => new ejemplo.Application.UseCases.Intercambio.IntercambioUseCase(u)
+                .CancelarIntercambioAsync(intercambioCancelado.Id, lunaByte.Id));
+
+            // --- Inventario público de NovaTrade (escaparate del vendedor) ---
+            await Paso(u => new InventarioPrivadoService(u).CambiarVisibilidadInventarioAsync(novaTrade.Inventario.Id));
+
+            // --- Administración: suspensión de una cuenta (queda en auditoría) ---
+            await Hacer(u => new AdministradorService(u).ActualizarEstadoKYCAsync(admin.Id, tramposo.Id, EstadoCuenta.Suspendido));
+
+            Console.WriteLine("-------------------------------------------------------");
+            Console.WriteLine("Credenciales de la demo (el login es con el id):");
+            Console.WriteLine($"  Administrador  id={admin.Id,-4} admin      / Admin123!");
+            foreach (var demo in new[] { neoRift, novaTrade, pixelWolf, lunaByte, zeroLag, xRaptor, tramposo })
+            {
+                Console.WriteLine($"  Usuario        id={demo.Id,-4} {demo.NombreUsuario,-10} / {ClaveDemo}");
+            }
+            Console.WriteLine($"  ConfiguracionSistema id={configuracion.Id}");
+            Console.WriteLine("-------------------------------------------------------");
             /*PROTECTED REGION END*/
         }
         catch (Exception ex)

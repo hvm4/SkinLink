@@ -28,11 +28,8 @@ public partial class IntercambioController
     {
     /*PROTECTED REGION ID(IntercambioController_IniciarIntercambio_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
-        var useCase = new ejemplo.Application.UseCases.Intercambio.IntercambioUseCase(unitOfWork);
-        var result = await useCase.IniciarIntercambioAsync(p_proponente_oid, p_receptor_oid, p_activosOfrecidos_oids, p_activosSolicitados_oids);
-        return Ok(result);
+        // Miembro 4: el proponente es siempre el usuario de la sesión; p_proponente_oid se ignora.
+        return await IniciarIntercambioDesdeSesionAsync(p_receptor_oid, p_activosOfrecidos_oids, p_activosSolicitados_oids);
     /*PROTECTED REGION END*/
     }
 
@@ -44,11 +41,8 @@ public partial class IntercambioController
     {
     /*PROTECTED REGION ID(IntercambioController_AceptarIntercambio_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
-        var useCase = new ejemplo.Application.UseCases.Intercambio.IntercambioUseCase(unitOfWork);
-        await useCase.AceptarIntercambioAsync(p_oid, p_receptor_oid);
-        return NoContent();
+        // Miembro 4: solo acepta el receptor, que es el usuario de la sesión; p_receptor_oid se ignora.
+        return await ResolverIntercambioAsync(p_oid, aceptar: true);
     /*PROTECTED REGION END*/
     }
 
@@ -60,11 +54,8 @@ public partial class IntercambioController
     {
     /*PROTECTED REGION ID(IntercambioController_CancelarIntercambio_POST_body) ENABLED START*/
 
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-        await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
-        var useCase = new ejemplo.Application.UseCases.Intercambio.IntercambioUseCase(unitOfWork);
-        await useCase.CancelarIntercambioAsync(p_oid, p_usuario_oid);
-        return NoContent();
+        // Miembro 4: cancela el usuario de la sesión (proponente o receptor); p_usuario_oid se ignora.
+        return await ResolverIntercambioAsync(p_oid, aceptar: false);
     /*PROTECTED REGION END*/
     }
 }

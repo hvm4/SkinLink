@@ -38,7 +38,10 @@ public partial class IntercambioController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
-    /*PROTECTED REGION ID(IntercambioController_Index_GET_body) START*/
+    /*PROTECTED REGION ID(IntercambioController_Index_GET_body) ENABLED START*/
+        // Miembro 4: un usuario solo ve sus propios intercambios; el listado completo es del administrador.
+        if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User))
+            return RedirectToAction(nameof(MisIntercambios));
 
         var entities = await _intercambioService.ReadAllAsync();
         return View(entities.Select(IntercambioAssembler.ToViewModel).ToList());

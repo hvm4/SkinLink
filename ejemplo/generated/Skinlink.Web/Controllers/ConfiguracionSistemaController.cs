@@ -151,10 +151,19 @@ public partial class ConfiguracionSistemaController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-    /*PROTECTED REGION ID(ConfiguracionSistemaController_DeleteConfirmed_POST_body) START*/
+    /*PROTECTED REGION ID(ConfiguracionSistemaController_DeleteConfirmed_POST_body) ENABLED START*/
 
         if (!ModelState.IsValid) return View("Delete", new Skinlink.Web.ViewModels.ConfiguracionSistemaViewModel());
-        await _configuracionSistemaService.DestroyAsync(id);
+        try
+        {
+            await _configuracionSistemaService.DestroyAsync(id);
+            TempData["ExitoBorrado"] = "Registro eliminado.";
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["ErrorBorrado"] = this.MensajeDeErrorAlEliminar(error);
+            return RedirectToAction(nameof(Delete), new { id });
+        }
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
     }

@@ -43,6 +43,22 @@ public static class MensajesUsuario
         return ErrorGenerico;
     }
 
+    /// <summary>
+    /// Texto para el usuario cuando falla un borrado del CRUD genérico. Si la base de datos lo impide porque
+    /// otros registros dependen de este (clave ajena), se explica así; el detalle técnico va al log.
+    /// </summary>
+    public static string MensajeDeErrorAlEliminar(this ControllerBase controller, Exception ex)
+    {
+        var texto = controller.MensajeDeError(ex);
+        if (MensajeDeNegocio(ex) is not null) return texto;
+        for (var causa = ex; causa is not null; causa = causa.InnerException)
+        {
+            if (causa.Message.Contains("FOREIGN KEY", StringComparison.OrdinalIgnoreCase))
+                return "No se puede eliminar este registro porque otros datos dependen de él (ventas, transacciones, intercambios, reseñas...). Elimina o modifica antes esos datos.";
+        }
+        return texto;
+    }
+
     // Se mira la causa original (la excepción más interna): si es de negocio, su mensaje es para el usuario.
     // Si es técnica (base de datos, nulos...), aunque el caso de uso la envuelva en una ModelException
     // ("Application error while executing use case ..."), no se enseña.

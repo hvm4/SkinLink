@@ -231,7 +231,7 @@ public partial class ArticuloCatalogoController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-    /*PROTECTED REGION ID(ArticuloCatalogoController_DeleteConfirmed_POST_body) START*/
+    /*PROTECTED REGION ID(ArticuloCatalogoController_DeleteConfirmed_POST_body) ENABLED START*/
 
         if (!ModelState.IsValid) return View("Delete", new Skinlink.Web.ViewModels.ArticuloCatalogoViewModel());
         await using var unitOfWork = _fileUnitOfWorkFactory.Create();
@@ -249,6 +249,7 @@ public partial class ArticuloCatalogoController : Controller
             await unitOfWork.RollbackAsync();
             _fileLogger.LogError(error, "Could not delete ArticuloCatalogo.");
             ModelState.AddModelError(string.Empty, "No se ha podido eliminar el registro.");
+            TempData["ErrorBorrado"] = this.MensajeDeErrorAlEliminar(error);
             return View("Delete", ArticuloCatalogoAssembler.ToViewModel(entity));
         }
         await _files.DeleteEntityFileAsync(entity.Imagen);

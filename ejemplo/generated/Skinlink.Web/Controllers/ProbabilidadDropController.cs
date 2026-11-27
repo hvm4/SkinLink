@@ -226,10 +226,19 @@ public partial class ProbabilidadDropController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-    /*PROTECTED REGION ID(ProbabilidadDropController_DeleteConfirmed_POST_body) START*/
+    /*PROTECTED REGION ID(ProbabilidadDropController_DeleteConfirmed_POST_body) ENABLED START*/
 
         if (!ModelState.IsValid) return View("Delete", new Skinlink.Web.ViewModels.ProbabilidadDropViewModel());
-        await _probabilidadDropService.DestroyAsync(id);
+        try
+        {
+            await _probabilidadDropService.DestroyAsync(id);
+            TempData["ExitoBorrado"] = "Registro eliminado.";
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["ErrorBorrado"] = this.MensajeDeErrorAlEliminar(error);
+            return RedirectToAction(nameof(Delete), new { id });
+        }
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
     }

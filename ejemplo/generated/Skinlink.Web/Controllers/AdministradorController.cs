@@ -203,10 +203,25 @@ public partial class AdministradorController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-    /*PROTECTED REGION ID(AdministradorController_DeleteConfirmed_POST_body) START*/
+    /*PROTECTED REGION ID(AdministradorController_DeleteConfirmed_POST_body) ENABLED START*/
 
         if (!ModelState.IsValid) return View("Delete", new Skinlink.Web.ViewModels.AdministradorViewModel());
-        await _administradorService.DestroyAsync(id);
+        // El administrador no puede borrar su propia cuenta (se quedaría sin acceso y sin administrador).
+        if (Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User) == id)
+        {
+            TempData["ErrorBorrado"] = "No puedes eliminar tu propia cuenta.";
+            return RedirectToAction(nameof(Index));
+        }
+        try
+        {
+            await _administradorService.DestroyAsync(id);
+            TempData["ExitoBorrado"] = "Registro eliminado.";
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["ErrorBorrado"] = this.MensajeDeErrorAlEliminar(error);
+            return RedirectToAction(nameof(Delete), new { id });
+        }
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
     }

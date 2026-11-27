@@ -46,7 +46,13 @@ cd ..
 # 2) Compilar y ejecutar todas las pruebas
 dotnet test ejemplo.sln
 
-# 3) Arrancar la web (con HTTPS: la cookie de sesión es segura y no viaja por http)
+# 3) Volver a crear la demo: la prueba generada Generated_Crud_And_Associations_Should_Work_Against_Database
+#    usa esta misma base de datos y deja monederos e inventarios "Sample" sueltos
+cd InitializeDB
+dotnet run
+cd ..
+
+# 4) Arrancar la web (con HTTPS: la cookie de sesión es segura y no viaja por http)
 dotnet run --project Skinlink.Web --launch-profile https
 ```
 
@@ -246,5 +252,5 @@ Todas las pantallas propias siguen la misma tarjeta que las vistas generadas por
 
 - Nunca se edita nada fuera de las regiones `/*PROTECTED REGION ID(...) ENABLED START*/ ... /*PROTECTED REGION END*/`: al regenerar se pierde.
 - La lógica propia va en `Services/manual` y `UseCases/manual`, un archivo por operación (`<Entidad>Service_<Operacion>.cs` o `<Entidad>UseCase_<Operacion>.cs`).
-- Tras cambiar `ejemplo.tdm`: regenerar con HARIA, ejecutar `InitializeDB` y lanzar `dotnet test` antes de subir los cambios.
+- Tras cambiar `ejemplo.tdm`: regenerar con HARIA, ejecutar `InitializeDB` y lanzar `dotnet test` antes de subir los cambios. Después de `dotnet test`, ejecutar otra vez `InitializeDB` para dejar la demo limpia.
 - Si una región protegida desaparece del modelo, HARIA guarda su código en `generated/.haria/orphans`.

@@ -69,6 +69,17 @@
     </header>
 
     <main class="container flex-grow-1 py-4 py-lg-5">
+        @* Resultado de los borrados del CRUD genérico: las vistas Delete e Index las genera HARIA Web
+           sin región protegida, así que el aviso se muestra aquí (claves propias para no duplicar
+           los avisos de _MensajesOperacion). *@
+        @if (TempData["ExitoBorrado"] is string exitoBorrado && !string.IsNullOrWhiteSpace(exitoBorrado))
+        {
+            <div class="alert alert-success" role="status">@exitoBorrado</div>
+        }
+        @if (TempData["ErrorBorrado"] is string errorBorrado && !string.IsNullOrWhiteSpace(errorBorrado))
+        {
+            <div class="alert alert-danger" role="alert">@errorBorrado</div>
+        }
         @RenderBody()
     </main>
 

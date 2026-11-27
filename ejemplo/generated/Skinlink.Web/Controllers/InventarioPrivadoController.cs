@@ -55,6 +55,10 @@ public partial class InventarioPrivadoController : Controller
         var entity = await _inventarioPrivadoService.ReadOIDAsync(id);
         if (entity is null) return NotFound();
         var model = InventarioPrivadoAssembler.ToViewModel(entity);
+        // El assembler generado no copia la colección Activos: se rellena aquí, junto con el valor total.
+        model.Activos = entity.Activos.Select(ActivoDigitalAssembler.ToViewModel).OrderBy(a => a.Nombre).ToList();
+        model.ValorEstimadoTotalValor = Math.Round(model.Activos.Sum(a => a.PrecioEstimadoValor), 2);
+        if (string.IsNullOrWhiteSpace(model.ValorEstimadoTotalDivisa)) model.ValorEstimadoTotalDivisa = "EUR";
         // Se puede ver el inventario propio o uno público; el administrador ve cualquiera.
         if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User)
             && !model.EsPublico
@@ -232,10 +236,19 @@ public partial class InventarioPrivadoController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-    /*PROTECTED REGION ID(InventarioPrivadoController_DeleteConfirmed_POST_body) START*/
+    /*PROTECTED REGION ID(InventarioPrivadoController_DeleteConfirmed_POST_body) ENABLED START*/
 
         if (!ModelState.IsValid) return View("Delete", new Skinlink.Web.ViewModels.InventarioPrivadoViewModel());
-        await _inventarioPrivadoService.DestroyAsync(id);
+        try
+        {
+            await _inventarioPrivadoService.DestroyAsync(id);
+            TempData["ExitoBorrado"] = "Registro eliminado.";
+        }
+        catch (Exception error) when (error is not OperationCanceledException)
+        {
+            TempData["ErrorBorrado"] = this.MensajeDeErrorAlEliminar(error);
+            return RedirectToAction(nameof(Delete), new { id });
+        }
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
     }

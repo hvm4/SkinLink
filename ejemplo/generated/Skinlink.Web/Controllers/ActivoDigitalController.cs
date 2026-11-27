@@ -282,7 +282,7 @@ public partial class ActivoDigitalController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-    /*PROTECTED REGION ID(ActivoDigitalController_DeleteConfirmed_POST_body) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_DeleteConfirmed_POST_body) ENABLED START*/
 
         if (!ModelState.IsValid) return View("Delete", new Skinlink.Web.ViewModels.ActivoDigitalViewModel());
         await using var unitOfWork = _fileUnitOfWorkFactory.Create();
@@ -300,6 +300,7 @@ public partial class ActivoDigitalController : Controller
             await unitOfWork.RollbackAsync();
             _fileLogger.LogError(error, "Could not delete ActivoDigital.");
             ModelState.AddModelError(string.Empty, "No se ha podido eliminar el registro.");
+            TempData["ErrorBorrado"] = this.MensajeDeErrorAlEliminar(error);
             return View("Delete", ActivoDigitalAssembler.ToViewModel(entity));
         }
         await _files.DeleteEntityFileAsync(entity.Imagen);

@@ -54,7 +54,11 @@ public partial class UsuarioController
 
         try
         {
-            await _usuarioService.SuspenderCuentaUsuarioAsync(p_oid);
+            // RF-29: la operación y su registro de auditoría van en una única transacción.
+            var administradorId = Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User)
+                ?? throw new InvalidOperationException("La sesión no es válida: vuelve a iniciar sesión.");
+            await using var unitOfWork = _formUnitOfWorkFactory.Create();
+            await global::ejemplo.Application.Reglas.OperacionesAuditadas.SuspenderCuentaUsuarioAsync(unitOfWork, administradorId, p_oid);
             TempData["Exito"] = "La cuenta se ha suspendido. El usuario perderá el acceso la próxima vez que inicie sesión.";
         }
         catch (Exception error) when (error is not OperationCanceledException)
@@ -76,7 +80,11 @@ public partial class UsuarioController
 
         try
         {
-            await _usuarioService.VerificarUsuarioAsync(p_oid);
+            // RF-29: la operación y su registro de auditoría van en una única transacción.
+            var administradorId = Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User)
+                ?? throw new InvalidOperationException("La sesión no es válida: vuelve a iniciar sesión.");
+            await using var unitOfWork = _formUnitOfWorkFactory.Create();
+            await global::ejemplo.Application.Reglas.OperacionesAuditadas.VerificarUsuarioAsync(unitOfWork, administradorId, p_oid);
             TempData["Exito"] = "La identidad del usuario se ha verificado.";
         }
         catch (Exception error) when (error is not OperationCanceledException)

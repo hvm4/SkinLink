@@ -30,20 +30,24 @@ public partial class MonederoController
     public async Task<IActionResult> IncrementarSaldo(int p_oid, Moneda p_montoAnadir)
     {
     /*PROTECTED REGION ID(MonederoController_IncrementarSaldo_POST_body) ENABLED START*/
-
-        // Operación interna: modifica el saldo sin pasar por una transacción, solo para administradores.
-        // Los usuarios normales usan DepositarFondos.
+        // Operación interna de administración: no genera transacción en el historial.
+        // Los usuarios normales usan DepositarFondos / RetirarSaldoWallet.
         if (!User.EsAdministrador()) return Forbid();
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid || p_montoAnadir is null)
+        {
+            TempData["Error"] = "Indica un importe y una divisa válidos.";
+            return RedirectToAction(nameof(AjustarSaldo), new { p_oid });
+        }
         try
         {
             await _monederoService.IncrementarSaldoAsync(p_oid, p_montoAnadir);
+            TempData["Ok"] = $"Se han añadido {p_montoAnadir.Valor:N2} {p_montoAnadir.Divisa} al monedero #{p_oid}.";
         }
-        catch (ejemplo.Application.Exceptions.ModelException ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return BadRequest(CompraventaWebHelper.MensajeDeError(ex));
+            TempData["Error"] = CompraventaWebHelper.MensajeDeError(ex);
         }
-        return NoContent();
+        return RedirectToAction(nameof(AjustarSaldo), new { p_oid });
     /*PROTECTED REGION END*/
     }
 
@@ -55,18 +59,24 @@ public partial class MonederoController
     public async Task<IActionResult> DecrementarSaldo(int p_oid, Moneda p_montoRestar)
     {
     /*PROTECTED REGION ID(MonederoController_DecrementarSaldo_POST_body) ENABLED START*/
-
+        // Operación interna de administración: no genera transacción en el historial.
+        // Los usuarios normales usan DepositarFondos / RetirarSaldoWallet.
         if (!User.EsAdministrador()) return Forbid();
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid || p_montoRestar is null)
+        {
+            TempData["Error"] = "Indica un importe y una divisa válidos.";
+            return RedirectToAction(nameof(AjustarSaldo), new { p_oid });
+        }
         try
         {
             await _monederoService.DecrementarSaldoAsync(p_oid, p_montoRestar);
+            TempData["Ok"] = $"Se han restado {p_montoRestar.Valor:N2} {p_montoRestar.Divisa} del monedero #{p_oid}.";
         }
-        catch (ejemplo.Application.Exceptions.ModelException ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return BadRequest(CompraventaWebHelper.MensajeDeError(ex));
+            TempData["Error"] = CompraventaWebHelper.MensajeDeError(ex);
         }
-        return NoContent();
+        return RedirectToAction(nameof(AjustarSaldo), new { p_oid });
     /*PROTECTED REGION END*/
     }
 

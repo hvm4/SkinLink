@@ -14,6 +14,15 @@ public partial class MonederoController
         return View(model);
     }
 
+    /// <summary>Ajuste manual de saldo (incrementarSaldo / decrementarSaldo). Solo administradores.</summary>
+    [HttpGet]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
+    public async Task<IActionResult> AjustarSaldo(int? p_oid)
+    {
+        var model = await CompraventaWebHelper.CargarMonederosAsync(_formUnitOfWorkFactory, User, p_oid);
+        return View(model);
+    }
+
     [HttpGet]
     public async Task<IActionResult> RetirarSaldoWallet(int? p_oid)
     {

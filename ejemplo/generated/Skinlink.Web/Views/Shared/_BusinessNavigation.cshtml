@@ -205,6 +205,11 @@
                 <ul class="list-unstyled mb-0">
                     <li><a asp-controller="Monedero" asp-action="DepositarFondos">Depositar fondos</a></li>
                     <li><a asp-controller="Monedero" asp-action="RetirarSaldoWallet">Retirar saldo</a></li>
+                    @if (User.IsInRole(Skinlink.Web.Utils.Security.Roles.Administrador))
+                    {
+                        <li><a asp-controller="Monedero" asp-action="AjustarSaldo">Ajustar saldo (admin)</a></li>
+                        <li><a asp-controller="Transaccion" asp-action="ValidarSaldoMonedero">Comprobar saldo (admin)</a></li>
+                    }
                 </ul>
             </div></div>
         </div>

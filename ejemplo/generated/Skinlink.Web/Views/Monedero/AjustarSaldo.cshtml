@@ -1,0 +1,81 @@
+@* Fichero manual (no lo genera HARIA Web): incrementarSaldo y decrementarSaldo (solo administradores). *@
+@model Skinlink.Web.ViewModels.OperacionMonederoViewModel
+@{
+    ViewData["Title"] = "Ajustar saldo";
+    var separador = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Ajustar saldo</h1>
+        <p class="text-body-secondary mb-0">Corrección manual del saldo disponible de un monedero (administración). No genera movimiento en el historial: para operaciones de usuario usa Depositar o Retirar.</p>
+    </div>
+    <div class="card-body p-4">
+        <partial name="_AlertasOperacion" />
+
+        @if (!Model.Monederos.Any())
+        {
+            <div class="alert alert-warning mb-0">No hay ningún monedero.</div>
+        }
+        else
+        {
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <form asp-action="IncrementarSaldo" method="post" class="border rounded p-3 h-100">
+                        @Html.AntiForgeryToken()
+                        <h2 class="h5">Añadir saldo</h2>
+                        <div class="mb-3">
+                            <label for="inc_oid" class="form-label">Monedero</label>
+                            <select id="inc_oid" name="p_oid" asp-items="Model.Monederos" class="form-select" required>
+                                <option value="">Selecciona...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-7">
+                                <label for="inc_valor" class="form-label">Importe</label>
+                                <input id="inc_valor" name="p_montoAnadir.Valor" type="text" inputmode="decimal" data-haria-number="true" data-haria-decimal="@separador" class="form-control" required />
+                            </div>
+                            <div class="col-5">
+                                <label for="inc_divisa" class="form-label">Divisa</label>
+                                <input id="inc_divisa" name="p_montoAnadir.Divisa" value="@Model.Divisa" maxlength="3" class="form-control" required />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Añadir</button>
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    <form asp-action="DecrementarSaldo" method="post" class="border rounded p-3 h-100">
+                        @Html.AntiForgeryToken()
+                        <h2 class="h5">Restar saldo</h2>
+                        <div class="mb-3">
+                            <label for="dec_oid" class="form-label">Monedero</label>
+                            <select id="dec_oid" name="p_oid" asp-items="Model.Monederos" class="form-select" required>
+                                <option value="">Selecciona...</option>
+                            </select>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-7">
+                                <label for="dec_valor" class="form-label">Importe</label>
+                                <input id="dec_valor" name="p_montoRestar.Valor" type="text" inputmode="decimal" data-haria-number="true" data-haria-decimal="@separador" class="form-control" required />
+                            </div>
+                            <div class="col-5">
+                                <label for="dec_divisa" class="form-label">Divisa</label>
+                                <input id="dec_divisa" name="p_montoRestar.Divisa" value="@Model.Divisa" maxlength="3" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="form-text mb-2">No se permite dejar el saldo en negativo.</div>
+                        <button type="submit" class="btn btn-outline-danger">Restar</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="card-footer bg-body p-4">
+        <a asp-controller="Monedero" asp-action="Index" class="btn btn-outline-secondary">Volver a monederos</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/haria-numbers.js" asp-append-version="true"></script>
+}

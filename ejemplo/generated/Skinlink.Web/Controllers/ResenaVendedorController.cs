@@ -62,9 +62,12 @@ public partial class ResenaVendedorController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
-    /*PROTECTED REGION ID(ResenaVendedorController_Create_GET_body) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_Create_GET_body) ENABLED START*/
 
         var model = new Skinlink.Web.ViewModels.ResenaVendedorViewModel();
+        // RF-18: la reseña la firma siempre el usuario autenticado.
+        model.CompradorId = Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User);
+        model.Fecha = DateTime.UtcNow;
 
         await LoadFormOptionsAsync(model);
         return View(model);
@@ -77,7 +80,17 @@ public partial class ResenaVendedorController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.ResenaVendedorViewModel model)
     {
-    /*PROTECTED REGION ID(ResenaVendedorController_Create_POST_body) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_Create_POST_body) ENABLED START*/
+        // RF-18 / CU-15: el comprador es el usuario autenticado (nunca un valor del formulario),
+        // la reseña nace visible y con la fecha actual.
+        var compradorActual = Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User);
+        if (compradorActual is null) return Challenge();
+        model.CompradorId = compradorActual;
+        model.Oculta = false;
+        model.Fecha = DateTime.UtcNow;
+        ModelState.Remove(nameof(model.CompradorId));
+        ModelState.Remove(nameof(model.Oculta));
+        ModelState.Remove(nameof(model.Fecha));
 
 
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
@@ -100,6 +113,19 @@ public partial class ResenaVendedorController : Controller
 
 
 
+        // Regla de negocio: solo tras una compra completada al vendedor, una reseña por compra, 1-5 estrellas.
+        if (ModelState.IsValid && model.VendedorId is int vendedorElegido)
+        {
+            try
+            {
+                await global::ejemplo.Application.Reglas.ReglasResenaVendedor.ValidarNuevaResenaAsync(
+                    unitOfWork, compradorActual.Value, vendedorElegido, model.Puntuacion);
+            }
+            catch (global::ejemplo.Application.Exceptions.ModelException error)
+            {
+                ModelState.AddModelError(string.Empty, error.Message);
+            }
+        }
         if (!ModelState.IsValid) return View(model);
 
 
@@ -132,7 +158,8 @@ public partial class ResenaVendedorController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ResenaVendedorController_Edit_GET_attributes) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_Edit_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // RF-26: solo el administrador edita o borra reseñas
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -148,7 +175,8 @@ public partial class ResenaVendedorController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ResenaVendedorController_Edit_POST_attributes) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_Edit_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // RF-26: solo el administrador edita o borra reseñas
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.ResenaVendedorViewModel model)
     {
@@ -208,7 +236,8 @@ public partial class ResenaVendedorController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ResenaVendedorController_Delete_GET_attributes) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_Delete_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // RF-26: solo el administrador edita o borra reseñas
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -223,7 +252,8 @@ public partial class ResenaVendedorController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ResenaVendedorController_DeleteConfirmed_POST_attributes) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_DeleteConfirmed_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // RF-26: solo el administrador edita o borra reseñas
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

@@ -115,7 +115,7 @@ public partial class UsuarioController
             await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
             var useCase = new ejemplo.Application.UseCases.Usuario.UsuarioUseCase(unitOfWork);
             var result = await useCase.ReclamarRecompensaDiariaAsync(p_oid, p_caja_oid);
-            TempData["Exito"] = $"¡Recompensa diaria reclamada! Has obtenido «{result.Nombre}» ({result.Atributos?.Rareza}, {result.Atributos?.Condicion}) y 25 puntos de experiencia.";
+            TempData["Exito"] = $"¡Recompensa diaria reclamada! Has obtenido «{result.Nombre}» ({(result.Atributos is null ? "" : Skinlink.Web.ViewModels.TextosDominio.Rareza(result.Atributos.Rareza) + ", " + Skinlink.Web.ViewModels.TextosDominio.Condicion(result.Atributos.Condicion))}) y 25 puntos de experiencia.";
             return RedirectToAction(nameof(Details), new { id = p_oid });
         }
         catch (Exception error) when (error is not OperationCanceledException)

@@ -121,7 +121,12 @@ public partial class IntercambioController
             else
             {
                 await useCase.CancelarIntercambioAsync(intercambioId, yo);
-                TempData["Exito"] = $"Intercambio #{intercambioId} cancelado.";
+                // El receptor lo rechaza y el proponente lo cancela: el aviso usa el mismo estado que el historial.
+                await using var lectura = _formUnitOfWorkFactory.Create();
+                var estado = (await lectura.IntercambioRepository.ReadAsync(intercambioId))?.Estado;
+                TempData["Exito"] = estado == ejemplo.Domain.Enums.EstadoIntercambio.Rechazado
+                    ? $"Has rechazado el intercambio #{intercambioId}."
+                    : $"Has cancelado la propuesta de intercambio #{intercambioId}.";
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

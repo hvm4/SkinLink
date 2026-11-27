@@ -270,7 +270,7 @@ public partial class CajaMisteriosaController : Controller
     /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasActivas_GET_body) ENABLED START*/
 
         var result = await _cajaMisteriosaService.FiltrarCajasActivasAsync();
-        return MostrarBusquedaCajas(new Skinlink.Web.ViewModels.CajaBusquedaViewModel(), "Cajas activas", result);
+        return await MostrarBusquedaCajasAsync(new Skinlink.Web.ViewModels.CajaBusquedaViewModel(), "Cajas activas", result);
     /*PROTECTED REGION END*/
     }
 
@@ -292,7 +292,7 @@ public partial class CajaMisteriosaController : Controller
             return View("Buscar", model);
         }
         var result = await _cajaMisteriosaService.FiltrarCajasPorPrecioAperturaAsync(minimo, maximo);
-        return MostrarBusquedaCajas(model, $"Precio de apertura entre {minimo:0.##} y {maximo:0.##}", result);
+        return await MostrarBusquedaCajasAsync(model, $"Precio de apertura entre {minimo:0.##} y {maximo:0.##}", result);
     /*PROTECTED REGION END*/
     }
 

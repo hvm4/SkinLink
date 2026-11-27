@@ -17,8 +17,11 @@
             <div class="col-md-4">
                 <form asp-action="FiltrarActivosPorRareza" method="get" class="card card-body h-100">
                     <label for="p_rareza" class="form-label">Rareza</label>
-                    <select id="p_rareza" name="p_rareza" class="form-select mb-2"
-                            asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.Rareza>()">
+                    <select id="p_rareza" name="p_rareza" class="form-select mb-2">
+                        @foreach (var rareza in Enum.GetValues<ejemplo.Domain.Enums.Rareza>())
+                        {
+                            <option value="@((int)rareza)" selected="@(Model.Rareza == rareza)">@TextosDominio.Rareza(rareza)</option>
+                        }
                     </select>
                     <button type="submit" class="btn btn-primary">Filtrar por rareza</button>
                 </form>
@@ -34,8 +37,11 @@
             <div class="col-md-4">
                 <form asp-action="FiltrarActivosPorCondicion" method="get" class="card card-body h-100">
                     <label for="p_condicion" class="form-label">Condición</label>
-                    <select id="p_condicion" name="p_condicion" class="form-select mb-2"
-                            asp-items="Html.GetEnumSelectList<ejemplo.Domain.Enums.Condicion>()">
+                    <select id="p_condicion" name="p_condicion" class="form-select mb-2">
+                        @foreach (var condicion in Enum.GetValues<ejemplo.Domain.Enums.Condicion>())
+                        {
+                            <option value="@((int)condicion)" selected="@(Model.Condicion == condicion)">@TextosDominio.Condicion(condicion)</option>
+                        }
                     </select>
                     <button type="submit" class="btn btn-primary">Filtrar por condición</button>
                 </form>
@@ -107,15 +113,34 @@
                                 </td>
                                 <td>@activo.Nombre</td>
                                 <td>@activo.Coleccion</td>
-                                <td>@activo.AtributosRareza</td>
-                                <td>@activo.AtributosCondicion</td>
+                                <td><span class="badge @TextosDominio.ClaseRareza(activo.AtributosRareza)">@TextosDominio.Rareza(activo.AtributosRareza)</span></td>
+                                <td>@TextosDominio.Condicion(activo.AtributosCondicion)</td>
                                 <td>@activo.PrecioEstimadoValor.ToString("0.00") @activo.PrecioEstimadoDivisa</td>
                                 <td>@(activo.EnVenta ? "Sí" : "No")</td>
                                 <td class="text-end text-nowrap">
                                     @if (Model.Autenticado)
                                     {
-                                        <a asp-action="Details" asp-route-id="@activo.Id" class="btn btn-sm btn-outline-primary">Detalles</a>
-                                        <a asp-action="Operaciones" asp-route-id="@activo.Id" class="btn btn-sm btn-outline-secondary">Operaciones</a>
+                                        var esPropio = Model.Propios.Contains(activo.Id);
+                                        var esFavorito = Model.Favoritos.Contains(activo.Id);
+                                        <div class="d-inline-flex flex-wrap justify-content-end gap-1">
+                                            <a asp-action="Details" asp-route-id="@activo.Id" class="btn btn-sm btn-outline-primary">Detalles</a>
+                                            @if (esPropio || Model.EsAdministrador)
+                                            {
+                                                <a asp-action="Operaciones" asp-route-id="@activo.Id" class="btn btn-sm btn-outline-secondary">Operaciones</a>
+                                            }
+                                            @if (esPropio && !activo.EnVenta)
+                                            {
+                                                <a asp-controller="Venta" asp-action="PonerALaVenta" asp-route-activoId="@activo.Id" class="btn btn-sm btn-outline-success">Vender</a>
+                                            }
+                                            @if (!esPropio && !Model.EsAdministrador)
+                                            {
+                                                <form asp-controller="Favorito" asp-action="Alternar" method="post" class="m-0">
+                                                    <input type="hidden" name="activoId" value="@activo.Id" />
+                                                    <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                                                    <button type="submit" class="btn btn-sm @(esFavorito ? "btn-warning" : "btn-outline-warning")" title="@(esFavorito ? "Quitar de favoritos" : "Añadir a favoritos")">@(esFavorito ? "★ Favorito" : "☆ Favorito")</button>
+                                                </form>
+                                            }
+                                        </div>
                                     }
                                 </td>
                             </tr>

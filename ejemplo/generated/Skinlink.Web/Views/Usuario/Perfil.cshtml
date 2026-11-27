@@ -15,7 +15,7 @@
         <partial name="_MensajesOperacion" />
 
         <dl class="row mb-0">
-            <dt class="col-sm-3">Identificador de acceso</dt><dd class="col-sm-9">@u.Id</dd>
+            <dt class="col-sm-3">Id de usuario</dt><dd class="col-sm-9">@u.Id</dd>
             <dt class="col-sm-3">Tipo de cuenta</dt>
             <dd class="col-sm-9">
                 @if (Model.EsAdministrador)
@@ -33,7 +33,7 @@
             <dt class="col-sm-3">Identidad verificada</dt><dd class="col-sm-9">@(u.Verificado ? "Sí" : "No")</dd>
             <dt class="col-sm-3">Nivel</dt><dd class="col-sm-9">@u.Nivel</dd>
             <dt class="col-sm-3">Experiencia</dt><dd class="col-sm-9">@u.Experiencia puntos</dd>
-            <dt class="col-sm-3">Última recompensa diaria</dt><dd class="col-sm-9">@(u.FechaUltimaRecompensa?.ToString("g") ?? "Nunca")</dd>
+            <dt class="col-sm-3">Última recompensa diaria</dt><dd class="col-sm-9">@(u.FechaUltimaRecompensa is DateTime ultima ? DateTime.SpecifyKind(ultima, DateTimeKind.Utc).ToLocalTime().ToString("g") : "Nunca")</dd>
             <dt class="col-sm-3">Idioma</dt><dd class="col-sm-9">@u.Idioma</dd>
             <dt class="col-sm-3">Monedero</dt>
             <dd class="col-sm-9">

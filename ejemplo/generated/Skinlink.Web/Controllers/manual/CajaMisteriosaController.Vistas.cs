@@ -34,13 +34,22 @@ public partial class CajaMisteriosaController
 
     private int? UsuarioActualId() => User.GetUsuarioId();
 
-    private IActionResult MostrarBusquedaCajas(CajaBusquedaViewModel model, string filtro, IEnumerable<CajaMisteriosa> resultados)
+    private async Task<IActionResult> MostrarBusquedaCajasAsync(CajaBusquedaViewModel model, string filtro, IEnumerable<CajaMisteriosa> resultados)
     {
         model.FiltroAplicado = filtro;
         model.Resultados = resultados
             .OrderBy(c => c.PrecioApertura?.Valor ?? 0)
             .Select(CajaMisteriosaAssembler.ToViewModel)
             .ToList();
+
+        // Los filtros no cargan las probabilidades de cada caja: se cuentan aparte.
+        await using var unitOfWork = _formUnitOfWorkFactory.Create();
+        await unitOfWork.CajaMisteriosaRepository.ReadAllAsync();
+        var probabilidades = await unitOfWork.ProbabilidadDropRepository.ReadAllAsync();
+        model.Recompensas = probabilidades
+            .Where(p => p.Caja is not null)
+            .GroupBy(p => p.Caja.Id)
+            .ToDictionary(g => g.Key, g => g.Count());
         return View("Buscar", model);
     }
 

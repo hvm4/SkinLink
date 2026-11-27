@@ -42,7 +42,10 @@ public partial class ActivoDigitalController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
-    /*PROTECTED REGION ID(ActivoDigitalController_Index_GET_body) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_Index_GET_body) ENABLED START*/
+        // El listado completo (con editar y borrar) es del administrador; el usuario busca desde su página.
+        if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User))
+            return RedirectToAction("Buscar");
 
         var entities = await _activoDigitalService.ReadAllAsync();
         return View(entities.Select(ActivoDigitalAssembler.ToViewModel).ToList());
@@ -63,7 +66,8 @@ public partial class ActivoDigitalController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ActivoDigitalController_Create_GET_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_Create_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
@@ -78,7 +82,8 @@ public partial class ActivoDigitalController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ActivoDigitalController_Create_POST_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_Create_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.ActivoDigitalViewModel model)
     {
@@ -157,7 +162,8 @@ public partial class ActivoDigitalController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ActivoDigitalController_Edit_GET_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_Edit_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -173,7 +179,8 @@ public partial class ActivoDigitalController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ActivoDigitalController_Edit_POST_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_Edit_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.ActivoDigitalViewModel model)
     {
@@ -254,7 +261,8 @@ public partial class ActivoDigitalController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(ActivoDigitalController_Delete_GET_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_Delete_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -269,7 +277,8 @@ public partial class ActivoDigitalController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(ActivoDigitalController_DeleteConfirmed_POST_attributes) START*/
+    /*PROTECTED REGION ID(ActivoDigitalController_DeleteConfirmed_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -309,7 +318,7 @@ public partial class ActivoDigitalController : Controller
         var model = NuevaBusqueda();
         model.Rareza = p_rareza;
         var result = await _activoDigitalService.FiltrarActivosPorRarezaAsync(p_rareza);
-        return MostrarBusqueda(model, $"Rareza: {p_rareza}", result);
+        return await MostrarBusquedaAsync(model, $"Rareza: {Skinlink.Web.ViewModels.TextosDominio.Rareza(p_rareza)}", result);
     /*PROTECTED REGION END*/
     }
 
@@ -329,7 +338,7 @@ public partial class ActivoDigitalController : Controller
             return View("Buscar", model);
         }
         var result = await _activoDigitalService.FiltrarActivosPorColeccionAsync(model.Coleccion);
-        return MostrarBusqueda(model, $"Colección: {model.Coleccion}", result);
+        return await MostrarBusquedaAsync(model, $"Colección: {model.Coleccion}", result);
     /*PROTECTED REGION END*/
     }
 
@@ -344,7 +353,7 @@ public partial class ActivoDigitalController : Controller
         var model = NuevaBusqueda();
         model.Condicion = p_condicion;
         var result = await _activoDigitalService.FiltrarActivosPorCondicionAsync(p_condicion);
-        return MostrarBusqueda(model, $"Condición: {p_condicion}", result);
+        return await MostrarBusquedaAsync(model, $"Condición: {Skinlink.Web.ViewModels.TextosDominio.Condicion(p_condicion)}", result);
     /*PROTECTED REGION END*/
     }
 
@@ -362,7 +371,7 @@ public partial class ActivoDigitalController : Controller
         model.UsuarioId = usuarioId;
         model.EnVenta = p_enVenta;
         var result = await _activoDigitalService.FiltrarActivosEnVentaAsync(usuarioId.Value, p_enVenta);
-        return MostrarBusqueda(model, $"Activos {(p_enVenta ? "en venta" : "guardados")} del usuario #{usuarioId}", result);
+        return await MostrarBusquedaAsync(model, usuarioId == UsuarioActualId() ? $"Mis activos {(p_enVenta ? "en venta" : "guardados")}" : $"Activos {(p_enVenta ? "en venta" : "guardados")} del usuario #{usuarioId}", result);
     /*PROTECTED REGION END*/
     }
 

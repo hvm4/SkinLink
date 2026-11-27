@@ -37,7 +37,10 @@ public partial class ResenaVendedorController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
-    /*PROTECTED REGION ID(ResenaVendedorController_Index_GET_body) START*/
+    /*PROTECTED REGION ID(ResenaVendedorController_Index_GET_body) ENABLED START*/
+        // El listado completo incluye reseñas ocultas: solo el administrador. El resto ve la reputación pública.
+        if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User))
+            return RedirectToAction(nameof(FiltrarResenasVisiblesPorVendedor));
 
         var entities = await _resenaVendedorService.ReadAllAsync();
         return View(entities.Select(ResenaVendedorAssembler.ToViewModel).ToList());
@@ -68,9 +71,11 @@ public partial class ResenaVendedorController : Controller
         // RF-18: la reseña la firma siempre el usuario autenticado.
         model.CompradorId = Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User);
         model.Fecha = DateTime.UtcNow;
+        model.Puntuacion = 5;
+        if (int.TryParse(Request.Query["vendedorId"], out var vendedorPedido)) model.VendedorId = vendedorPedido;
 
-        await LoadFormOptionsAsync(model);
-        return View(model);
+        // Los usuarios ven la pantalla propia "Valorar a un vendedor"; el administrador, el formulario genérico.
+        return await VistaCrearResenaAsync(model);
     /*PROTECTED REGION END*/
     }
 
@@ -126,7 +131,7 @@ public partial class ResenaVendedorController : Controller
                 ModelState.AddModelError(string.Empty, error.Message);
             }
         }
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid) return await VistaCrearResenaAsync(model);
 
 
         try
@@ -148,11 +153,14 @@ public partial class ResenaVendedorController : Controller
             await unitOfWork.RollbackAsync();
             if (error is OperationCanceledException) throw;
             _logger.LogError(error, "Could not save the record and its lines.");
-            ModelState.AddModelError(string.Empty, "No se han podido guardar el registro y sus líneas.");
-            return View(model);
+            ModelState.AddModelError(string.Empty, this.MensajeDeError(error));
+            return await VistaCrearResenaAsync(model);
         }
 
 
+        TempData["Exito"] = "Gracias por tu reseña: ya aparece en la reputación del vendedor.";
+        if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User))
+            return RedirectToAction(nameof(FiltrarResenasVisiblesPorVendedor), new { p_vendedorId = model.VendedorId });
         return RedirectToAction(nameof(Index));
     /*PROTECTED REGION END*/
     }

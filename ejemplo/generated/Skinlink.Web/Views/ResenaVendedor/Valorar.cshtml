@@ -1,0 +1,60 @@
+@* Fichero manual (no lo genera HARIA Web): valorar a un vendedor (usuarios).
+   Se envía a la acción generada Create, que fija el comprador (la sesión), la fecha y la visibilidad,
+   y comprueba la regla: solo tras una compra completada, una reseña por compra, de 1 a 5 estrellas. *@
+@model Skinlink.Web.ViewModels.ResenaVendedorViewModel
+@{
+    ViewData["Title"] = "Valorar a un vendedor";
+    var vendedores = ViewData["Vendedores"] as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> ?? new();
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Valorar a un vendedor</h1>
+        <p class="text-body-secondary mb-0">Puedes valorar a los vendedores a los que has comprado: una reseña por cada compra, de 1 a 5 estrellas.</p>
+    </div>
+    <form asp-action="Create" method="post">
+        <div class="card-body p-4">
+            <partial name="_MensajesOperacion" />
+            @if (vendedores.Count == 0)
+            {
+                <div class="alert alert-info mb-0">Todavía no has completado ninguna compra, así que no puedes valorar a ningún vendedor.</div>
+            }
+            else
+            {
+                <div style="max-width: 36rem">
+                    <div class="mb-3">
+                        <label for="VendedorId" class="form-label">Vendedor</label>
+                        <select id="VendedorId" name="VendedorId" class="form-select" required>
+                            <option value="">Selecciona un vendedor…</option>
+                            @foreach (var vendedor in vendedores)
+                            {
+                                <option value="@vendedor.Value" selected="@vendedor.Selected">@vendedor.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Puntuacion" class="form-label">Puntuación</label>
+                        <select id="Puntuacion" name="Puntuacion" class="form-select" style="max-width: 14rem">
+                            @for (var estrellas = 5; estrellas >= 1; estrellas--)
+                            {
+                                <option value="@estrellas" selected="@(Model.Puntuacion == estrellas)">@(new string('★', estrellas))@(new string('☆', 5 - estrellas)) (@estrellas)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Comentario" class="form-label">Comentario</label>
+                        <textarea id="Comentario" name="Comentario" class="form-control" rows="3" maxlength="500" required>@Model.Comentario</textarea>
+                        <span asp-validation-for="Comentario" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+            @if (vendedores.Count > 0)
+            {
+                <button type="submit" class="btn btn-primary">Publicar reseña</button>
+            }
+            <a asp-action="FiltrarResenasVisiblesPorVendedor" class="btn btn-outline-secondary">Ver la reputación de los vendedores</a>
+        </div>
+    </form>
+</div>

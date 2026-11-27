@@ -1,0 +1,132 @@
+@* Fichero manual (no lo genera HARIA Web): poner a la venta un activo propio (Venta.new + Venta.publicarVenta). *@
+@model Skinlink.Web.ViewModels.PonerALaVentaViewModel
+@{
+    ViewData["Title"] = "Poner a la venta";
+    var vendibles = Model.Activos.Where(a => a.Motivo is null).ToList();
+    var noVendibles = Model.Activos.Where(a => a.Motivo is not null).ToList();
+    var seleccionado = vendibles.FirstOrDefault(a => a.Id == Model.ActivoId) ?? vendibles.FirstOrDefault();
+    var separador = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Poner a la venta</h1>
+        <p class="text-body-secondary mb-0">Elige uno de tus activos y su precio. Queda publicado en el mercado y ganas 10 puntos de experiencia.</p>
+    </div>
+    <form asp-action="PonerALaVenta" method="post">
+        <div class="card-body p-4">
+            <partial name="_MensajesOperacion" />
+            @if (vendibles.Count == 0)
+            {
+                <div class="alert alert-info mb-0">Ahora mismo no tienes activos que se puedan poner a la venta. Consigue más abriendo cajas, con la recompensa diaria o con intercambios.</div>
+            }
+            else
+            {
+                <div style="max-width: 36rem">
+                    <div class="mb-3">
+                        <label for="p_activo_oid" class="form-label">Activo</label>
+                        <select id="p_activo_oid" name="p_activo_oid" class="form-select" required>
+                            @foreach (var activo in vendibles)
+                            {
+                                <option value="@activo.Id" data-precio="@activo.PrecioEstimado.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture)" data-divisa="@activo.Divisa" selected="@(activo.Id == seleccionado?.Id)">@activo.Nombre · @activo.Detalle · estimado @TextosDominio.Precio(activo.PrecioEstimado, activo.Divisa)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="p_precio_Valor" class="form-label">Precio de venta</label>
+                            <input id="p_precio_Valor" name="p_precio.Valor" type="text" inputmode="decimal" data-haria-number="true" data-haria-decimal="@separador"
+                                   value="@(seleccionado?.PrecioEstimado.ToString("0.##", System.Globalization.CultureInfo.CurrentCulture))" class="form-control" required />
+                            <div class="form-text">Se propone el precio estimado del activo.</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="p_precio_Divisa" class="form-label">Divisa</label>
+                            <input id="p_precio_Divisa" name="p_precio.Divisa" value="@(seleccionado?.Divisa ?? "EUR")" class="form-control" maxlength="3" required />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+            @if (vendibles.Count > 0)
+            {
+                <button type="submit" class="btn btn-primary">Poner a la venta</button>
+            }
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Volver al inicio</a>
+        </div>
+    </form>
+</div>
+
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-header bg-body px-4 py-3">
+        <h2 class="h5 mb-0">Mis ventas publicadas</h2>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.VentasPublicadas.Count == 0)
+        {
+            <p class="text-body-secondary p-4 mb-0">No tienes ninguna venta publicada.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light"><tr><th>#</th><th>Activo</th><th>Precio</th><th>Publicada</th><th class="text-end">Acciones</th></tr></thead>
+                    <tbody>
+                    @foreach (var venta in Model.VentasPublicadas)
+                    {
+                        <tr>
+                            <td>@venta.VentaId</td>
+                            <td>@venta.Activo</td>
+                            <td>@TextosDominio.Precio(venta.Precio, venta.Divisa)</td>
+                            <td>@venta.FechaPublicacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="EditarPrecio" asp-route-p_oid="@venta.VentaId" class="btn btn-sm btn-outline-primary">Editar precio</a>
+                                <a asp-action="CancelarVenta" asp-route-p_oid="@venta.VentaId" class="btn btn-sm btn-outline-danger">Cancelar venta</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@if (noVendibles.Count > 0)
+{
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-header bg-body px-4 py-3">
+            <h2 class="h5 mb-0">Activos que no se pueden vender ahora</h2>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light"><tr><th>Activo</th><th>Motivo</th></tr></thead>
+                    <tbody>
+                    @foreach (var activo in noVendibles)
+                    {
+                        <tr><td>@activo.Nombre <span class="text-body-secondary small">· @activo.Detalle</span></td><td class="text-body-secondary">@activo.Motivo</td></tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        // Al cambiar de activo se propone su precio estimado.
+        (function () {
+            var select = document.getElementById('p_activo_oid');
+            var precio = document.getElementById('p_precio_Valor');
+            var divisa = document.getElementById('p_precio_Divisa');
+            if (!select || !precio || !divisa) return;
+            select.addEventListener('change', function () {
+                var option = select.options[select.selectedIndex];
+                if (option && option.dataset.precio) precio.value = option.dataset.precio;
+                if (option && option.dataset.divisa) divisa.value = option.dataset.divisa;
+            });
+        })();
+    </script>
+}

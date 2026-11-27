@@ -30,6 +30,12 @@ public sealed class ActivoBusquedaViewModel
     public bool Autenticado { get; set; }
 
     public List<ActivoDigitalViewModel> Resultados { get; set; } = new();
+
+    /// <summary>Ids de los resultados que son del usuario conectado.</summary>
+    public HashSet<int> Propios { get; set; } = new();
+
+    /// <summary>Ids de los resultados que el usuario conectado tiene en favoritos.</summary>
+    public HashSet<int> Favoritos { get; set; } = new();
 }
 
 /// <summary>Búsqueda de cajas: activas o por rango de precio de apertura.</summary>
@@ -44,6 +50,9 @@ public sealed class CajaBusquedaViewModel
     public string? FiltroAplicado { get; set; }
 
     public List<CajaMisteriosaViewModel> Resultados { get; set; } = new();
+
+    /// <summary>Número de posibles recompensas de cada caja (id de caja → probabilidades).</summary>
+    public Dictionary<int, int> Recompensas { get; set; } = new();
 }
 
 /// <summary>Panel de operaciones de un activo (bloquear, desbloquear, precio, autenticidad, reporte).</summary>

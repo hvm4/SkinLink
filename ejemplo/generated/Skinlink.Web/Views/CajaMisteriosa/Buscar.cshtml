@@ -68,7 +68,7 @@
                                 <td>@caja.Nombre</td>
                                 <td>@caja.PrecioAperturaValor.ToString("0.00") @caja.PrecioAperturaDivisa</td>
                                 <td>@(caja.Activa ? "Sí" : "No")</td>
-                                <td>@caja.Probabilidades.Count</td>
+                                <td>@Model.Recompensas.GetValueOrDefault(caja.Id)</td>
                                 <td class="text-end">
                                     <a asp-action="Abrir" asp-route-id="@caja.Id" class="btn btn-sm btn-outline-primary">Ver probabilidades y abrir</a>
                                 </td>

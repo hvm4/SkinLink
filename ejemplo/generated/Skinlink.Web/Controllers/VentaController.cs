@@ -59,7 +59,8 @@ public partial class VentaController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(VentaController_Create_GET_attributes) START*/
+    /*PROTECTED REGION ID(VentaController_Create_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
@@ -74,7 +75,8 @@ public partial class VentaController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(VentaController_Create_POST_attributes) START*/
+    /*PROTECTED REGION ID(VentaController_Create_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.VentaViewModel model)
     {
@@ -147,7 +149,8 @@ public partial class VentaController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(VentaController_Edit_GET_attributes) START*/
+    /*PROTECTED REGION ID(VentaController_Edit_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -163,7 +166,8 @@ public partial class VentaController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(VentaController_Edit_POST_attributes) START*/
+    /*PROTECTED REGION ID(VentaController_Edit_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.VentaViewModel model)
     {
@@ -235,7 +239,8 @@ public partial class VentaController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(VentaController_Delete_GET_attributes) START*/
+    /*PROTECTED REGION ID(VentaController_Delete_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -250,7 +255,8 @@ public partial class VentaController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(VentaController_DeleteConfirmed_POST_attributes) START*/
+    /*PROTECTED REGION ID(VentaController_DeleteConfirmed_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

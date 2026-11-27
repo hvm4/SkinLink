@@ -73,6 +73,8 @@ public partial class UsuarioController : Controller
     {
     /*PROTECTED REGION ID(UsuarioController_Create_GET_body) ENABLED START*/
 
+        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
+
         // Alta administrativa: el monedero y el inventario se crean vacíos automáticamente.
         return View("Alta", new UsuarioViewModel
         {
@@ -104,7 +106,7 @@ public partial class UsuarioController : Controller
         try
         {
             var entity = await _usuarioService.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento, model.Estado, model.Nivel, model.Experiencia, model.FechaUltimoLogin, model.TemaModoOscuro, model.Idioma, model.Verificado, CuentaNueva.Monedero(), CuentaNueva.Inventario());
-            TempData["Exito"] = $"Usuario creado. Su identificador de acceso es {entity.Id}.";
+            TempData["Exito"] = $"Usuario creado. Puede iniciar sesión con su correo ({entity.Correo}).";
             return RedirectToAction(nameof(Details), new { id = entity.Id });
         }
         catch (Exception error) when (error is not OperationCanceledException)
@@ -124,6 +126,8 @@ public partial class UsuarioController : Controller
     {
     /*PROTECTED REGION ID(UsuarioController_Register_GET_body) ENABLED START*/
 
+        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
+
         if (User.Identity?.IsAuthenticated == true) return RedirectToAction(nameof(Perfil));
         return View("Registro", new UsuarioViewModel { FechaNacimiento = DateTime.Today.AddYears(-18), Idioma = "es" });
     /*PROTECTED REGION END*/
@@ -140,7 +144,7 @@ public partial class UsuarioController : Controller
 
         // Registro propio: el usuario solo elige sus datos personales. El estado, el nivel, la experiencia
         // y la verificación los fija el servidor, y el monedero y el inventario se crean vacíos.
-        QuitarCamposGestionadosPorServidor();
+        QuitarCamposDelRegistro();
         if (string.IsNullOrEmpty(model.Contrasena)) ModelState.AddModelError(nameof(model.Contrasena), "Debes indicar una contraseña.");
         if (model.FechaNacimiento.Date > DateTime.Today) ModelState.AddModelError(nameof(model.FechaNacimiento), "La fecha de nacimiento no puede ser futura.");
         if (await CorreoEnUsoAsync(model.Correo)) ModelState.AddModelError(nameof(model.Correo), "Ya existe una cuenta con ese correo.");
@@ -167,10 +171,10 @@ public partial class UsuarioController : Controller
         catch (Exception error) when (error is not OperationCanceledException)
         {
             _logger.LogError(error, "La cuenta se ha creado, pero no se ha podido iniciar la sesión.");
-            TempData["Exito"] = $"Tu cuenta ya está creada. Tu identificador de acceso es {createdUser.Id}: úsalo para iniciar sesión.";
+            TempData["Exito"] = $"Tu cuenta ya está creada. Inicia sesión con tu correo ({createdUser.Correo}) y tu contraseña.";
             return RedirectToAction("Login", "Account");
         }
-        TempData["Exito"] = $"¡Bienvenido a SkinLink! Tu identificador de acceso es {createdUser.Id}: guárdalo, lo necesitarás para iniciar sesión.";
+        TempData["Exito"] = $"¡Bienvenido a SkinLink! A partir de ahora inicia sesión con tu correo ({createdUser.Correo}).";
         return RedirectToAction(nameof(Details), new { id = createdUser.Id });
     /*PROTECTED REGION END*/
     }

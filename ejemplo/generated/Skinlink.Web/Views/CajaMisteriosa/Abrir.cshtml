@@ -35,7 +35,7 @@
                     }
                     <div>
                         <div class="fw-semibold">@r.Nombre</div>
-                        <div>@r.Coleccion · @r.AtributosRareza · @r.AtributosCondicion (float @r.AtributosFloatVal.ToString("0.0000"))</div>
+                        <div>@r.Coleccion · @TextosDominio.Rareza(r.AtributosRareza) · @TextosDominio.Condicion(r.AtributosCondicion) (float @r.AtributosFloatVal.ToString("0.0000"))</div>
                         <div>Valor estimado: @r.PrecioEstimadoValor.ToString("0.00") @r.PrecioEstimadoDivisa</div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                         </td>
                         <td>@p.Nombre</td>
                         <td>@p.Coleccion</td>
-                        <td>@p.Rareza</td>
+                        <td><span class="badge @TextosDominio.ClaseRareza(p.Rareza)">@TextosDominio.Rareza(p.Rareza)</span></td>
                         <td class="text-end">@p.Porcentaje.ToString("0.##") %</td>
                     </tr>
                 }

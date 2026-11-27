@@ -67,6 +67,8 @@ public partial class AdministradorController : Controller
     {
     /*PROTECTED REGION ID(AdministradorController_Create_GET_body) ENABLED START*/
 
+        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
+
         // Alta de administrador (subclase de Usuario): monedero e inventario propios y vacíos.
         return View("Alta", new Skinlink.Web.ViewModels.AdministradorViewModel
         {
@@ -99,7 +101,7 @@ public partial class AdministradorController : Controller
         try
         {
             var entity = await _administradorService.NewAsync(model.NombreUsuario, model.Correo, model.Contrasena!, model.FechaNacimiento, model.Estado, model.Nivel, model.Experiencia, model.FechaUltimoLogin, model.TemaModoOscuro, model.Idioma, model.Verificado, CuentaNueva.Monedero(), CuentaNueva.Inventario(), model.CodigoAuditor);
-            TempData["Exito"] = $"Administrador creado. Su identificador de acceso es {entity.Id}.";
+            TempData["Exito"] = $"Administrador creado. Puede iniciar sesión con su correo ({entity.Correo}).";
             return RedirectToAction("Details", "Usuario", new { id = entity.Id });
         }
         catch (Exception error) when (error is not OperationCanceledException)
@@ -215,6 +217,8 @@ public partial class AdministradorController : Controller
     public async Task<IActionResult> FiltrarUsuariosPorEstado(EstadoCuenta p_estado)
     {
     /*PROTECTED REGION ID(AdministradorController_FiltrarUsuariosPorEstado_GET_body) ENABLED START*/
+
+        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
 
         // Operación heredada de Usuario: se reutiliza la vista del filtro de Usuario.
         return RedirectToAction("FiltrarUsuariosPorEstado", "Usuario", new { p_estado });

@@ -1,35 +1,119 @@
-@* Fichero manual (Miembro 1): portada para visitantes, usuarios normales y cuentas suspendidas. *@
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
-        <h1 class="h3">SkinLink</h1>
-        @if (User.Identity?.IsAuthenticated != true)
-        {
-            <p>Compra, vende e intercambia skins. Puedes ver los activos y las cajas sin cuenta; para operar, inicia sesión o regístrate.</p>
+@* Fichero manual (Miembro 1): portada para visitantes, usuarios normales y cuentas suspendidas.
+   Para los usuarios es el panel desde el que se llega a todas sus operaciones. *@
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body p-4">
+            <h1 class="h3 mb-1">SkinLink</h1>
+            <p class="text-body-secondary mb-0">Compra, vende e intercambia skins. Puedes ver los activos, las cajas y la reputación de los vendedores sin cuenta; para operar, inicia sesión o regístrate.</p>
+        </div>
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
             <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
             <a class="btn btn-outline-primary" asp-controller="Usuario" asp-action="Register">Crear cuenta</a>
-            <a class="btn btn-link" asp-controller="ActivoDigital" asp-action="Buscar">Ver activos</a>
-            <a class="btn btn-link" asp-controller="CajaMisteriosa" asp-action="Buscar">Ver cajas</a>
-        }
-        else if (!User.IsInRole(Roles.Usuario))
-        {
-            <div class="alert alert-warning mb-0">Tu cuenta está suspendida. Ponte en contacto con un administrador para reactivarla.</div>
-        }
-        else
-        {
-            <p>Hola, @User.GetNombreUsuario().</p>
-            <ul>
-                <li><a asp-controller="Usuario" asp-action="Perfil">Mi perfil</a></li>
-                <li><a asp-controller="Usuario" asp-action="ReclamarRecompensaDiaria">Reclamar la recompensa diaria</a></li>
-                <li><a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas">Mis movimientos</a></li>
-                <li><a asp-controller="ActivoDigital" asp-action="Buscar">Buscar activos</a></li>
-                <li><a asp-controller="CajaMisteriosa" asp-action="Buscar">Cajas misteriosas</a></li>
-                <li><a asp-controller="Venta" asp-action="Index">Ventas</a></li>
-                @* Miembro 4 *@
-                <li><a asp-controller="Intercambio" asp-action="MisIntercambios">Mis intercambios</a></li>
-                <li><a asp-controller="Favorito" asp-action="MisFavoritos">Mis favoritos</a></li>
-                <li><a asp-controller="InventarioPrivado" asp-action="Visibilidad">Visibilidad de mi inventario</a></li>
-                <li><a asp-controller="ResenaVendedor" asp-action="FiltrarResenasVisiblesPorVendedor">Reputación de vendedores</a></li>
-            </ul>
-        }
+            <a class="btn btn-outline-secondary" asp-controller="ActivoDigital" asp-action="Buscar">Ver activos</a>
+            <a class="btn btn-outline-secondary" asp-controller="CajaMisteriosa" asp-action="Buscar">Ver cajas</a>
+            <a class="btn btn-outline-secondary" asp-controller="ResenaVendedor" asp-action="FiltrarResenasVisiblesPorVendedor">Reputación de vendedores</a>
+        </div>
     </div>
-</div>
+}
+else if (!User.IsInRole(Roles.Usuario))
+{
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body p-4">
+            <h1 class="h3 mb-1">SkinLink</h1>
+            <p class="text-body-secondary mb-0">Tu sesión está iniciada, pero la cuenta no tiene acceso.</p>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-warning mb-0">Tu cuenta está suspendida. Ponte en contacto con un administrador para reactivarla.</div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body p-4">
+            <h1 class="h3 mb-1">Hola, @User.GetNombreUsuario()</h1>
+            <p class="text-body-secondary mb-0">Todo lo que puedes hacer en SkinLink, agrupado.</p>
+        </div>
+        <div class="card-body p-4">
+            <partial name="_MensajesOperacion" />
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h6 text-uppercase text-body-secondary">Mi cuenta</h2>
+                            <ul class="list-unstyled mb-0">
+                                <li><a asp-controller="Usuario" asp-action="Perfil">Mi perfil</a></li>
+                                <li><a asp-controller="Usuario" asp-action="ReclamarRecompensaDiaria">Reclamar la recompensa diaria</a></li>
+                                <li><a asp-controller="InventarioPrivado" asp-action="Visibilidad">Visibilidad de mi inventario</a></li>
+                                <li><a asp-controller="ActivoDigital" asp-action="FiltrarActivosEnVenta" asp-route-p_usuarioId="0" asp-route-p_enVenta="false">Mis activos guardados</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h6 text-uppercase text-body-secondary">Monedero</h2>
+                            <ul class="list-unstyled mb-0">
+                                <li><a asp-controller="Monedero" asp-action="DepositarFondos">Depositar fondos</a></li>
+                                <li><a asp-controller="Monedero" asp-action="RetirarSaldoWallet">Retirar saldo</a></li>
+                                <li><a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas">Mis movimientos por fechas</a></li>
+                                <li><a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorTipo">Mis movimientos por tipo</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h6 text-uppercase text-body-secondary">Comprar</h2>
+                            <ul class="list-unstyled mb-0">
+                                <li><a asp-controller="ActivoDigital" asp-action="Buscar">Buscar activos</a></li>
+                                <li><a asp-controller="Venta" asp-action="ProcesarCompraSkin">Comprar una skin</a></li>
+                                <li><a asp-controller="Venta" asp-action="FiltrarVentasPorPrecioMaximo">Ventas por precio máximo</a></li>
+                                <li><a asp-controller="Venta" asp-action="FiltrarVentasPorEstado">Ventas por estado</a></li>
+                                <li><a asp-controller="CajaMisteriosa" asp-action="Buscar">Cajas misteriosas</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h6 text-uppercase text-body-secondary">Vender</h2>
+                            <ul class="list-unstyled mb-0">
+                                <li><a asp-controller="Venta" asp-action="PonerALaVenta">Poner a la venta y mis ventas</a></li>
+                                <li><a asp-controller="Venta" asp-action="EditarPrecio">Editar el precio de una venta</a></li>
+                                <li><a asp-controller="Venta" asp-action="CancelarVenta">Cancelar una venta</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h6 text-uppercase text-body-secondary">Intercambios y favoritos</h2>
+                            <ul class="list-unstyled mb-0">
+                                <li><a asp-controller="Intercambio" asp-action="MisIntercambios">Mis intercambios</a></li>
+                                <li><a asp-controller="Intercambio" asp-action="Proponer">Proponer un intercambio</a></li>
+                                <li><a asp-controller="Favorito" asp-action="MisFavoritos">Mis favoritos</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h6 text-uppercase text-body-secondary">Reseñas</h2>
+                            <ul class="list-unstyled mb-0">
+                                <li><a asp-controller="ResenaVendedor" asp-action="FiltrarResenasVisiblesPorVendedor">Reputación de vendedores</a></li>
+                                <li><a asp-controller="ResenaVendedor" asp-action="Create">Valorar a un vendedor</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

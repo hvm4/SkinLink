@@ -4,14 +4,24 @@
     ViewData["Title"] = "Crear usuario";
 }
 
-<h1 class="h3">Crear usuario</h1>
-<form asp-action="Create" method="post" style="max-width: 32rem">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <partial name="_CamposCuenta" model="Model" />
-    <p class="text-body-secondary small">Se le creará un monedero y un inventario vacíos.</p>
-    <button type="submit" class="btn btn-primary">Crear</button>
-    <a asp-action="Index" class="btn btn-link">Cancelar</a>
-</form>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Crear usuario</h1>
+        <p class="text-body-secondary mb-0">Alta de una cuenta de usuario. Se le crean un monedero y un inventario vacíos; podrá iniciar sesión con su correo.</p>
+    </div>
+    <form asp-action="Create" method="post">
+        <div class="card-body p-4">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <div style="max-width: 32rem">
+                <partial name="_CamposCuenta" model="Model" />
+            </div>
+        </div>
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+            <button type="submit" class="btn btn-primary">Crear</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Volver a usuarios</a>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -93,6 +93,21 @@ public partial class UsuarioController
         ModelState.Remove(nameof(UsuarioViewModel.InventarioId));
     }
 
+    /// <summary>
+    /// El formulario de registro no envía el estado, el nivel, la experiencia, la verificación ni la fecha
+    /// de último acceso: los fija el servidor. Sin esto, Estado llega con 0 (no existe en EstadoCuenta)
+    /// y la validación rechaza el registro con "El valor de Estado no es válido".
+    /// </summary>
+    private void QuitarCamposDelRegistro()
+    {
+        QuitarCamposGestionadosPorServidor();
+        ModelState.Remove(nameof(UsuarioViewModel.Estado));
+        ModelState.Remove(nameof(UsuarioViewModel.Nivel));
+        ModelState.Remove(nameof(UsuarioViewModel.Experiencia));
+        ModelState.Remove(nameof(UsuarioViewModel.Verificado));
+        ModelState.Remove(nameof(UsuarioViewModel.FechaUltimoLogin));
+    }
+
     private async Task<bool> CorreoEnUsoAsync(string? correo)
     {
         if (string.IsNullOrWhiteSpace(correo)) return false;

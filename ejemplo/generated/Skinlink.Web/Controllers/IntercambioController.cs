@@ -62,7 +62,8 @@ public partial class IntercambioController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(IntercambioController_Create_GET_attributes) START*/
+    /*PROTECTED REGION ID(IntercambioController_Create_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
@@ -77,7 +78,8 @@ public partial class IntercambioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(IntercambioController_Create_POST_attributes) START*/
+    /*PROTECTED REGION ID(IntercambioController_Create_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.IntercambioViewModel model)
     {
@@ -136,7 +138,8 @@ public partial class IntercambioController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(IntercambioController_Edit_GET_attributes) START*/
+    /*PROTECTED REGION ID(IntercambioController_Edit_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -152,7 +155,8 @@ public partial class IntercambioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(IntercambioController_Edit_POST_attributes) START*/
+    /*PROTECTED REGION ID(IntercambioController_Edit_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.IntercambioViewModel model)
     {
@@ -212,7 +216,8 @@ public partial class IntercambioController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(IntercambioController_Delete_GET_attributes) START*/
+    /*PROTECTED REGION ID(IntercambioController_Delete_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -227,7 +232,8 @@ public partial class IntercambioController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(IntercambioController_DeleteConfirmed_POST_attributes) START*/
+    /*PROTECTED REGION ID(IntercambioController_DeleteConfirmed_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

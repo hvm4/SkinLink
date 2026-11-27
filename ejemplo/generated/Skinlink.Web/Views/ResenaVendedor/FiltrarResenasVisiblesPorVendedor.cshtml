@@ -16,6 +16,10 @@
         {
             <a asp-action="Moderacion" class="btn btn-outline-secondary">Ir a moderación de reseñas</a>
         }
+        else if (User.IsInRole(Roles.Usuario))
+        {
+            <a asp-action="Create" asp-route-vendedorId="@Model.VendedorId" class="btn btn-primary">Valorar a un vendedor</a>
+        }
     </div>
     <div class="card-body p-4">
         <partial name="_MensajesOperacion" />
@@ -86,7 +90,7 @@
                                 {
                                     <form asp-action="OcultarResena" method="post" class="flex-shrink-0">
                                         <input type="hidden" name="p_oid" value="@resena.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Ocultar de mi perfil</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">@(Model.EsAdministrador ? "Ocultar" : "Ocultar de mi perfil")</button>
                                     </form>
                                 }
                             </div>

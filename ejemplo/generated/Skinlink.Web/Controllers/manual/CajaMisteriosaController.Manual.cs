@@ -58,7 +58,7 @@ public partial class CajaMisteriosaController
             await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
             var useCase = new ejemplo.Application.UseCases.CajaMisteriosa.CajaMisteriosaUseCase(unitOfWork);
             var result = await useCase.AbrirCajaSorpresaAsync(p_oid, usuarioId.Value);
-            TempData["Exito"] = $"¡Has obtenido {result.Nombre} ({result.Atributos?.Rareza})! Ya está en tu inventario.";
+            TempData["Exito"] = $"¡Has obtenido {result.Nombre} ({(result.Atributos is null ? "" : Skinlink.Web.ViewModels.TextosDominio.Rareza(result.Atributos.Rareza))})! Ya está en tu inventario y has ganado 20 puntos de experiencia.";
             TempData["CajaActivoObtenidoId"] = result.Id;
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

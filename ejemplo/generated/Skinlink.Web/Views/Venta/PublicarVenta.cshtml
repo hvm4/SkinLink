@@ -15,7 +15,7 @@
 
             @if (!Model.Ventas.Any())
             {
-                <div class="alert alert-info mb-0">No tienes ventas pendientes de publicar. Crea una venta desde el listado de ventas.</div>
+                <div class="alert alert-info mb-0">No tienes ventas pendientes de publicar. Para vender uno de tus activos usa <a asp-action="PonerALaVenta" class="alert-link">Poner a la venta</a>.</div>
             }
             else
             {

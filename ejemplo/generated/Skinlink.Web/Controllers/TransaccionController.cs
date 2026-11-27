@@ -35,7 +35,8 @@ public partial class TransaccionController : Controller
     }
     /*PROTECTED REGION END*/
     [HttpGet]
-    /*PROTECTED REGION ID(TransaccionController_Index_GET_attributes) START*/
+    /*PROTECTED REGION ID(TransaccionController_Index_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // los listados completos son solo del administrador
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
@@ -51,11 +52,17 @@ public partial class TransaccionController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Details(int id)
     {
-    /*PROTECTED REGION ID(TransaccionController_Details_GET_body) START*/
+    /*PROTECTED REGION ID(TransaccionController_Details_GET_body) ENABLED START*/
 
         var entity = await _transaccionService.ReadOIDAsync(id);
         if (entity is null) return NotFound();
-        return View(TransaccionAssembler.ToViewModel(entity));
+        var model = TransaccionAssembler.ToViewModel(entity);
+        // Un usuario solo puede ver los movimientos de su propio monedero; el administrador, cualquiera.
+        if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User)
+            && (model.MonederoId is not int monederoId
+                || !await Skinlink.Web.Utils.CompraventaWebHelper.PuedeUsarMonederoAsync(_formUnitOfWorkFactory, User, monederoId)))
+            return Forbid();
+        return View(model);
     /*PROTECTED REGION END*/
     }
 

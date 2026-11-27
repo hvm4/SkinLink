@@ -32,13 +32,25 @@ public partial class ActivoDigitalController
         UsuarioId = User.GetUsuarioId()
     };
 
-    private IActionResult MostrarBusqueda(ActivoBusquedaViewModel model, string filtro, IEnumerable<ActivoDigital> resultados)
+    private async Task<IActionResult> MostrarBusquedaAsync(ActivoBusquedaViewModel model, string filtro, IEnumerable<ActivoDigital> resultados)
     {
         model.FiltroAplicado = filtro;
         model.Resultados = resultados
             .OrderBy(a => a.Nombre)
             .Select(ActivoDigitalAssembler.ToViewModel)
             .ToList();
+
+        // Para cada resultado: si es mío (operaciones y vender) y si ya está en mis favoritos.
+        if (UsuarioActualId() is int yo)
+        {
+            await using var unitOfWork = _formUnitOfWorkFactory.Create();
+            await unitOfWork.UsuarioRepository.ReadAllAsync();
+            await unitOfWork.InventarioPrivadoRepository.ReadAllAsync();
+            var activos = await unitOfWork.ActivoDigitalRepository.ReadAllAsync();
+            var favoritos = await unitOfWork.FavoritoRepository.ReadAllAsync();
+            model.Propios = activos.Where(a => a.Inventario?.Usuario?.Id == yo).Select(a => a.Id).ToHashSet();
+            model.Favoritos = favoritos.Where(f => f.Usuario?.Id == yo && f.ActivoDigital is not null).Select(f => f.ActivoDigital.Id).ToHashSet();
+        }
         return View("Buscar", model);
     }
 

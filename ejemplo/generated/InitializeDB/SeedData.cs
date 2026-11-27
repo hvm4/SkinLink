@@ -254,6 +254,21 @@ public static class SeedData
 
             const string ClaveDemo = "Demo1234!";
 
+            // --- Limpieza de los datos de prueba generados por HARIA ---
+            // El bloque generado de arriba borra el usuario y el administrador de prueba, pero no sus
+            // monederos e inventarios (relación 1 a 1), que se quedaban con la divisa "Sample Moneda Divisa"
+            // y salían en los desplegables de la web.
+            await Hacer(async u =>
+            {
+                await u.UsuarioRepository.ReadAllAsync();
+                var monederoService = new MonederoService(u);
+                foreach (var huerfano in (await u.MonederoRepository.ReadAllAsync()).Where(m => m.Usuario is null).ToList())
+                    await monederoService.DestroyAsync(huerfano.Id);
+                var inventarioService = new InventarioPrivadoService(u);
+                foreach (var huerfano in (await u.InventarioPrivadoRepository.ReadAllAsync()).Where(i => i.Usuario is null).ToList())
+                    await inventarioService.DestroyAsync(huerfano.Id);
+            });
+
             // --- Configuración del sistema (comisiones en %, límites de retirada en EUR) ---
             var configuracion = await Paso(u => new ConfiguracionSistemaService(u)
                 .NewAsync(50, 500, 5, 4, 3, 10, 2000));

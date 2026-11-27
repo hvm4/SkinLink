@@ -4,42 +4,52 @@
     ViewData["Title"] = "Crear cuenta";
 }
 
-<h1 class="h3">Crear cuenta</h1>
-<form asp-action="Register" method="post" style="max-width: 32rem">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="mb-3">
-        <label asp-for="NombreUsuario" class="form-label">Nombre de usuario</label>
-        <input asp-for="NombreUsuario" class="form-control" />
-        <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Crear cuenta</h1>
+        <p class="text-body-secondary mb-0">Iniciarás sesión con tu correo y tu contraseña. Para operar con fondos tendrás que verificar tu identidad (mayores de 18 años).</p>
     </div>
-    <div class="mb-3">
-        <label asp-for="Correo" class="form-label">Correo</label>
-        <input asp-for="Correo" type="email" class="form-control" />
-        <span asp-validation-for="Correo" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Contrasena" class="form-label"></label>
-        <input asp-for="Contrasena" type="password" value="" autocomplete="new-password" required class="form-control" />
-        <span asp-validation-for="Contrasena" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
-        <input asp-for="FechaNacimiento" type="date" class="form-control" />
-        <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Idioma" class="form-label">Idioma</label>
-        <input asp-for="Idioma" class="form-control" />
-        <span asp-validation-for="Idioma" class="text-danger"></span>
-    </div>
-    <div class="form-check mb-3">
-        <input asp-for="TemaModoOscuro" class="form-check-input" />
-        <label asp-for="TemaModoOscuro" class="form-check-label">Tema oscuro</label>
-    </div>
-    <p class="text-body-secondary small">Al crear la cuenta recibirás tu identificador de acceso. Para operar con fondos tendrás que verificar tu identidad (mayores de 18 años).</p>
-    <button type="submit" class="btn btn-primary">Crear cuenta</button>
-    <a asp-controller="Account" asp-action="Login" class="btn btn-link">Ya tengo cuenta</a>
-</form>
+    <form asp-action="Register" method="post">
+        <div class="card-body p-4">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <div style="max-width: 32rem">
+                <div class="mb-3">
+                    <label asp-for="NombreUsuario" class="form-label">Nombre de usuario</label>
+                    <input asp-for="NombreUsuario" class="form-control" />
+                    <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label">Correo</label>
+                    <input asp-for="Correo" type="email" class="form-control" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Contrasena" class="form-label"></label>
+                    <input asp-for="Contrasena" type="password" value="" autocomplete="new-password" required class="form-control" />
+                    <span asp-validation-for="Contrasena" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                    <input asp-for="FechaNacimiento" type="date" class="form-control" />
+                    <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Idioma" class="form-label">Idioma</label>
+                    <input asp-for="Idioma" class="form-control" />
+                    <span asp-validation-for="Idioma" class="text-danger"></span>
+                </div>
+                <div class="form-check">
+                    <input asp-for="TemaModoOscuro" class="form-check-input" />
+                    <label asp-for="TemaModoOscuro" class="form-check-label">Tema oscuro</label>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+            <button type="submit" class="btn btn-primary">Crear cuenta</button>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary">Ya tengo cuenta</a>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

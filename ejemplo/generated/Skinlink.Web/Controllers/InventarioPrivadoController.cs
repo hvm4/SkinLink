@@ -33,7 +33,8 @@ public partial class InventarioPrivadoController : Controller
     }
     /*PROTECTED REGION END*/
     [HttpGet]
-    /*PROTECTED REGION ID(InventarioPrivadoController_Index_GET_attributes) START*/
+    /*PROTECTED REGION ID(InventarioPrivadoController_Index_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // los listados completos son solo del administrador
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
@@ -49,11 +50,17 @@ public partial class InventarioPrivadoController : Controller
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Details(int id)
     {
-    /*PROTECTED REGION ID(InventarioPrivadoController_Details_GET_body) START*/
+    /*PROTECTED REGION ID(InventarioPrivadoController_Details_GET_body) ENABLED START*/
 
         var entity = await _inventarioPrivadoService.ReadOIDAsync(id);
         if (entity is null) return NotFound();
-        return View(InventarioPrivadoAssembler.ToViewModel(entity));
+        var model = InventarioPrivadoAssembler.ToViewModel(entity);
+        // Se puede ver el inventario propio o uno público; el administrador ve cualquiera.
+        if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User)
+            && !model.EsPublico
+            && model.UsuarioId != Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User))
+            return Forbid();
+        return View(model);
     /*PROTECTED REGION END*/
     }
 

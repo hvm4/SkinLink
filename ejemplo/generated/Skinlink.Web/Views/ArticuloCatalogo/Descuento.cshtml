@@ -71,7 +71,7 @@
                             <td>@art.Nombre</td>
                             <td>@art.PrecioReferenciaValor.ToString("0.00") @art.PrecioReferenciaDivisa</td>
                             <td>@(art.PorcentajeDescuento is double d && d > 0 ? d.ToString("0.##") + " %" : "—")</td>
-                            <td>@(art.FechaFinDescuento?.ToString("dd/MM/yyyy") ?? "—")</td>
+                            <td>@(art.PorcentajeDescuento is double hay && hay > 0 && art.FechaFinDescuento is DateTime fin ? fin.ToString("dd/MM/yyyy") : "—")</td>
                         </tr>
                     }
                     </tbody>

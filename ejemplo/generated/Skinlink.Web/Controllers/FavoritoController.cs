@@ -61,7 +61,8 @@ public partial class FavoritoController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(FavoritoController_Create_GET_attributes) START*/
+    /*PROTECTED REGION ID(FavoritoController_Create_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
@@ -76,7 +77,8 @@ public partial class FavoritoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(FavoritoController_Create_POST_attributes) START*/
+    /*PROTECTED REGION ID(FavoritoController_Create_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.FavoritoViewModel model)
     {
@@ -135,7 +137,8 @@ public partial class FavoritoController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(FavoritoController_Edit_GET_attributes) START*/
+    /*PROTECTED REGION ID(FavoritoController_Edit_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -151,7 +154,8 @@ public partial class FavoritoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(FavoritoController_Edit_POST_attributes) START*/
+    /*PROTECTED REGION ID(FavoritoController_Edit_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.FavoritoViewModel model)
     {
@@ -211,7 +215,8 @@ public partial class FavoritoController : Controller
     }
 
     [HttpGet]
-    /*PROTECTED REGION ID(FavoritoController_Delete_GET_attributes) START*/
+    /*PROTECTED REGION ID(FavoritoController_Delete_GET_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -226,7 +231,8 @@ public partial class FavoritoController : Controller
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    /*PROTECTED REGION ID(FavoritoController_DeleteConfirmed_POST_attributes) START*/
+    /*PROTECTED REGION ID(FavoritoController_DeleteConfirmed_POST_attributes) ENABLED START*/
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

@@ -44,8 +44,9 @@
                     <div class="form-text">No se puede repetir una referencia ya utilizada.</div>
                 </div>
                 <div class="form-check mb-3">
-                    <input type="hidden" name="p_pagoConfirmado" value="false" />
+                    @* El checkbox va ANTES que el hidden: con "true,false" el binder de bool toma el primer valor. *@
                     <input id="p_pagoConfirmado" name="p_pagoConfirmado" type="checkbox" value="true" class="form-check-input" />
+                    <input type="hidden" name="p_pagoConfirmado" value="false" />
                     <label for="p_pagoConfirmado" class="form-check-label">El pago está confirmado</label>
                 </div>
             }
@@ -54,7 +55,14 @@
         {
             <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
                 <button type="submit" class="btn btn-primary">Depositar</button>
-                <a asp-controller="Monedero" asp-action="Index" class="btn btn-outline-secondary">Volver a monederos</a>
+                @if (User.EsAdministrador())
+                {
+                    <a asp-controller="Monedero" asp-action="Index" class="btn btn-outline-secondary">Volver a monederos</a>
+                }
+                else
+                {
+                    <a asp-controller="Usuario" asp-action="Perfil" class="btn btn-outline-secondary">Volver a mi perfil</a>
+                }
             </div>
         }
     </form>

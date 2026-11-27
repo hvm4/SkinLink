@@ -10,7 +10,7 @@
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-body p-4">
         <h1 class="h3 mb-1">@a.Nombre</h1>
-        <p class="text-body-secondary mb-0">@a.Coleccion · @a.AtributosRareza · @a.AtributosCondicion · Propietario: @(Model.Propietario ?? "—")</p>
+        <p class="text-body-secondary mb-0">@a.Coleccion · @TextosDominio.Rareza(a.AtributosRareza) · @TextosDominio.Condicion(a.AtributosCondicion) · Propietario: @(Model.Propietario ?? "—")</p>
     </div>
     <div class="card-body p-4">
         <partial name="_MensajesOperacion" />
@@ -42,10 +42,16 @@
                     }
                     else
                     {
-                        <form asp-action="BloquearParaVenta" method="post">
-                            <input type="hidden" name="p_oid" value="@a.Id" />
-                            <button type="submit" class="btn btn-outline-secondary">Bloquear para la venta</button>
-                        </form>
+                        <div class="d-flex flex-wrap gap-2">
+                            @if (Model.EsPropietario)
+                            {
+                                <a asp-controller="Venta" asp-action="PonerALaVenta" asp-route-activoId="@a.Id" class="btn btn-success">Poner a la venta</a>
+                            }
+                            <form asp-action="BloquearParaVenta" method="post" class="m-0">
+                                <input type="hidden" name="p_oid" value="@a.Id" />
+                                <button type="submit" class="btn btn-outline-secondary">Bloquear para la venta</button>
+                            </form>
+                        </div>
                     }
                 </div>
 

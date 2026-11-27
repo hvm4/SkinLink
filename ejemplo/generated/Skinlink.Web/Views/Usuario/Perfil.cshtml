@@ -6,97 +6,103 @@
     var esAdminActual = User.EsAdministrador();
 }
 
-<h1 class="h3">@(Model.EsMiPerfil ? "Mi perfil" : "Usuario") · @u.NombreUsuario</h1>
-<partial name="_MensajesOperacion" />
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">@(Model.EsMiPerfil ? "Mi perfil" : "Usuario") · @u.NombreUsuario</h1>
+        <p class="text-body-secondary mb-0">@(Model.EsMiPerfil ? "Tus datos de cuenta, tu monedero, tu inventario y tus operaciones." : "Datos de la cuenta y operaciones disponibles sobre ella.")</p>
+    </div>
+    <div class="card-body p-4">
+        <partial name="_MensajesOperacion" />
 
-<dl class="row">
-    <dt class="col-sm-3">Identificador de acceso</dt><dd class="col-sm-9">@u.Id</dd>
-    <dt class="col-sm-3">Tipo de cuenta</dt>
-    <dd class="col-sm-9">
-        @if (Model.EsAdministrador)
-        {
-            <text>Administrador (hereda de Usuario) · código de auditor: @Model.CodigoAuditor</text>
-        }
-        else
-        {
-            <text>Usuario</text>
-        }
-    </dd>
-    <dt class="col-sm-3">Correo</dt><dd class="col-sm-9">@u.Correo</dd>
-    <dt class="col-sm-3">Fecha de nacimiento</dt><dd class="col-sm-9">@u.FechaNacimiento.ToString("d")</dd>
-    <dt class="col-sm-3">Estado de la cuenta</dt><dd class="col-sm-9">@u.Estado</dd>
-    <dt class="col-sm-3">Identidad verificada</dt><dd class="col-sm-9">@(u.Verificado ? "Sí" : "No")</dd>
-    <dt class="col-sm-3">Nivel</dt><dd class="col-sm-9">@u.Nivel</dd>
-    <dt class="col-sm-3">Experiencia</dt><dd class="col-sm-9">@u.Experiencia puntos</dd>
-    <dt class="col-sm-3">Última recompensa diaria</dt><dd class="col-sm-9">@(u.FechaUltimaRecompensa?.ToString("g") ?? "Nunca")</dd>
-    <dt class="col-sm-3">Idioma</dt><dd class="col-sm-9">@u.Idioma</dd>
-    <dt class="col-sm-3">Monedero</dt>
-    <dd class="col-sm-9">
-        Disponible: @Model.SaldoDisponible.ToString("N2") @Model.Divisa · Pendiente: @Model.SaldoPendiente.ToString("N2") @Model.Divisa
-        @if (u.MonederoId is int monederoId)
-        {
-            <text> · </text><a asp-controller="Monedero" asp-action="Details" asp-route-id="@monederoId">ver monedero</a>
-        }
-    </dd>
-    <dt class="col-sm-3">Inventario</dt>
-    <dd class="col-sm-9">
-        @(Model.InventarioPublico ? "Público" : "Privado")
-        @if (u.InventarioId is int inventarioId)
-        {
-            <text> · </text><a asp-controller="InventarioPrivado" asp-action="Details" asp-route-id="@inventarioId">ver inventario</a>
-        }
-    </dd>
-</dl>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Identificador de acceso</dt><dd class="col-sm-9">@u.Id</dd>
+            <dt class="col-sm-3">Tipo de cuenta</dt>
+            <dd class="col-sm-9">
+                @if (Model.EsAdministrador)
+                {
+                    <text>Administrador (hereda de Usuario) · código de auditor: @Model.CodigoAuditor</text>
+                }
+                else
+                {
+                    <text>Usuario</text>
+                }
+            </dd>
+            <dt class="col-sm-3">Correo</dt><dd class="col-sm-9">@u.Correo</dd>
+            <dt class="col-sm-3">Fecha de nacimiento</dt><dd class="col-sm-9">@u.FechaNacimiento.ToString("d")</dd>
+            <dt class="col-sm-3">Estado de la cuenta</dt><dd class="col-sm-9">@u.Estado</dd>
+            <dt class="col-sm-3">Identidad verificada</dt><dd class="col-sm-9">@(u.Verificado ? "Sí" : "No")</dd>
+            <dt class="col-sm-3">Nivel</dt><dd class="col-sm-9">@u.Nivel</dd>
+            <dt class="col-sm-3">Experiencia</dt><dd class="col-sm-9">@u.Experiencia puntos</dd>
+            <dt class="col-sm-3">Última recompensa diaria</dt><dd class="col-sm-9">@(u.FechaUltimaRecompensa?.ToString("g") ?? "Nunca")</dd>
+            <dt class="col-sm-3">Idioma</dt><dd class="col-sm-9">@u.Idioma</dd>
+            <dt class="col-sm-3">Monedero</dt>
+            <dd class="col-sm-9">
+                Disponible: @Model.SaldoDisponible.ToString("N2") @Model.Divisa · Pendiente: @Model.SaldoPendiente.ToString("N2") @Model.Divisa
+                @if (u.MonederoId is int monederoId)
+                {
+                    <text> · </text><a asp-controller="Monedero" asp-action="Details" asp-route-id="@monederoId">ver monedero</a>
+                }
+            </dd>
+            <dt class="col-sm-3">Inventario</dt>
+            <dd class="col-sm-9">
+                @(Model.InventarioPublico ? "Público" : "Privado")
+                @if (u.InventarioId is int inventarioId)
+                {
+                    <text> · </text><a asp-controller="InventarioPrivado" asp-action="Details" asp-route-id="@inventarioId">ver inventario</a>
+                }
+            </dd>
+        </dl>
 
-@if (Model.EsMiPerfil)
-{
-    <h2 class="h5">Mis operaciones</h2>
-    <p>
-        @if (Model.YaReclamadoHoy)
+        @if (Model.EsMiPerfil)
         {
-            <span>Ya has reclamado la recompensa diaria de hoy.</span>
-        }
-        else
-        {
-            <a asp-action="ReclamarRecompensaDiaria" class="btn btn-primary btn-sm">Reclamar recompensa diaria</a>
-        }
-        <a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas" class="btn btn-outline-secondary btn-sm">Mis movimientos</a>
-    </p>
-}
-
-@if (esAdminActual && !Model.EsMiPerfil)
-{
-    <h2 class="h5">Operaciones de administración</h2>
-    <div class="d-flex flex-wrap gap-2 mb-3">
-        <a asp-action="SumarExperiencia" asp-route-id="@u.Id" class="btn btn-outline-primary btn-sm">Sumar experiencia</a>
-
-        @if (!u.Verificado && u.Estado == ejemplo.Domain.Enums.EstadoCuenta.Activo)
-        {
-            <form asp-action="VerificarUsuario" method="post" class="m-0">
-                <input type="hidden" name="p_oid" value="@u.Id" />
-                <button type="submit" class="btn btn-outline-success btn-sm">Verificar identidad</button>
-            </form>
+            <h2 class="h5 border-top pt-4 mt-4">Mis operaciones</h2>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                @if (Model.YaReclamadoHoy)
+                {
+                    <span class="text-body-secondary">Ya has reclamado la recompensa diaria de hoy.</span>
+                }
+                else
+                {
+                    <a asp-action="ReclamarRecompensaDiaria" class="btn btn-primary btn-sm">Reclamar recompensa diaria</a>
+                }
+                <a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas" class="btn btn-outline-secondary btn-sm">Mis movimientos</a>
+            </div>
         }
 
-        @if (!Model.EsAdministrador && u.Estado == ejemplo.Domain.Enums.EstadoCuenta.Activo)
+        @if (esAdminActual && !Model.EsMiPerfil)
         {
-            <form asp-action="SuspenderCuentaUsuario" method="post" class="m-0" onsubmit="return confirm('¿Suspender esta cuenta?');">
-                <input type="hidden" name="p_oid" value="@u.Id" />
-                <button type="submit" class="btn btn-outline-danger btn-sm">Suspender cuenta</button>
-            </form>
-        }
+            <h2 class="h5 border-top pt-4 mt-4">Operaciones de administración</h2>
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-action="SumarExperiencia" asp-route-id="@u.Id" class="btn btn-outline-primary btn-sm">Sumar experiencia</a>
 
-        @if (!Model.EsAdministrador)
-        {
-            <a asp-controller="Administrador" asp-action="ActualizarEstadoKYC" asp-route-usuarioId="@u.Id" class="btn btn-outline-secondary btn-sm">Actualizar estado KYC</a>
+                @if (!u.Verificado && u.Estado == ejemplo.Domain.Enums.EstadoCuenta.Activo)
+                {
+                    <form asp-action="VerificarUsuario" method="post" class="m-0">
+                        <input type="hidden" name="p_oid" value="@u.Id" />
+                        <button type="submit" class="btn btn-outline-success btn-sm">Verificar identidad</button>
+                    </form>
+                }
+
+                @if (!Model.EsAdministrador && u.Estado == ejemplo.Domain.Enums.EstadoCuenta.Activo)
+                {
+                    <form asp-action="SuspenderCuentaUsuario" method="post" class="m-0" onsubmit="return confirm('¿Suspender esta cuenta?');">
+                        <input type="hidden" name="p_oid" value="@u.Id" />
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Suspender cuenta</button>
+                    </form>
+                }
+
+                @if (!Model.EsAdministrador)
+                {
+                    <a asp-controller="Administrador" asp-action="ActualizarEstadoKYC" asp-route-usuarioId="@u.Id" class="btn btn-outline-secondary btn-sm">Actualizar estado KYC</a>
+                }
+            </div>
         }
     </div>
-}
-
-@if (esAdminActual)
-{
-    <p>
-        <a asp-controller="@(Model.EsAdministrador ? "Administrador" : "Usuario")" asp-action="Edit" asp-route-id="@u.Id" class="btn btn-outline-secondary btn-sm">Editar</a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Volver al listado</a>
-    </p>
-}
+    @if (esAdminActual)
+    {
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+            <a asp-controller="@(Model.EsAdministrador ? "Administrador" : "Usuario")" asp-action="Edit" asp-route-id="@u.Id" class="btn btn-primary">Editar</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+        </div>
+    }
+</div>

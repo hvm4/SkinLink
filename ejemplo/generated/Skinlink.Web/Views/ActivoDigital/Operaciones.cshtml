@@ -7,98 +7,104 @@
     var a = Model.Activo;
 }
 
-<h1 class="h3 mb-1">@a.Nombre</h1>
-<p class="text-body-secondary">
-    @a.Coleccion · @a.AtributosRareza · @a.AtributosCondicion · Propietario: @(Model.Propietario ?? "—")
-</p>
-<partial name="_MensajesOperacion" />
-
-<div class="row g-4">
-    <div class="col-md-4">
-        @if (!string.IsNullOrWhiteSpace(a.Imagen))
-        {
-            <img src="@Url.Content("~/" + a.Imagen.TrimStart('/'))" alt="@a.Nombre" class="img-fluid rounded mb-3" />
-        }
-        <dl class="row">
-            <dt class="col-6">Precio estimado</dt><dd class="col-6">@a.PrecioEstimadoValor.ToString("0.00") @a.PrecioEstimadoDivisa</dd>
-            <dt class="col-6">Float / patrón</dt><dd class="col-6">@a.AtributosFloatVal.ToString("0.0000") / @a.AtributosPatron</dd>
-            <dt class="col-6">Estado</dt><dd class="col-6">@(a.EnVenta ? "Bloqueado / en venta" : "Libre")</dd>
-            <dt class="col-6">Identificador</dt><dd class="col-6 text-break">@a.IdentificadorUnico</dd>
-        </dl>
-        <a asp-action="Buscar" class="btn btn-link px-0">Volver a la búsqueda</a>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">@a.Nombre</h1>
+        <p class="text-body-secondary mb-0">@a.Coleccion · @a.AtributosRareza · @a.AtributosCondicion · Propietario: @(Model.Propietario ?? "—")</p>
     </div>
+    <div class="card-body p-4">
+        <partial name="_MensajesOperacion" />
 
-    <div class="col-md-8">
-        @* Bloquear / desbloquear *@
-        <div class="card card-body mb-3">
-            <h2 class="h6">Bloqueo para la venta</h2>
-            @if (a.EnVenta)
-            {
-                <form asp-action="Desbloquear" method="post">
-                    <input type="hidden" name="p_oid" value="@a.Id" />
-                    <button type="submit" class="btn btn-outline-secondary">Desbloquear</button>
-                </form>
-            }
-            else
-            {
-                <form asp-action="BloquearParaVenta" method="post">
-                    <input type="hidden" name="p_oid" value="@a.Id" />
-                    <button type="submit" class="btn btn-outline-secondary">Bloquear para la venta</button>
-                </form>
-            }
-        </div>
-
-        @* Verificar autenticidad *@
-        <div class="card card-body mb-3">
-            <h2 class="h6">Autenticidad</h2>
-            @if (Model.Autentico is bool autentico)
-            {
-                <div class="alert @(autentico ? "alert-success" : "alert-warning") py-2">
-                    @(autentico ? "El identificador único es válido: el activo es auténtico." : "El identificador único no es válido: el activo no se puede considerar auténtico.")
-                </div>
-            }
-            <form asp-action="VerificarAutenticidad" method="post">
-                <input type="hidden" name="p_oid" value="@a.Id" />
-                <button type="submit" class="btn btn-outline-primary">Verificar autenticidad</button>
-            </form>
-        </div>
-
-        @if (Model.EsAdministrador)
-        {
-            @* Actualizar precio estimado *@
-            <div class="card card-body mb-3">
-                <h2 class="h6">Actualizar precio estimado</h2>
-                <form asp-action="ActualizarPrecio" method="post" class="row g-2 align-items-end">
-                    <input type="hidden" name="p_oid" value="@a.Id" />
-                    <div class="col-sm-5">
-                        <label for="precioValor" class="form-label">Nuevo precio</label>
-                        <input id="precioValor" name="p_nuevoPrecio.Valor" type="text" inputmode="decimal"
-                               value="@Model.NuevoPrecioValor.ToString(System.Globalization.CultureInfo.CurrentCulture)"
-                               data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator"
-                               class="form-control" required />
-                    </div>
-                    <div class="col-sm-3">
-                        <label for="precioDivisa" class="form-label">Divisa</label>
-                        <input id="precioDivisa" name="p_nuevoPrecio.Divisa" value="@Model.NuevoPrecioDivisa" class="form-control" maxlength="3" required />
-                    </div>
-                    <div class="col-sm-4">
-                        <button type="submit" class="btn btn-primary">Actualizar precio</button>
-                    </div>
-                </form>
+        <div class="row g-4">
+            <div class="col-md-4">
+                @if (!string.IsNullOrWhiteSpace(a.Imagen))
+                {
+                    <img src="@Url.Content("~/" + a.Imagen.TrimStart('/'))" alt="@a.Nombre" class="img-fluid rounded mb-3" />
+                }
+                <dl class="row">
+                    <dt class="col-6">Precio estimado</dt><dd class="col-6">@a.PrecioEstimadoValor.ToString("0.00") @a.PrecioEstimadoDivisa</dd>
+                    <dt class="col-6">Float / patrón</dt><dd class="col-6">@a.AtributosFloatVal.ToString("0.0000") / @a.AtributosPatron</dd>
+                    <dt class="col-6">Estado</dt><dd class="col-6">@(a.EnVenta ? "Bloqueado / en venta" : "Libre")</dd>
+                    <dt class="col-6">Identificador</dt><dd class="col-6 text-break">@a.IdentificadorUnico</dd>
+                </dl>
             </div>
 
-            @* Reporte de actividad *@
-            <div class="card card-body mb-3">
-                <h2 class="h6">Reporte de actividad</h2>
-                <form asp-action="GenerarReporteActividad" method="post" class="mb-2">
-                    <input type="hidden" name="p_oid" value="@a.Id" />
-                    <button type="submit" class="btn btn-outline-primary">Generar reporte</button>
-                </form>
-                @if (!string.IsNullOrWhiteSpace(Model.Reporte))
+            <div class="col-md-8">
+                @* Bloquear / desbloquear *@
+                <div class="card card-body mb-3">
+                    <h2 class="h6">Bloqueo para la venta</h2>
+                    @if (a.EnVenta)
+                    {
+                        <form asp-action="Desbloquear" method="post">
+                            <input type="hidden" name="p_oid" value="@a.Id" />
+                            <button type="submit" class="btn btn-outline-secondary">Desbloquear</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="BloquearParaVenta" method="post">
+                            <input type="hidden" name="p_oid" value="@a.Id" />
+                            <button type="submit" class="btn btn-outline-secondary">Bloquear para la venta</button>
+                        </form>
+                    }
+                </div>
+
+                @* Verificar autenticidad *@
+                <div class="card card-body mb-3">
+                    <h2 class="h6">Autenticidad</h2>
+                    @if (Model.Autentico is bool autentico)
+                    {
+                        <div class="alert @(autentico ? "alert-success" : "alert-warning") py-2">
+                            @(autentico ? "El identificador único es válido: el activo es auténtico." : "El identificador único no es válido: el activo no se puede considerar auténtico.")
+                        </div>
+                    }
+                    <form asp-action="VerificarAutenticidad" method="post">
+                        <input type="hidden" name="p_oid" value="@a.Id" />
+                        <button type="submit" class="btn btn-outline-primary">Verificar autenticidad</button>
+                    </form>
+                </div>
+
+                @if (Model.EsAdministrador)
                 {
-                    <pre class="bg-body-tertiary p-3 rounded mb-0" style="white-space: pre-wrap;">@Model.Reporte</pre>
+                    @* Actualizar precio estimado *@
+                    <div class="card card-body mb-3">
+                        <h2 class="h6">Actualizar precio estimado</h2>
+                        <form asp-action="ActualizarPrecio" method="post" class="row g-2 align-items-end">
+                            <input type="hidden" name="p_oid" value="@a.Id" />
+                            <div class="col-sm-5">
+                                <label for="precioValor" class="form-label">Nuevo precio</label>
+                                <input id="precioValor" name="p_nuevoPrecio.Valor" type="text" inputmode="decimal"
+                                       value="@Model.NuevoPrecioValor.ToString(System.Globalization.CultureInfo.CurrentCulture)"
+                                       data-haria-number="true" data-haria-decimal="@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator"
+                                       class="form-control" required />
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="precioDivisa" class="form-label">Divisa</label>
+                                <input id="precioDivisa" name="p_nuevoPrecio.Divisa" value="@Model.NuevoPrecioDivisa" class="form-control" maxlength="3" required />
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-primary">Actualizar precio</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    @* Reporte de actividad *@
+                    <div class="card card-body mb-3">
+                        <h2 class="h6">Reporte de actividad</h2>
+                        <form asp-action="GenerarReporteActividad" method="post" class="mb-2">
+                            <input type="hidden" name="p_oid" value="@a.Id" />
+                            <button type="submit" class="btn btn-outline-primary">Generar reporte</button>
+                        </form>
+                        @if (!string.IsNullOrWhiteSpace(Model.Reporte))
+                        {
+                            <pre class="bg-body-tertiary p-3 rounded mb-0" style="white-space: pre-wrap;">@Model.Reporte</pre>
+                        }
+                    </div>
                 }
             </div>
-        }
+        </div>
+    </div>
+    <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+        <a asp-action="Buscar" class="btn btn-outline-secondary">Volver a la búsqueda</a>
     </div>
 </div>

@@ -5,47 +5,57 @@
     var administradorIds = ViewData["AdministradorIds"] as HashSet<int> ?? new HashSet<int>();
 }
 
-<h1 class="h3">Usuarios</h1>
-<partial name="_MensajesOperacion" />
-<p>
-    <a asp-action="Create" class="btn btn-primary btn-sm">Crear usuario</a>
-    <a asp-controller="Administrador" asp-action="Create" class="btn btn-outline-primary btn-sm">Crear administrador</a>
-    <a asp-action="FiltrarUsuariosPorEstado" class="btn btn-outline-secondary btn-sm">Filtrar por estado</a>
-    <a asp-controller="Administrador" asp-action="ActualizarEstadoKYC" class="btn btn-outline-secondary btn-sm">Actualizar estado KYC</a>
-</p>
-
-@if (!Model.Any())
-{
-    <p>Todavía no hay usuarios.</p>
-}
-else
-{
-    <table class="table table-sm table-hover align-middle">
-        <thead>
-            <tr>
-                <th>Id</th><th>Tipo</th><th>Nombre de usuario</th><th>Correo</th><th>Estado</th><th>Verificado</th><th>Nivel</th><th>Experiencia</th><th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model)
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 p-4">
+        <div>
+            <h1 class="h3 mb-1">Usuarios</h1>
+            <p class="text-body-secondary mb-0">Usuarios y administradores registrados. Desde la ficha de cada uno se accede a sus operaciones.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a asp-action="Create" class="btn btn-primary">Crear usuario</a>
+            <a asp-controller="Administrador" asp-action="Create" class="btn btn-outline-primary">Crear administrador</a>
+            <a asp-action="FiltrarUsuariosPorEstado" class="btn btn-outline-secondary">Filtrar por estado</a>
+            <a asp-controller="Administrador" asp-action="ActualizarEstadoKYC" class="btn btn-outline-secondary">Actualizar estado KYC</a>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <partial name="_MensajesOperacion" />
+        @if (!Model.Any())
         {
-            var esAdministrador = administradorIds.Contains(item.Id);
-            <tr>
-                <td>@item.Id</td>
-                <td>@(esAdministrador ? "Administrador" : "Usuario")</td>
-                <td>@item.NombreUsuario</td>
-                <td>@item.Correo</td>
-                <td>@item.Estado</td>
-                <td>@(item.Verificado ? "Sí" : "No")</td>
-                <td>@item.Nivel</td>
-                <td>@item.Experiencia</td>
-                <td class="text-nowrap">
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Ficha y operaciones</a>
-                    <a asp-controller="@(esAdministrador ? "Administrador" : "Usuario")" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                    <a asp-controller="@(esAdministrador ? "Administrador" : "Usuario")" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
-                </td>
-            </tr>
+            <p class="text-body-secondary mb-0">Todavía no hay usuarios.</p>
         }
-        </tbody>
-    </table>
-}
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Id</th><th>Tipo</th><th>Nombre de usuario</th><th>Correo</th><th>Estado</th><th>Verificado</th><th>Nivel</th><th>Experiencia</th><th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var esAdministrador = administradorIds.Contains(item.Id);
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@(esAdministrador ? "Administrador" : "Usuario")</td>
+                            <td>@item.NombreUsuario</td>
+                            <td>@item.Correo</td>
+                            <td>@item.Estado</td>
+                            <td>@(item.Verificado ? "Sí" : "No")</td>
+                            <td>@item.Nivel</td>
+                            <td>@item.Experiencia</td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Ficha y operaciones</a>
+                                <a asp-controller="@(esAdministrador ? "Administrador" : "Usuario")" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <a asp-controller="@(esAdministrador ? "Administrador" : "Usuario")" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

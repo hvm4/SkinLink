@@ -6,46 +6,53 @@
     ViewData["Title"] = "Proponer un intercambio";
 }
 
-<h1 class="h3 mb-3">Proponer un intercambio</h1>
-<partial name="_MensajesOperacion" />
-
-<form asp-action="Proponer" method="get" class="card card-body mb-4">
-    <div class="row g-2 align-items-end">
-        <div class="col-sm-8">
-            <label for="receptorId" class="form-label">Usuario con quien intercambiar</label>
-            <select id="receptorId" name="receptorId" class="form-select" asp-items="Model.Receptores" required>
-                <option value="">Selecciona un usuario…</option>
-            </select>
-        </div>
-        <div class="col-sm-4">
-            <button type="submit" class="btn btn-outline-primary w-100">Ver sus activos</button>
-        </div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Proponer un intercambio</h1>
+        <p class="text-body-secondary mb-0">Elige un usuario y marca los activos que ofreces y los que le pides. Solo aparecen activos que no están en venta ni en otro intercambio.</p>
     </div>
-</form>
+    <div class="card-body p-4">
+        <partial name="_MensajesOperacion" />
 
-@if (Model.ReceptorId is int receptorId && Model.ReceptorNombre is not null)
-{
-    <form asp-action="IniciarIntercambio" method="post">
-        <input type="hidden" name="p_receptor_oid" value="@receptorId" />
-
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <h2 class="h5">Ofreces</h2>
-                <partial name="_SeleccionActivos" model="@(("p_activosOfrecidos_oids", Model.MisActivos, "No tienes activos disponibles para intercambiar (los que están en venta o en otro intercambio no cuentan)."))" />
+        <form asp-action="Proponer" method="get" class="card card-body mb-4">
+            <div class="row g-2 align-items-end">
+                <div class="col-sm-8">
+                    <label for="receptorId" class="form-label">Usuario con quien intercambiar</label>
+                    <select id="receptorId" name="receptorId" class="form-select" asp-items="Model.Receptores" required>
+                        <option value="">Selecciona un usuario…</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-outline-primary w-100">Ver sus activos</button>
+                </div>
             </div>
-            <div class="col-lg-6">
-                <h2 class="h5">Pides a @Model.ReceptorNombre</h2>
-                <partial name="_SeleccionActivos" model="@(("p_activosSolicitados_oids", Model.ActivosReceptor, "Este usuario no tiene activos disponibles para intercambiar."))" />
-            </div>
-        </div>
+        </form>
 
-        <div class="d-flex gap-2 mt-4">
-            <button type="submit" class="btn btn-primary" disabled="@(Model.MisActivos.Count == 0 || Model.ActivosReceptor.Count == 0)">Enviar propuesta</button>
-            <a asp-action="MisIntercambios" class="btn btn-link">Cancelar</a>
-        </div>
-        <p class="small text-muted mt-2">Hay que marcar al menos un activo en cada lado. Mientras la propuesta esté pendiente, esos activos no se pueden vender ni ofrecer en otro intercambio.</p>
-    </form>
-}
+        @if (Model.ReceptorId is int receptorId && Model.ReceptorNombre is not null)
+        {
+            <form asp-action="IniciarIntercambio" method="post">
+                <input type="hidden" name="p_receptor_oid" value="@receptorId" />
+
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <h2 class="h5">Ofreces</h2>
+                        <partial name="_SeleccionActivos" model="@(("p_activosOfrecidos_oids", Model.MisActivos, "No tienes activos disponibles para intercambiar (los que están en venta o en otro intercambio no cuentan)."))" />
+                    </div>
+                    <div class="col-lg-6">
+                        <h2 class="h5">Pides a @Model.ReceptorNombre</h2>
+                        <partial name="_SeleccionActivos" model="@(("p_activosSolicitados_oids", Model.ActivosReceptor, "Este usuario no tiene activos disponibles para intercambiar."))" />
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary" disabled="@(Model.MisActivos.Count == 0 || Model.ActivosReceptor.Count == 0)">Enviar propuesta</button>
+                    <a asp-action="MisIntercambios" class="btn btn-outline-secondary">Volver a mis intercambios</a>
+                </div>
+                <p class="small text-body-secondary mt-2">Hay que marcar al menos un activo en cada lado. Mientras la propuesta esté pendiente, esos activos no se pueden vender ni ofrecer en otro intercambio.</p>
+            </form>
+        }
+    </div>
+</div>
 
 @section Scripts {
     <script>

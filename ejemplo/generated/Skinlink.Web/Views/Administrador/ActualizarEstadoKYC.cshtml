@@ -4,29 +4,39 @@
     ViewData["Title"] = "Actualizar estado KYC";
 }
 
-<h1 class="h3">Actualizar estado KYC</h1>
-<partial name="_MensajesOperacion" />
-<p>Cambia el estado de la cuenta de un usuario. El cambio queda registrado en el registro de auditoría a tu nombre.</p>
-<form asp-action="ActualizarEstadoKYC" method="post" style="max-width: 32rem">
-    <div class="mb-3">
-        <label for="p_usuario_oid" class="form-label">Usuario</label>
-        <select id="p_usuario_oid" name="p_usuario_oid" class="form-select" required>
-            <option value="">Selecciona un usuario…</option>
-            @foreach (var usuario in Model.Usuarios)
-            {
-                <option value="@usuario.Value" selected="@(usuario.Value == Model.UsuarioId?.ToString())">@usuario.Text</option>
-            }
-        </select>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Actualizar estado KYC</h1>
+        <p class="text-body-secondary mb-0">Cambia el estado de la cuenta de un usuario. El cambio queda registrado en el registro de auditoría a tu nombre.</p>
     </div>
-    <div class="mb-3">
-        <label for="p_nuevoEstado" class="form-label">Nuevo estado</label>
-        <select id="p_nuevoEstado" name="p_nuevoEstado" class="form-select">
-            @foreach (var estado in Enum.GetValues<ejemplo.Domain.Enums.EstadoCuenta>())
-            {
-                <option value="@estado" selected="@(estado == Model.NuevoEstado)">@estado</option>
-            }
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Actualizar</button>
-    <a asp-controller="RegistroAuditoria" asp-action="Index" class="btn btn-link">Ver registro de auditoría</a>
-</form>
+    <form asp-action="ActualizarEstadoKYC" method="post">
+        <div class="card-body p-4">
+            <partial name="_MensajesOperacion" />
+            <div style="max-width: 32rem">
+                <div class="mb-3">
+                    <label for="p_usuario_oid" class="form-label">Usuario</label>
+                    <select id="p_usuario_oid" name="p_usuario_oid" class="form-select" required>
+                        <option value="">Selecciona un usuario…</option>
+                        @foreach (var usuario in Model.Usuarios)
+                        {
+                            <option value="@usuario.Value" selected="@(usuario.Value == Model.UsuarioId?.ToString())">@usuario.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="p_nuevoEstado" class="form-label">Nuevo estado</label>
+                    <select id="p_nuevoEstado" name="p_nuevoEstado" class="form-select">
+                        @foreach (var estado in Enum.GetValues<ejemplo.Domain.Enums.EstadoCuenta>())
+                        {
+                            <option value="@estado" selected="@(estado == Model.NuevoEstado)">@estado</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+            <a asp-controller="RegistroAuditoria" asp-action="Index" class="btn btn-outline-secondary">Ver registro de auditoría</a>
+        </div>
+    </form>
+</div>

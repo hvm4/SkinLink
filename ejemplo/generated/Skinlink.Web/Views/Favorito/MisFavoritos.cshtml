@@ -5,49 +5,56 @@
     ViewData["Title"] = "Mis favoritos";
 }
 
-<h1 class="h3 mb-3">Mis favoritos</h1>
-<partial name="_MensajesOperacion" />
-
-@if (Model.Favoritos.Count == 0)
-{
-    <div class="card card-body text-center">
-        <p class="mb-2">Todavía no tienes favoritos.</p>
-        <p class="text-muted small mb-3">Marca los activos que te interesen para seguirlos desde aquí.</p>
-        <div><a asp-controller="ActivoDigital" asp-action="Buscar" class="btn btn-primary">Buscar activos</a></div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Mis favoritos</h1>
+        <p class="text-body-secondary mb-0">Los activos que has marcado para seguirlos. Puedes quitarlos desde aquí.</p>
     </div>
-}
-else
-{
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
-        @foreach (var f in Model.Favoritos)
+    <div class="card-body p-4">
+        <partial name="_MensajesOperacion" />
+
+        @if (Model.Favoritos.Count == 0)
         {
-            <div class="col">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <span class="badge @TextosDominio.ClaseRareza(f.Rareza) mb-2">@TextosDominio.Rareza(f.Rareza)</span>
-                        <h2 class="h6 mb-1">@f.Nombre</h2>
-                        <p class="small text-muted mb-2">@f.Coleccion · @TextosDominio.Condicion(f.Condicion)</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold">@TextosDominio.Precio(f.Precio, f.Divisa)</span>
-                            @if (f.EnVenta)
-                            {
-                                <span class="badge text-bg-success">En venta</span>
-                            }
-                            else
-                            {
-                                <span class="badge text-bg-light">No está a la venta</span>
-                            }
+            <div class="card card-body text-center">
+                <p class="mb-2">Todavía no tienes favoritos.</p>
+                <p class="text-body-secondary small mb-3">Marca los activos que te interesen para seguirlos desde aquí.</p>
+                <div><a asp-controller="ActivoDigital" asp-action="Buscar" class="btn btn-primary">Buscar activos</a></div>
+            </div>
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+                @foreach (var f in Model.Favoritos)
+                {
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <span class="badge @TextosDominio.ClaseRareza(f.Rareza) mb-2">@TextosDominio.Rareza(f.Rareza)</span>
+                                <h2 class="h6 mb-1">@f.Nombre</h2>
+                                <p class="small text-body-secondary mb-2">@f.Coleccion · @TextosDominio.Condicion(f.Condicion)</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-semibold">@TextosDominio.Precio(f.Precio, f.Divisa)</span>
+                                    @if (f.EnVenta)
+                                    {
+                                        <span class="badge text-bg-success">En venta</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge text-bg-light">No está a la venta</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                                <small class="text-body-secondary">Desde @f.FechaMarcado.ToLocalTime().ToString("dd/MM/yyyy")</small>
+                                <form asp-action="Alternar" method="post">
+                                    <input type="hidden" name="activoId" value="@f.ActivoId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Quitar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Desde @f.FechaMarcado.ToLocalTime().ToString("dd/MM/yyyy")</small>
-                        <form asp-action="Alternar" method="post">
-                            <input type="hidden" name="activoId" value="@f.ActivoId" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Quitar</button>
-                        </form>
-                    </div>
-                </div>
+                }
             </div>
         }
     </div>
-}
+</div>

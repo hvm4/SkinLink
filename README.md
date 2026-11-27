@@ -186,6 +186,33 @@ Toda la web sigue el mismo estándar para avisar del resultado de una operación
 
 `MensajeDeError` está en `Utils/MensajesUsuario.cs`. Los errores de negocio (`ModelException` lanzadas por los servicios y casos de uso) se muestran tal cual; cualquier otro error es técnico: se registra en el log del servidor y el usuario ve "No se ha podido completar la operación. Inténtalo de nuevo más tarde.". Así nunca se enseñan errores internos (SQL, nulos, trazas) en pantalla. Los mensajes que deba ver el usuario se lanzan como `ModelException` y en castellano.
 
+### Plantilla de las páginas
+
+Todas las pantallas propias siguen la misma tarjeta que las vistas generadas por HARIA Web (ejemplo de referencia: `Views/Venta/PublicarVenta.cshtml`):
+
+```cshtml
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Título</h1>
+        <p class="text-body-secondary mb-0">Una frase que explica qué se hace en la página.</p>
+    </div>
+    <div class="card-body p-4">
+        <partial name="_MensajesOperacion" />
+        ...formulario, tabla o contenido...
+    </div>
+    <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+        <button type="submit" class="btn btn-primary">Acción principal</button>
+        <a asp-action="..." class="btn btn-outline-secondary">Volver a ...</a>
+    </div>
+</div>
+```
+
+- Si la página es un formulario, el `<form>` envuelve el cuerpo y el pie para que los botones queden en el pie.
+- Los botones de la página que no son la acción del formulario (crear, ir a otra sección) van a la derecha de la cabecera.
+- Las tablas usan `table table-hover align-middle` con `thead class="table-light"`; los textos secundarios, `text-body-secondary`.
+- Una sección secundaria con mucho contenido (p. ej. "Descuentos actuales") va en otra tarjeta igual debajo, con un `h2 class="h5"` en la cabecera.
+- `@section Scripts { ... }` va siempre fuera de la tarjeta, al final del archivo.
+
 ## Cobertura de requisitos de la propuesta
 
 | Requisito | Dónde está |

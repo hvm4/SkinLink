@@ -6,49 +6,56 @@
     var precioTexto = Model.Precio?.ToString("0.##", System.Globalization.CultureInfo.GetCultureInfo("es-ES")) ?? string.Empty;
 }
 
-<h1 class="h3 mb-3">Comisión de mercado</h1>
-<partial name="_MensajesOperacion" />
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Comisión de mercado</h1>
+        <p class="text-body-secondary mb-0">Consulta los tramos de comisión y calcula cuánto recibe el vendedor por un precio de venta.</p>
+    </div>
+    <div class="card-body p-4">
+        <partial name="_MensajesOperacion" />
 
-<div class="row g-4">
-    <div class="col-lg-5">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="h6 text-muted text-uppercase">Tramos configurados</h2>
-                <table class="table table-sm mb-0">
-                    <thead><tr><th>Precio de venta</th><th class="text-end">Comisión</th></tr></thead>
-                    <tbody>
-                        <tr><td>Hasta @TextosDominio.Precio(Model.LimitePrecioBajo, "EUR")</td><td class="text-end">@Model.ComisionPrecioBajo.ToString("0.##") %</td></tr>
-                        <tr><td>Hasta @TextosDominio.Precio(Model.LimitePrecioMedio, "EUR")</td><td class="text-end">@Model.ComisionPrecioMedio.ToString("0.##") %</td></tr>
-                        <tr><td>Más de @TextosDominio.Precio(Model.LimitePrecioMedio, "EUR")</td><td class="text-end">@Model.ComisionPrecioAlto.ToString("0.##") %</td></tr>
-                    </tbody>
-                </table>
-                <a asp-action="Edit" asp-route-id="@Model.ConfiguracionId" class="btn btn-link px-0 mt-2">Editar configuración</a>
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h6 text-body-secondary text-uppercase">Tramos configurados</h2>
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light"><tr><th>Precio de venta</th><th class="text-end">Comisión</th></tr></thead>
+                            <tbody>
+                                <tr><td>Hasta @TextosDominio.Precio(Model.LimitePrecioBajo, "EUR")</td><td class="text-end">@Model.ComisionPrecioBajo.ToString("0.##") %</td></tr>
+                                <tr><td>Hasta @TextosDominio.Precio(Model.LimitePrecioMedio, "EUR")</td><td class="text-end">@Model.ComisionPrecioMedio.ToString("0.##") %</td></tr>
+                                <tr><td>Más de @TextosDominio.Precio(Model.LimitePrecioMedio, "EUR")</td><td class="text-end">@Model.ComisionPrecioAlto.ToString("0.##") %</td></tr>
+                            </tbody>
+                        </table>
+                        <a asp-action="Edit" asp-route-id="@Model.ConfiguracionId" class="btn btn-link px-0 mt-2">Editar configuración</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <form asp-action="CalcularComisionMercado" method="post" class="card card-body" novalidate>
+                    <input type="hidden" name="p_oid" value="@Model.ConfiguracionId" />
+                    <label for="p_precio" class="form-label">Precio de venta (EUR)</label>
+                    <div class="input-group">
+                        <input id="p_precio" name="p_precio" type="text" inputmode="decimal" class="form-control"
+                               value="@precioTexto" placeholder="96,40" required pattern="^\d+([.,]\d{1,2})?$" />
+                        <button type="submit" class="btn btn-primary">Calcular</button>
+                    </div>
+                    <span asp-validation-for="Precio" class="text-danger small"></span>
+
+                    @if (Model.Porcentaje is double porcentaje && Model.Precio is double precio)
+                    {
+                        <dl class="row mt-4 mb-0">
+                            <dt class="col-7 fw-normal">Precio de venta</dt>
+                            <dd class="col-5 text-end">@TextosDominio.Precio(precio, "EUR")</dd>
+                            <dt class="col-7 fw-normal">Comisión aplicada (@porcentaje.ToString("0.##") %)</dt>
+                            <dd class="col-5 text-end">− @TextosDominio.Precio(Model.ImporteComision ?? 0, "EUR")</dd>
+                            <dt class="col-7 border-top pt-2">El vendedor recibe</dt>
+                            <dd class="col-5 text-end border-top pt-2 fw-bold">@TextosDominio.Precio(Model.ImporteNeto ?? 0, "EUR")</dd>
+                        </dl>
+                    }
+                </form>
             </div>
         </div>
-    </div>
-
-    <div class="col-lg-7">
-        <form asp-action="CalcularComisionMercado" method="post" class="card card-body" novalidate>
-            <input type="hidden" name="p_oid" value="@Model.ConfiguracionId" />
-            <label for="p_precio" class="form-label">Precio de venta (EUR)</label>
-            <div class="input-group">
-                <input id="p_precio" name="p_precio" type="text" inputmode="decimal" class="form-control"
-                       value="@precioTexto" placeholder="96,40" required pattern="^\d+([.,]\d{1,2})?$" />
-                <button type="submit" class="btn btn-primary">Calcular</button>
-            </div>
-            <span asp-validation-for="Precio" class="text-danger small"></span>
-
-            @if (Model.Porcentaje is double porcentaje && Model.Precio is double precio)
-            {
-                <dl class="row mt-4 mb-0">
-                    <dt class="col-7 fw-normal">Precio de venta</dt>
-                    <dd class="col-5 text-end">@TextosDominio.Precio(precio, "EUR")</dd>
-                    <dt class="col-7 fw-normal">Comisión aplicada (@porcentaje.ToString("0.##") %)</dt>
-                    <dd class="col-5 text-end">− @TextosDominio.Precio(Model.ImporteComision ?? 0, "EUR")</dd>
-                    <dt class="col-7 border-top pt-2">El vendedor recibe</dt>
-                    <dd class="col-5 text-end border-top pt-2 fw-bold">@TextosDominio.Precio(Model.ImporteNeto ?? 0, "EUR")</dd>
-                </dl>
-            }
-        </form>
     </div>
 </div>

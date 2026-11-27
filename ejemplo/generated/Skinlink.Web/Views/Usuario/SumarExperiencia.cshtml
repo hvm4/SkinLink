@@ -4,15 +4,23 @@
     ViewData["Title"] = "Sumar experiencia";
 }
 
-<h1 class="h3">Sumar experiencia a @Model.NombreUsuario</h1>
-<partial name="_MensajesOperacion" />
-<p>Nivel actual: @Model.NivelActual · Experiencia actual: @Model.ExperienciaActual puntos. Cada 100 puntos se sube un nivel.</p>
-<form asp-action="SumarExperiencia" method="post" style="max-width: 24rem">
-    <input type="hidden" name="p_oid" value="@Model.UsuarioId" />
-    <div class="mb-3">
-        <label for="p_puntos" class="form-label">Puntos de experiencia</label>
-        <input id="p_puntos" name="p_puntos" type="number" min="1" value="@Model.Puntos" required class="form-control" />
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-body p-4">
+        <h1 class="h3 mb-1">Sumar experiencia a @Model.NombreUsuario</h1>
+        <p class="text-body-secondary mb-0">Nivel actual: @Model.NivelActual · Experiencia actual: @Model.ExperienciaActual puntos. Cada 100 puntos se sube un nivel.</p>
     </div>
-    <button type="submit" class="btn btn-primary">Sumar</button>
-    <a asp-action="Details" asp-route-id="@Model.UsuarioId" class="btn btn-link">Cancelar</a>
-</form>
+    <form asp-action="SumarExperiencia" method="post">
+        <div class="card-body p-4">
+            <partial name="_MensajesOperacion" />
+            <input type="hidden" name="p_oid" value="@Model.UsuarioId" />
+            <div class="mb-3" style="max-width: 24rem">
+                <label for="p_puntos" class="form-label">Puntos de experiencia</label>
+                <input id="p_puntos" name="p_puntos" type="number" min="1" value="@Model.Puntos" required class="form-control" />
+            </div>
+        </div>
+        <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
+            <button type="submit" class="btn btn-primary">Sumar</button>
+            <a asp-action="Details" asp-route-id="@Model.UsuarioId" class="btn btn-outline-secondary">Volver a la ficha</a>
+        </div>
+    </form>
+</div>

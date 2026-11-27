@@ -63,18 +63,18 @@ New-Item -ItemType Directory -Force $env:DOTNET_CLI_HOME | Out-Null
 
 ## Datos de demostración (`InitializeDB/SeedData.cs`)
 
-El login es con el **id** del usuario. Los ids salen por consola al final de `InitializeDB` (con la base recién creada son estos):
+El login es con el **correo** y la contraseña. Las credenciales salen por consola al final de `InitializeDB`:
 
-| Id | Usuario | Contraseña | Para qué sirve en la demo |
-|---|---|---|---|
-| 3 | `admin` (Administrador) | `Admin123!` | Paneles de administración, moderación, auditoría, comisión |
-| 4 | NeoRift | `Demo1234!` | Comprador y coleccionista: compras, cajas abiertas, retirada, favoritos, intercambio pendiente |
-| 5 | NovaTrade | `Demo1234!` | Vendedor con buena reputación, varias ventas publicadas, inventario público |
-| 6 | PixelWolf | `Demo1234!` | Comprador y vendedor; tiene un intercambio por responder |
-| 7 | LunaByte | `Demo1234!` | Ha usado la recompensa diaria; un intercambio aceptado y otro cancelado |
-| 8 | ZeroLag | `Demo1234!` | Ha abierto una caja; venta cancelada |
-| 9 | xRaptor | `Demo1234!` | Cuenta sin verificar (no puede retirar); autor de una reseña moderada |
-| 10 | Tramposo99 | `Demo1234!` | Cuenta suspendida por el administrador (queda en auditoría) |
+| Correo | Contraseña | Para qué sirve en la demo |
+|---|---|---|
+| `admin@skinlink.gg` (Administrador) | `Admin123!` | Paneles de administración, moderación, auditoría, comisión |
+| `neorift@skinlink.gg` | `Demo1234!` | Comprador y coleccionista: compras, cajas abiertas, retirada, favoritos, intercambio pendiente |
+| `novatrade@skinlink.gg` | `Demo1234!` | Vendedor con buena reputación, varias ventas publicadas, inventario público |
+| `pixelwolf@skinlink.gg` | `Demo1234!` | Comprador y vendedor; tiene un intercambio por responder |
+| `lunabyte@skinlink.gg` | `Demo1234!` | Ha usado la recompensa diaria; un intercambio aceptado y otro cancelado |
+| `zerolag@skinlink.gg` | `Demo1234!` | Ha abierto una caja; venta cancelada |
+| `xraptor@skinlink.gg` | `Demo1234!` | Cuenta sin verificar (no puede retirar); autor de una reseña moderada |
+| `tramposo99@skinlink.gg` | `Demo1234!` | Cuenta suspendida por el administrador (queda en auditoría) |
 
 Todo se crea con las operaciones reales del modelo, así que los saldos, comisiones, transacciones y auditoría son coherentes:
 
@@ -153,7 +153,8 @@ Los roles se asignan al iniciar sesión en `Utils/Security/UsuarioClaims.cs` (pu
 - **Cualquier cuenta activa** (`Roles.Todos`): el resto. Un usuario solo ve su propia ficha (`Usuario/Details`) y solo reclama su propia recompensa diaria.
 - Las acciones con `[AllowAnonymous]` (búsqueda de activos y cajas) siguen siendo públicas.
 - En el código: `[Authorize(Roles = Roles.Administrador)]` o `Roles.Todos`; `User.GetUsuarioId()`, `User.EsAdministrador()`, `User.PuedeAccederAUsuario(id)`.
-- El login es con el **id** del usuario y su contraseña; al registrarse se muestra el id.
+- El login es con el **correo** y la contraseña (operación `login` del modelo con `p_correo`).
+- **La pantalla de login muestra la etiqueta "id" en el campo del correo, y se ha dejado así a propósito.** `Views/Account/Login.cshtml` y `ViewModels/LoginViewModel.cs` los genera HARIA Web enteros, sin ninguna región protegida: la etiqueta sale de la propiedad `Id` del modelo de login generado. Si se cambiara a mano, la siguiente regeneración de la web lo sobrescribiría y habría que repetirlo cada vez, con el riesgo de que alguien del grupo regenere y el cambio se pierda sin que nadie lo note. El campo acepta el correo y el login funciona; solo es el texto de la etiqueta.
 - Los roles van en la cookie: si se suspende a alguien con la sesión abierta, pierde el acceso al volver a iniciar sesión.
 - `Views/Home/Index.cshtml` es generado: si se regenera con "Update Home Page", hay que volver a poner el `if` que separa la portada del administrador (`_BusinessNavigation`) de la del resto (`_InicioUsuario`).
 

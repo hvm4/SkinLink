@@ -14,7 +14,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(AdministradorController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): solo administradores.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
 /*PROTECTED REGION END*/
 public partial class AdministradorController : Controller
@@ -67,7 +66,7 @@ public partial class AdministradorController : Controller
     {
     /*PROTECTED REGION ID(AdministradorController_Create_GET_body) ENABLED START*/
 
-        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
+        await Task.CompletedTask;
 
         // Alta de administrador (subclase de Usuario): monedero e inventario propios y vacíos.
         return View("Alta", new Skinlink.Web.ViewModels.AdministradorViewModel
@@ -136,7 +135,7 @@ public partial class AdministradorController : Controller
     {
     /*PROTECTED REGION ID(AdministradorController_Edit_POST_body) ENABLED START*/
 
-        ModelState.Remove(nameof(model.FechaUltimaRecompensa)); // Campo fuera del contrato Edit de Application.
+        ModelState.Remove(nameof(model.FechaUltimaRecompensa));
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
         var service = new AdministradorService(unitOfWork);
         var entity = await service.ReadOIDAdministradorDefaultAsync(id);
@@ -233,7 +232,7 @@ public partial class AdministradorController : Controller
     {
     /*PROTECTED REGION ID(AdministradorController_FiltrarUsuariosPorEstado_GET_body) ENABLED START*/
 
-        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
+        await Task.CompletedTask;
 
         // Operación heredada de Usuario: se reutiliza la vista del filtro de Usuario.
         return RedirectToAction("FiltrarUsuariosPorEstado", "Usuario", new { p_estado });

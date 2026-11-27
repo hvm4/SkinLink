@@ -14,9 +14,6 @@ public sealed partial class UsuarioService
     public async Task<string?> LoginAsync(string p_correo, string p_password)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_Usuario_login) ENABLED START*/
-        // Login por correo (CU-02). Devuelve el token o null si las credenciales no son válidas,
-        // igual que el login generado por OID. El correo se compara de forma exacta, como hace
-        // AccountController al cargar la cuenta tras el login; el registro impide correos repetidos.
         if (string.IsNullOrWhiteSpace(p_correo) || string.IsNullOrEmpty(p_password))
             return null;
 

@@ -1,5 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): ayudas comunes de los controladores de operaciones de
-// monedero y venta. Está fuera de Controllers/manual para que la regeneración no lo toque.
 using System.Globalization;
 using System.Security.Claims;
 using ejemplo.Application.Abstractions;
@@ -13,9 +11,7 @@ namespace Skinlink.Web.Utils;
 
 public enum ModoVentas
 {
-    /// <summary>Ventas que el usuario puede gestionar (las suyas; el administrador, todas).</summary>
     Gestionar,
-    /// <summary>Ventas que el usuario puede comprar (las de los demás).</summary>
     Comprar
 }
 

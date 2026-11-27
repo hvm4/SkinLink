@@ -1,4 +1,3 @@
-// Fichero manual (no lo genera HARIA): reglas de negocio para crear reseñas de vendedor (RF-18, CU-15).
 using ejemplo.Application.Abstractions;
 using ejemplo.Application.Exceptions;
 using ejemplo.Domain.Entities;
@@ -11,12 +10,6 @@ public static class ReglasResenaVendedor
     public const int PuntuacionMinima = 1;
     public const int PuntuacionMaxima = 5;
 
-    /// <summary>
-    /// Comprueba que el comprador puede dejar una reseña al vendedor:
-    /// puntuación entre 1 y 5, no reseñarse a sí mismo, cuenta activa, haber comprado al vendedor
-    /// (venta completada) y como máximo una reseña por cada compra completada.
-    /// Lanza <see cref="ModelException"/> con el motivo si no se cumple.
-    /// </summary>
     public static async Task ValidarNuevaResenaAsync(IUnitOfWork unitOfWork, int compradorId, int vendedorId, int puntuacion)
     {
         if (puntuacion < PuntuacionMinima || puntuacion > PuntuacionMaxima)

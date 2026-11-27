@@ -15,8 +15,6 @@ using Skinlink.Web.ViewModels;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(TransaccionController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class TransaccionController : Controller
@@ -36,7 +34,7 @@ public partial class TransaccionController : Controller
     /*PROTECTED REGION END*/
     [HttpGet]
     /*PROTECTED REGION ID(TransaccionController_Index_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // los listados completos son solo del administrador
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {
@@ -274,9 +272,6 @@ public partial class TransaccionController : Controller
     {
     /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorTipo_GET_body) ENABLED START*/
 
-        // ReadFilter filtrarTransaccionesPorTipo
-        // (filterLinQ: (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && entity.Tipo == p_tipo).
-        // p_usuarioId NUNCA se toma de la URL: se calcula a partir del usuario autenticado.
         var model = new TransaccionFiltroTipoViewModel { Tipo = p_tipo };
 
         // Sin parámetros en la URL: solo se muestra el formulario.
@@ -315,9 +310,6 @@ public partial class TransaccionController : Controller
     {
     /*PROTECTED REGION ID(TransaccionController_FiltrarTransaccionesPorRangoFechas_GET_body) ENABLED START*/
 
-        // ReadFilter filtrarTransaccionesPorRangoFechas
-        // (filterLinQ: (p_usuarioId == 0 || entity.Monedero.Usuario.Id == p_usuarioId) && rango de fechas).
-        // p_usuarioId NUNCA se toma de la URL: se calcula a partir del usuario autenticado.
         var model = new TransaccionFiltroFechasViewModel
         {
             FechaInicio = DateTime.Today.AddDays(-30),

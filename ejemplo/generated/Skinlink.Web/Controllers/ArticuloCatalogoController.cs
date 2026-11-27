@@ -13,8 +13,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(ArticuloCatalogoController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class ArticuloCatalogoController : Controller

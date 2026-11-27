@@ -43,7 +43,7 @@ public sealed class ResenaVendedorViewModel : IValidatableObject
     /*PROTECTED REGION END*/
 
     /*PROTECTED REGION ID(ResenaVendedorViewModel_manual) ENABLED START*/
-    // Miembro 4: la valoración de vendedores es una nota numérica de 1 a 5 (servidor y cliente vía ModelState).
+    // La valoración de vendedores es una nota numérica de 1 a 5 (servidor y cliente vía ModelState).
     public const int PuntuacionMinima = 1;
     public const int PuntuacionMaxima = 5;
     public const int LongitudMaximaComentario = 500;

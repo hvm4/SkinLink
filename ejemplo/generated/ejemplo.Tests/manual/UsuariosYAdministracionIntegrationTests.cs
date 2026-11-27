@@ -11,9 +11,6 @@ using ejemplo.Infrastructure.Data;
 
 namespace ejemplo.Tests.Manual;
 
-// Miembro 1 · Prueba de integración: base de datos SQLite en fichero, un UnitOfWork (DbContext) nuevo
-// en cada paso, como ocurre en la web con cada petición. Recorre el ciclo de vida de una cuenta:
-// alta (Usuario y Administrador) -> login -> verificación -> experiencia -> KYC -> auditoría -> filtro.
 public sealed class UsuariosYAdministracionIntegrationTests
 {
     private static Monedero NuevoMonedero() => new Monedero

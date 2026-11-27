@@ -1,4 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): formulario de la operación custom actualizarEstadoKYC.
 using System.Globalization;
 using ejemplo.Domain.Entities;
 using ejemplo.Domain.Enums;

@@ -1,6 +1,3 @@
-// Fichero manual (no lo genera HARIA Web) — Miembro 4.
-// Textos legibles de los enumerados del dominio para las vistas. Cualquiera puede usarlo:
-// @TextosDominio.Rareza(item.Rareza), @TextosDominio.Precio(valor, divisa)...
 using System.Globalization;
 using ejemplo.Domain.Enums;
 
@@ -20,7 +17,6 @@ public static class TextosDominio
         _ => rareza.ToString()
     };
 
-    /// <summary>Clase de Bootstrap para la etiqueta de rareza.</summary>
     public static string ClaseRareza(Rareza rareza) => rareza switch
     {
         ejemplo.Domain.Enums.Rareza.Extraordinario => "text-bg-danger",
@@ -56,7 +52,6 @@ public static class TextosDominio
         _ => "text-bg-secondary"
     };
 
-    /// <summary>Importe con formato español: "96,40 €" (u otra divisa).</summary>
     public static string Precio(double valor, string? divisa)
     {
         var simbolo = string.Equals(divisa, "EUR", StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(divisa)

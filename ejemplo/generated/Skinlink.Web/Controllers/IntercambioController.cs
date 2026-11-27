@@ -13,8 +13,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(IntercambioController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class IntercambioController : Controller
@@ -39,7 +37,7 @@ public partial class IntercambioController : Controller
     public async Task<IActionResult> Index()
     {
     /*PROTECTED REGION ID(IntercambioController_Index_GET_body) ENABLED START*/
-        // Miembro 4: un usuario solo ve sus propios intercambios; el listado completo es del administrador.
+        // Un usuario solo ve sus propios intercambios; el listado completo es del administrador.
         if (!Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.EsAdministrador(User))
             return RedirectToAction(nameof(MisIntercambios));
 
@@ -63,7 +61,7 @@ public partial class IntercambioController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(IntercambioController_Create_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
@@ -79,7 +77,7 @@ public partial class IntercambioController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     /*PROTECTED REGION ID(IntercambioController_Create_POST_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.IntercambioViewModel model)
     {
@@ -139,7 +137,7 @@ public partial class IntercambioController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(IntercambioController_Edit_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -156,7 +154,7 @@ public partial class IntercambioController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     /*PROTECTED REGION ID(IntercambioController_Edit_POST_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.IntercambioViewModel model)
     {
@@ -217,7 +215,7 @@ public partial class IntercambioController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(IntercambioController_Delete_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -233,7 +231,7 @@ public partial class IntercambioController : Controller
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
     /*PROTECTED REGION ID(IntercambioController_DeleteConfirmed_POST_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

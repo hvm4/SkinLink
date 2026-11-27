@@ -13,10 +13,6 @@ using ejemplo.Infrastructure.Data;
 
 namespace ejemplo.Tests.Manual;
 
-// Pruebas de las operaciones que quedaron pendientes de la entrega anterior:
-// incrementarSaldo, decrementarSaldo, validarSaldoMonedero, sumarExperiencia, actualizarEstadoKYC,
-// publicarVenta, editarPrecio, moderarResena, ocultarResena y simularApertura.
-// Incluye además el flujo de experiencia (RF-04) en compraventa y apertura de cajas.
 public sealed class OperacionesPendientesTests
 {
     private static (SqliteConnection connection, DbContextOptions<ejemploDbContext> options) CreateInMemorySqlite()

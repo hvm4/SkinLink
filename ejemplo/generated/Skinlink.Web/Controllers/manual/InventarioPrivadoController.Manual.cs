@@ -28,7 +28,7 @@ public partial class InventarioPrivadoController
     {
     /*PROTECTED REGION ID(InventarioPrivadoController_CambiarVisibilidadInventario_POST_body) ENABLED START*/
 
-        // Miembro 4: un usuario solo cambia la visibilidad de su inventario; el administrador, la de cualquiera.
+        // Un usuario solo cambia la visibilidad de su inventario; el administrador, la de cualquiera.
         return await CambiarVisibilidadDesdeSesionAsync(p_oid);
     /*PROTECTED REGION END*/
     }

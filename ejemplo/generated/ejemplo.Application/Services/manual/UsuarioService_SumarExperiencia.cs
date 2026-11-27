@@ -14,10 +14,6 @@ public sealed partial class UsuarioService
     public async Task SumarExperienciaAsync(int p_oid, int p_puntos)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_Usuario_sumarExperiencia) ENABLED START*/
-        // Suma puntos de experiencia y recalcula el nivel (RF-04).
-        // Regla única de nivel para toda la aplicación: nivel = experiencia / 100 + 1 (nunca baja).
-        // No abre transacción propia: los casos de uso (compra, caja, recompensa, publicación) la llaman
-        // dentro de la suya.
         if (p_puntos <= 0)
             throw new ModelException("Los puntos de experiencia a sumar deben ser positivos.");
 

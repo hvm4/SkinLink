@@ -28,7 +28,7 @@ public partial class ConfiguracionSistemaController
     {
     /*PROTECTED REGION ID(ConfiguracionSistemaController_CalcularComisionMercado_POST_body) ENABLED START*/
 
-        // Miembro 4: muestra el resultado en la vista Comision (el controlador ya es solo para Administrador).
+        // Muestra el resultado en la vista Comision (el controlador ya es solo para Administrador).
         return await CalcularComisionEnVistaAsync(p_oid);
     /*PROTECTED REGION END*/
     }

@@ -13,8 +13,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(CajaMisteriosaController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class CajaMisteriosaController : Controller
@@ -272,7 +270,7 @@ public partial class CajaMisteriosaController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasActivas_GET_attributes) ENABLED START*/
-    [AllowAnonymous] // listado público de cajas
+    [AllowAnonymous]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarCajasActivas()
     {
@@ -285,7 +283,7 @@ public partial class CajaMisteriosaController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(CajaMisteriosaController_FiltrarCajasPorPrecioApertura_GET_attributes) ENABLED START*/
-    [AllowAnonymous] // listado público de cajas
+    [AllowAnonymous]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarCajasPorPrecioApertura(double p_precioMinimo, double p_precioMaximo)
     {

@@ -10,18 +10,10 @@ using ejemplo.Infrastructure.Data;
 
 namespace ejemplo.Tests.Manual;
 
-/// <summary>
-/// Miembro 2 (monedero, transacciones y compraventa): tests de integración del flujo
-/// depositar → publicar → comprar → comprobar saldos, y de las operaciones sueltas
-/// (incrementarSaldo, decrementarSaldo, validarSaldoMonedero, editarPrecio...).
-/// Cada paso usa una UnitOfWork nueva (como una petición real).
-/// </summary>
 [Trait("Category", "Database")]
 public sealed class CompraventaFlujoCompletoTests
 {
-    // ------------------------------------------------------------------
     // Infraestructura de test (SQLite en memoria, no toca tu BD real)
-    // ------------------------------------------------------------------
     private sealed class TestEnv : IAsyncDisposable
     {
         private readonly SqliteConnection _connection;
@@ -121,10 +113,6 @@ public sealed class CompraventaFlujoCompletoTests
         int InventarioVendedorId, int InventarioCompradorId,
         int ActivoId, int ActivoAjenoId, int VentaId);
 
-    /// <summary>
-    /// Vendedor con un activo (todavía no publicado) y una venta creada por 40 EUR en estado Disponible,
-    /// comprador y un tercero, todos con el monedero a 0.
-    /// </summary>
     private static async Task<Escenario> SeedAsync(TestEnv env, double precio = 40)
     {
         return await env.SeedAsync(db =>
@@ -155,9 +143,7 @@ public sealed class CompraventaFlujoCompletoTests
         });
     }
 
-    // ------------------------------------------------------------------
     // Ayudas de ejecución / comprobación
-    // ------------------------------------------------------------------
     private static Task<Transaccion> DepositarAsync(TestEnv env, int monederoId, double importe, string referencia) =>
         new ejemplo.Application.UseCases.Monedero.MonederoUseCase(env.NewUow())
             .DepositarFondosAsync(monederoId, Eur(importe), referencia, true);
@@ -206,9 +192,7 @@ public sealed class CompraventaFlujoCompletoTests
         return string.Join(" | ", partes);
     }
 
-    // ------------------------------------------------------------------
     // FLUJO COMPLETO: depositar → publicar → comprar → comprobar saldos
-    // ------------------------------------------------------------------
     [Fact]
     public async Task Flujo_Completo_Depositar_Publicar_Comprar_Y_Comprobar_Saldos()
     {
@@ -305,9 +289,7 @@ public sealed class CompraventaFlujoCompletoTests
         Assert.Equal(100, await SaldoAsync(env, s.MonederoVendedorId), 2);
     }
 
-    // ------------------------------------------------------------------
     // depositarFondos / retirarSaldoWallet
-    // ------------------------------------------------------------------
     [Fact]
     public async Task Depositar_Sin_Confirmacion_De_Pago_No_Ingresa_Fondos()
     {
@@ -378,9 +360,7 @@ public sealed class CompraventaFlujoCompletoTests
         Assert.Empty(await TransaccionesAsync(env, TipoTransaccion.Retiro));
     }
 
-    // ------------------------------------------------------------------
     // incrementarSaldo / decrementarSaldo / validarSaldoMonedero
-    // ------------------------------------------------------------------
     [Fact]
     public async Task IncrementarSaldo_Suma_El_Importe_Al_Saldo_Disponible()
     {
@@ -484,9 +464,7 @@ public sealed class CompraventaFlujoCompletoTests
             service.ValidarSaldoMonederoAsync(deposito.Id, 9999, Eur(10)));
     }
 
-    // ------------------------------------------------------------------
     // publicarVenta / editarPrecio / cancelarVenta
-    // ------------------------------------------------------------------
     [Fact]
     public async Task PublicarVenta_Con_Un_Activo_Que_No_Es_De_La_Venta_Lanza_ModelException()
     {
@@ -499,10 +477,6 @@ public sealed class CompraventaFlujoCompletoTests
         Assert.False((await LeerActivoAsync(env, s.ActivoId)).EnVenta);
         Assert.False((await LeerActivoAsync(env, s.ActivoAjenoId)).EnVenta);
     }
-
-    // Nota: publicar dos veces la misma venta con el mismo activo NO falla en la implementación actual de
-    // publicarVenta (se permite para poder publicar un activo ya bloqueado con bloquearParaVenta), así que
-    // ese caso no se comprueba aquí.
 
     [Fact]
     public async Task PublicarVenta_De_Una_Venta_Cancelada_Lanza_ModelException()

@@ -14,9 +14,6 @@ public sealed partial class CajaMisteriosaService
     public async Task<ActivoDigital> SimularAperturaAsync(int p_oid)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_CajaMisteriosa_simularApertura) ENABLED START*/
-        // Modo prueba (RF-22): simula la apertura con el mismo algoritmo de probabilidades que
-        // abrirCajaSorpresa, pero sin cobrar, sin crear el activo en ningún inventario y sin guardar nada.
-        // Devuelve un ActivoDigital NO persistido (Id = 0) para mostrar el resultado.
         var caja = await _repository.ReadAsync(p_oid)
             ?? throw new ModelException("CajaMisteriosa not found.");
         if (!caja.Activa)

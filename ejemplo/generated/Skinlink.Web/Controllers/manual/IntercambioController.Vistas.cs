@@ -1,6 +1,3 @@
-// Fichero manual (no lo genera HARIA Web) — Miembro 4: ciclo de vida de un Intercambio.
-// iniciarIntercambio, aceptarIntercambio y cancelarIntercambio (IntercambioController.Manual.cs)
-// delegan en estos métodos desde sus regiones protegidas. El usuario que actúa sale siempre de la sesión.
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ejemplo.Application.Abstractions;
@@ -13,7 +10,6 @@ namespace Skinlink.Web.Controllers;
 
 public partial class IntercambioController
 {
-    /// <summary>Intercambios del usuario: recibidos y enviados pendientes, e historial.</summary>
     [HttpGet]
     public async Task<IActionResult> MisIntercambios()
     {
@@ -37,10 +33,6 @@ public partial class IntercambioController
         return View("MisIntercambios", model);
     }
 
-    /// <summary>
-    /// Formulario para proponer un intercambio. Primero se elige el usuario; después se marcan
-    /// los activos propios que se ofrecen y los suyos que se piden.
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Proponer(int? receptorId)
     {
@@ -137,7 +129,6 @@ public partial class IntercambioController
         return RedirectToAction(nameof(MisIntercambios));
     }
 
-    /// <summary>Carga los intercambios con sus usuarios y activos en el mismo contexto.</summary>
     private static async Task<IReadOnlyList<Intercambio>> CargarIntercambiosAsync(IUnitOfWork uow)
     {
         await uow.UsuarioRepository.ReadAllAsync();
@@ -147,7 +138,6 @@ public partial class IntercambioController
         return intercambios;
     }
 
-    /// <summary>Activos de un usuario que puede ofrecer o que se le pueden pedir.</summary>
     private static List<ActivoIntercambioViewModel> ActivosIntercambiables(IEnumerable<ActivoDigital> activos, int usuarioId) =>
         activos
             .Where(a => a.Inventario?.Usuario?.Id == usuarioId

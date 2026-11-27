@@ -1,6 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): pantalla propia para que un usuario valore a un vendedor.
-// Las acciones generadas Create (GET/POST) delegan aquí desde sus regiones protegidas cuando quien
-// entra no es el administrador, para no enseñarle el formulario genérico (comprador, fecha, oculta...).
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ejemplo.Domain.Enums;
@@ -11,7 +8,6 @@ namespace Skinlink.Web.Controllers;
 
 public partial class ResenaVendedorController
 {
-    /// <summary>Vendedores a los que el usuario ha comprado algo (venta completada), para elegir a quién valorar.</summary>
     private async Task<List<SelectListItem>> VendedoresAValorarAsync(int compradorId, int? seleccionado)
     {
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
@@ -28,7 +24,6 @@ public partial class ResenaVendedorController
             .ToList();
     }
 
-    /// <summary>Vista "Valorar a un vendedor" para usuarios; el administrador sigue con el formulario genérico.</summary>
     private async Task<IActionResult> VistaCrearResenaAsync(ResenaVendedorViewModel model)
     {
         if (User.EsAdministrador())

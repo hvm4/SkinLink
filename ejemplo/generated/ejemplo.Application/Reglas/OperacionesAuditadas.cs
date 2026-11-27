@@ -1,7 +1,3 @@
-// Fichero manual (no lo genera HARIA): ejecución auditada de operaciones de administración (RF-29).
-// suspenderCuentaUsuario y verificarUsuario solo reciben el usuario afectado; aquí se añade el
-// administrador que actúa y se registra en RegistroAuditoria en la MISMA transacción que la operación,
-// de modo que nunca queda un cambio sin su registro (ni un registro de un cambio fallido).
 using ejemplo.Application.Abstractions;
 using ejemplo.Application.Exceptions;
 using ejemplo.Application.Services;
@@ -11,13 +7,11 @@ namespace ejemplo.Application.Reglas;
 
 public static class OperacionesAuditadas
 {
-    /// <summary>Suspende la cuenta (suspenderCuentaUsuario) y lo registra a nombre del administrador.</summary>
     public static Task SuspenderCuentaUsuarioAsync(IUnitOfWork unitOfWork, int administradorId, int usuarioId) =>
         EjecutarAsync(unitOfWork, administradorId, usuarioId, "SuspenderCuentaUsuario",
             service => service.SuspenderCuentaUsuarioAsync(usuarioId),
             usuario => $"Suspensión: cuenta '{usuario.NombreUsuario}' (#{usuario.Id}) suspendida");
 
-    /// <summary>Verifica la identidad (verificarUsuario) y lo registra a nombre del administrador.</summary>
     public static Task VerificarUsuarioAsync(IUnitOfWork unitOfWork, int administradorId, int usuarioId) =>
         EjecutarAsync(unitOfWork, administradorId, usuarioId, "VerificarUsuario",
             service => service.VerificarUsuarioAsync(usuarioId),

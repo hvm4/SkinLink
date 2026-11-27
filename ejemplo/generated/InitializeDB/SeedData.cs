@@ -219,12 +219,7 @@ public static class SeedData
             Ensure(await registroAuditoriaService.ReadOIDRegistroAuditoriaDefaultAsync(sampleRegistroAuditoria.Id) is null, "RegistroAuditoria seed cleanup completed.");
             /*PROTECTED REGION ID(initializeDataMethod) ENABLED START*/
             // ============================================================
-            // DATOS DE DEMOSTRACIÓN (miembro 4)
-            // Se crean usando las operaciones reales del modelo (depositar,
-            // publicar, comprar, abrir caja, intercambiar, moderar...), cada
-            // paso con su propia UnitOfWork, como si fuera una petición web.
-            // Contraseña de todos los usuarios de la demo: Demo1234!
-            // Administrador: admin / Admin123! (su id se muestra al final)
+            // DATOS DE DEMOSTRACIÓN
             // ============================================================
             Console.WriteLine("-------------------------------------------------------");
             Console.WriteLine("Cargando datos de demostración de SkinLink...");
@@ -255,9 +250,6 @@ public static class SeedData
             const string ClaveDemo = "Demo1234!";
 
             // --- Limpieza de los datos de prueba generados por HARIA ---
-            // El bloque generado de arriba borra el usuario y el administrador de prueba, pero no sus
-            // monederos e inventarios (relación 1 a 1), que se quedaban con la divisa "Sample Moneda Divisa"
-            // y salían en los desplegables de la web.
             await Hacer(async u =>
             {
                 await u.UsuarioRepository.ReadAllAsync();

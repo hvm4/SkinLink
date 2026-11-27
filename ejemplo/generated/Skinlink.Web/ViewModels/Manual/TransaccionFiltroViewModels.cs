@@ -1,4 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): vista del ReadFilter filtrarTransaccionesPorRangoFechas.
 using System.ComponentModel.DataAnnotations;
 using ejemplo.Domain.Enums;
 
@@ -16,7 +15,6 @@ public sealed class TransaccionFiltroFechasViewModel
 
     public bool Buscado { get; set; }
 
-    /// <summary>true si es un usuario normal: solo se le muestran los movimientos de su monedero.</summary>
     public bool SoloMisMovimientos { get; set; }
 
     public List<TransaccionViewModel> Resultados { get; set; } = new();

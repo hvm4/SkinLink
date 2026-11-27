@@ -1,5 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): acciones GET que muestran los formularios
-// de las operaciones de Usuario y el perfil. Los POST están en UsuarioController.Manual.cs.
 using System.Globalization;
 using ejemplo.Domain.Entities;
 using ejemplo.Domain.ValueObjects;
@@ -14,7 +12,6 @@ namespace Skinlink.Web.Controllers;
 
 public partial class UsuarioController
 {
-    /// <summary>Ficha del usuario que ha iniciado sesión.</summary>
     [HttpGet]
     public IActionResult Perfil()
     {
@@ -23,7 +20,6 @@ public partial class UsuarioController
         return RedirectToAction(nameof(Details), new { id });
     }
 
-    /// <summary>Formulario de la operación custom sumarExperiencia (solo administradores).</summary>
     [HttpGet]
     [Authorize(Roles = Roles.Administrador)]
     public async Task<IActionResult> SumarExperiencia(int id)
@@ -39,7 +35,6 @@ public partial class UsuarioController
         });
     }
 
-    /// <summary>Formulario de la operación customTransaction reclamarRecompensaDiaria para el usuario actual.</summary>
     [HttpGet]
     public async Task<IActionResult> ReclamarRecompensaDiaria()
     {
@@ -93,11 +88,6 @@ public partial class UsuarioController
         ModelState.Remove(nameof(UsuarioViewModel.InventarioId));
     }
 
-    /// <summary>
-    /// El formulario de registro no envía el estado, el nivel, la experiencia, la verificación ni la fecha
-    /// de último acceso: los fija el servidor. Sin esto, Estado llega con 0 (no existe en EstadoCuenta)
-    /// y la validación rechaza el registro con "El valor de Estado no es válido".
-    /// </summary>
     private void QuitarCamposDelRegistro()
     {
         QuitarCamposGestionadosPorServidor();
@@ -116,7 +106,6 @@ public partial class UsuarioController
     }
 }
 
-/// <summary>Monedero e inventario vacíos para una cuenta nueva (relaciones 1 a 1 de Usuario).</summary>
 public static class CuentaNueva
 {
     public const string Divisa = "EUR";

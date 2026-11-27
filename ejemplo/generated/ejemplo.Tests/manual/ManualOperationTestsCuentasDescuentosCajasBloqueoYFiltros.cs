@@ -12,9 +12,6 @@ using ejemplo.Infrastructure.Data;
 
 namespace ejemplo.Tests.Manual;
 
-// Tests de suspender cuentas, descuentos de catálogo, apertura de cajas, bloquear/desbloquear activos
-// y comportamiento real de los ReadFilter de Usuario, Transacción y ActivoDigital (rareza, colección, condición).
-// Las operaciones de Blanca (favoritos, visibilidad, autenticidad, intercambios, filtros de Venta y activos en venta) están en BlancaOperationsTests.
 public sealed class ManualOperationTestsCuentasDescuentosCajasBloqueoYFiltros
 {
     private static (SqliteConnection connection, DbContextOptions<ejemploDbContext> options) CreateInMemorySqlite()
@@ -69,8 +66,6 @@ public sealed class ManualOperationTestsCuentasDescuentosCajasBloqueoYFiltros
         Vendedor = vendedor,
         ActivoDigital = activo
     };
-
-    // ---------------- Héctor ----------------
 
     [Fact]
     public async Task Usuario_SuspenderCuentaUsuario_Debe_Suspender_Y_Rechazar_Repeticiones()
@@ -201,7 +196,7 @@ public sealed class ManualOperationTestsCuentasDescuentosCajasBloqueoYFiltros
         }
     }
 
-    // ---------------- Jorge: bloquear / desbloquear ----------------
+    // ---------------- bloquear / desbloquear ----------------
 
     [Fact]
     public async Task ActivoDigital_BloquearParaVenta_Y_Desbloquear_Deben_Cambiar_EnVenta()

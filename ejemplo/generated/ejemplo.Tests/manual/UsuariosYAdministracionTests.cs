@@ -11,10 +11,6 @@ using ejemplo.Infrastructure.Data;
 
 namespace ejemplo.Tests.Manual;
 
-// Miembro 1 · Usuarios, seguridad y administración.
-// Pruebas unitarias (SQLite en memoria) de sumarExperiencia, actualizarEstadoKYC,
-// el filtro filtrarUsuariosPorEstado y la herencia Usuario <- Administrador.
-// Complementan los casos básicos de OperacionesPendientesTests.
 public sealed class UsuariosYAdministracionTests
 {
     private static (SqliteConnection connection, DbContextOptions<ejemploDbContext> options) CreateInMemorySqlite()

@@ -28,7 +28,7 @@ public partial class IntercambioController
     {
     /*PROTECTED REGION ID(IntercambioController_IniciarIntercambio_POST_body) ENABLED START*/
 
-        // Miembro 4: el proponente es siempre el usuario de la sesión; p_proponente_oid se ignora.
+        // El proponente es siempre el usuario de la sesión; p_proponente_oid se ignora.
         return await IniciarIntercambioDesdeSesionAsync(p_receptor_oid, p_activosOfrecidos_oids, p_activosSolicitados_oids);
     /*PROTECTED REGION END*/
     }
@@ -41,7 +41,7 @@ public partial class IntercambioController
     {
     /*PROTECTED REGION ID(IntercambioController_AceptarIntercambio_POST_body) ENABLED START*/
 
-        // Miembro 4: solo acepta el receptor, que es el usuario de la sesión; p_receptor_oid se ignora.
+        // Solo acepta el receptor, que es el usuario de la sesión; p_receptor_oid se ignora.
         return await ResolverIntercambioAsync(p_oid, aceptar: true);
     /*PROTECTED REGION END*/
     }
@@ -54,7 +54,7 @@ public partial class IntercambioController
     {
     /*PROTECTED REGION ID(IntercambioController_CancelarIntercambio_POST_body) ENABLED START*/
 
-        // Miembro 4: cancela el usuario de la sesión (proponente o receptor); p_usuario_oid se ignora.
+        // Cancela el usuario de la sesión (proponente o receptor); p_usuario_oid se ignora.
         return await ResolverIntercambioAsync(p_oid, aceptar: false);
     /*PROTECTED REGION END*/
     }

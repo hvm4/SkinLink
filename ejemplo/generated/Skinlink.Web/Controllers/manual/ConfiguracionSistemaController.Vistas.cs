@@ -1,5 +1,3 @@
-// Fichero manual (no lo genera HARIA Web) — Miembro 4: calculadora de la comisión de mercado.
-// Usa calcularComisionMercado (porcentaje según el tramo de precio de la configuración del sistema).
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using ejemplo.Domain.Entities;

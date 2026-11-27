@@ -13,7 +13,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(RegistroAuditoriaController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): solo administradores.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
 /*PROTECTED REGION END*/
 public partial class RegistroAuditoriaController : Controller

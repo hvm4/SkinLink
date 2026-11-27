@@ -1,6 +1,3 @@
-// Fichero manual (no lo genera HARIA Web) — Miembro 4: vistas de las reseñas de vendedores.
-// La acción generada FiltrarResenasVisiblesPorVendedor y las operaciones OcultarResena / ModerarResena
-// delegan en estos métodos desde sus regiones protegidas.
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,7 +10,6 @@ namespace Skinlink.Web.Controllers;
 
 public partial class ResenaVendedorController
 {
-    /// <summary>Panel de moderación: todas las reseñas (visibles y ocultas) para el administrador.</summary>
     [HttpGet]
     [Authorize(Roles = Roles.Administrador)]
     public async Task<IActionResult> Moderacion()
@@ -32,10 +28,6 @@ public partial class ResenaVendedorController
         return View("Moderacion", model);
     }
 
-    /// <summary>
-    /// filtrarResenasVisiblesPorVendedor en HTML: reseñas no ocultas de un vendedor y su nota media.
-    /// Si no se indica vendedor, muestra solo el selector.
-    /// </summary>
     private async Task<IActionResult> MostrarResenasVendedorAsync(int? vendedorId)
     {
         await using var uow = _formUnitOfWorkFactory.Create();
@@ -75,7 +67,6 @@ public partial class ResenaVendedorController
         return View("FiltrarResenasVisiblesPorVendedor", model);
     }
 
-    /// <summary>ocultarResena: solo el vendedor reseñado o un administrador.</summary>
     private async Task<IActionResult> OcultarResenaDeMiPerfilAsync(int resenaId)
     {
         if (User.GetUsuarioId() is not int usuarioId) return Challenge();

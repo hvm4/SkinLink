@@ -13,8 +13,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(ActivoDigitalController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class ActivoDigitalController : Controller
@@ -67,7 +65,7 @@ public partial class ActivoDigitalController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(ActivoDigitalController_Create_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create()
     {
@@ -83,7 +81,7 @@ public partial class ActivoDigitalController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     /*PROTECTED REGION ID(ActivoDigitalController_Create_POST_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Create(Skinlink.Web.ViewModels.ActivoDigitalViewModel model)
     {
@@ -163,7 +161,7 @@ public partial class ActivoDigitalController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(ActivoDigitalController_Edit_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id)
     {
@@ -180,7 +178,7 @@ public partial class ActivoDigitalController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     /*PROTECTED REGION ID(ActivoDigitalController_Edit_POST_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Edit(int id, Skinlink.Web.ViewModels.ActivoDigitalViewModel model)
     {
@@ -262,7 +260,7 @@ public partial class ActivoDigitalController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(ActivoDigitalController_Delete_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Delete(int id)
     {
@@ -278,7 +276,7 @@ public partial class ActivoDigitalController : Controller
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
     /*PROTECTED REGION ID(ActivoDigitalController_DeleteConfirmed_POST_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // CRUD genérico solo para el administrador; los usuarios usan sus pantallas propias
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -310,7 +308,7 @@ public partial class ActivoDigitalController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorRareza_GET_attributes) ENABLED START*/
-    [AllowAnonymous] // catálogo público (CU-10)
+    [AllowAnonymous]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarActivosPorRareza(Rareza p_rareza)
     {
@@ -325,7 +323,7 @@ public partial class ActivoDigitalController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorColeccion_GET_attributes) ENABLED START*/
-    [AllowAnonymous] // catálogo público (CU-10)
+    [AllowAnonymous]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarActivosPorColeccion(string p_coleccion)
     {
@@ -345,7 +343,7 @@ public partial class ActivoDigitalController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(ActivoDigitalController_FiltrarActivosPorCondicion_GET_attributes) ENABLED START*/
-    [AllowAnonymous] // catálogo público (CU-10)
+    [AllowAnonymous]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarActivosPorCondicion(Condicion p_condicion)
     {

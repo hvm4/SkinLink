@@ -14,10 +14,6 @@ public sealed partial class ResenaVendedorService
     public async Task ModerarResenaAsync(int p_oid, int p_admin_oid)
     {
         /*PROTECTED REGION ID(ejemplo.Application.Services_ResenaVendedor_moderarResena) ENABLED START*/
-        // Moderación por un Administrador (RF-26): alterna la visibilidad de la reseña
-        // (visible -> oculta por moderación, oculta -> restaurada) y lo registra en auditoría (RF-29).
-        // El filtro filtrarResenasVisiblesPorVendedor excluye las ocultas, así que la reputación
-        // visible del vendedor se recalcula sola.
         await _unitOfWork.BeginTransactionAsync("ModerarResena");
         try
         {

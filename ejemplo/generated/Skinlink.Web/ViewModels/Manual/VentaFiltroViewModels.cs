@@ -1,4 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): vistas de los ReadFilter filtrarVentasPorEstado y filtrarVentasPorPrecioMaximo.
 using System.ComponentModel.DataAnnotations;
 using ejemplo.Domain.Enums;
 
@@ -16,7 +15,6 @@ public sealed class VentaFiltroEstadoViewModel
 
 public sealed class VentaFiltroPrecioViewModel
 {
-    /// <summary>Texto tal y como lo escribe el usuario (admite coma o punto decimal).</summary>
     [Display(Name = "Precio máximo")]
     public string PrecioMaximo { get; set; } = string.Empty;
 

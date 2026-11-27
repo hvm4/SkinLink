@@ -1,5 +1,3 @@
-// Fichero manual (no lo genera HARIA Web) — Miembro 4: favoritos del usuario conectado.
-// Usa la operación marcarComoFavorito de ActivoDigital (alterna: si ya era favorito, lo quita).
 using Microsoft.AspNetCore.Mvc;
 using ejemplo.Application.Services;
 using Skinlink.Web.Utils.Security;
@@ -40,10 +38,6 @@ public partial class FavoritoController
         return View("MisFavoritos", model);
     }
 
-    /// <summary>
-    /// Marca o desmarca un activo como favorito del usuario de la sesión.
-    /// Desde cualquier vista: form POST a /Favorito/Alternar con activoId (y returnUrl opcional).
-    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Alternar(int activoId, string? returnUrl)

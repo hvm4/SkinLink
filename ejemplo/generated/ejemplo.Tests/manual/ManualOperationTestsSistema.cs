@@ -102,9 +102,7 @@ public sealed class ManualOperationTestsSistema
         return activo;
     }
 
-    // ------------------------------------------------------------------
     // Custom: Usuario.verificarUsuario
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task Usuario_VerificarUsuario_Debe_Marcar_La_Identidad_Como_Verificada()
@@ -157,9 +155,7 @@ public sealed class ManualOperationTestsSistema
         }
     }
 
-    // ------------------------------------------------------------------
     // Custom: ConfiguracionSistema.calcularComisionMercado
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task ConfiguracionSistema_CalcularComisionMercado_Debe_Aplicar_La_Comision_Segun_El_Rango()
@@ -199,9 +195,7 @@ public sealed class ManualOperationTestsSistema
         }
     }
 
-    // ------------------------------------------------------------------
     // Custom: ActivoDigital.generarReporteActividad
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task ActivoDigital_GenerarReporteActividad_Debe_Incluir_Las_Metricas_Del_Activo()
@@ -248,9 +242,7 @@ public sealed class ManualOperationTestsSistema
         }
     }
 
-    // ------------------------------------------------------------------
     // CustomTransaction: Monedero.depositarFondos
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task Monedero_DepositarFondos_Debe_Acreditar_Saldo_Y_Registrar_La_Transaccion()
@@ -311,9 +303,7 @@ public sealed class ManualOperationTestsSistema
         }
     }
 
-    // ------------------------------------------------------------------
     // CustomTransaction: Monedero.retirarSaldoWallet
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task Monedero_RetirarSaldoWallet_Debe_Descontar_Saldo_Y_Registrar_La_Transaccion()
@@ -411,9 +401,7 @@ public sealed class ManualOperationTestsSistema
         }
     }
 
-    // ------------------------------------------------------------------
     // ReadFilter: CajaMisteriosa.filtrarCajasActivas
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task CajaMisteriosa_FiltrarCajasActivas_Debe_Devolver_Solo_Las_Cajas_Activas()
@@ -443,9 +431,7 @@ public sealed class ManualOperationTestsSistema
         }
     }
 
-    // ------------------------------------------------------------------
     // ReadFilter: CajaMisteriosa.filtrarCajasPorPrecioApertura
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task CajaMisteriosa_FiltrarCajasPorPrecioApertura_Debe_Devolver_Las_Cajas_Del_Rango()
@@ -480,9 +466,7 @@ public sealed class ManualOperationTestsSistema
         }
     }
 
-    // ------------------------------------------------------------------
     // ReadFilter: ResenaVendedor.filtrarResenasVisiblesPorVendedor
-    // ------------------------------------------------------------------
 
     [Fact]
     public async Task ResenaVendedor_FiltrarResenasVisiblesPorVendedor_Debe_Excluir_Las_Ocultas_Y_Las_De_Otros_Vendedores()

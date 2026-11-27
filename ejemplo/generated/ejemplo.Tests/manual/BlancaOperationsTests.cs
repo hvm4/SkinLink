@@ -14,9 +14,7 @@ namespace ejemplo.Tests.Manual;
 [Trait("Category", "Database")]
 public sealed class BlancaOperationsTests
 {
-    // ------------------------------------------------------------------
     // Infraestructura de test (SQLite en memoria, no toca tu BD real)
-    // ------------------------------------------------------------------
     private sealed class TestEnv : IAsyncDisposable
     {
         private readonly SqliteConnection _connection;
@@ -155,9 +153,7 @@ public sealed class BlancaOperationsTests
         return await uow.ActivoDigitalRepository.ReadAllAsync();
     }
 
-    // ------------------------------------------------------------------
     // CUSTOM: marcarComoFavorito
-    // ------------------------------------------------------------------
     [Fact]
     public async Task MarcarComoFavorito_Alterna_Anadir_Y_Retirar()
     {
@@ -183,9 +179,7 @@ public sealed class BlancaOperationsTests
         await Assert.ThrowsAsync<ModelException>(() => service.MarcarComoFavoritoAsync(9999, s.ProponenteId));
     }
 
-    // ------------------------------------------------------------------
     // CUSTOM: verificarAutenticidad
-    // ------------------------------------------------------------------
     [Fact]
     public async Task VerificarAutenticidad_Guid_Valido_Devuelve_True()
     {
@@ -211,9 +205,7 @@ public sealed class BlancaOperationsTests
         Assert.False(await service.VerificarAutenticidadAsync(id));
     }
 
-    // ------------------------------------------------------------------
     // CUSTOM: cambiarVisibilidadInventario
-    // ------------------------------------------------------------------
     [Fact]
     public async Task CambiarVisibilidadInventario_Alterna_Publico_Privado()
     {
@@ -229,9 +221,7 @@ public sealed class BlancaOperationsTests
         Assert.False(tras2!.EsPublico);
     }
 
-    // ------------------------------------------------------------------
     // CUSTOMTRANSACTION: iniciarIntercambio
-    // ------------------------------------------------------------------
     [Fact]
     public async Task IniciarIntercambio_Crea_Propuesta_Pendiente_Y_Reserva_Los_Activos()
     {
@@ -298,9 +288,7 @@ public sealed class BlancaOperationsTests
         Assert.Empty(await env.NewUow().IntercambioRepository.ReadAllAsync());
     }
 
-    // ------------------------------------------------------------------
     // CUSTOMTRANSACTION: aceptarIntercambio
-    // ------------------------------------------------------------------
     [Fact]
     public async Task AceptarIntercambio_Intercambia_La_Propiedad_De_Los_Activos()
     {
@@ -379,9 +367,7 @@ public sealed class BlancaOperationsTests
         Assert.Equal(s.InvProponenteId, activos.Single(a => a.Id == s.ActivoProponenteId).Inventario.Id);
     }
 
-    // ------------------------------------------------------------------
     // READFILTER: filtrarVentasPorEstado / PorPrecioMaximo / filtrarActivosEnVenta
-    // ------------------------------------------------------------------
     [Fact]
     public async Task FiltrarVentasPorEstado_Devuelve_Solo_Las_Del_Estado()
     {

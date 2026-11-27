@@ -1,6 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): vistas de los filtros y operaciones de ActivoDigital.
-// Las acciones generadas (FiltrarActivosPor..., BloquearParaVenta, ...) delegan en estos métodos
-// desde sus regiones protegidas.
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ejemplo.Domain.Entities;
@@ -12,12 +9,10 @@ namespace Skinlink.Web.Controllers;
 
 public partial class ActivoDigitalController
 {
-    /// <summary>Catálogo con los cuatro filtros (CU-10). Visible sin iniciar sesión.</summary>
     [HttpGet]
     [AllowAnonymous]
     public IActionResult Buscar() => View("Buscar", NuevaBusqueda());
 
-    /// <summary>Panel de operaciones de un activo.</summary>
     [HttpGet]
     public async Task<IActionResult> Operaciones(int id) =>
         await MostrarOperacionesAsync(id, autentico: null, reporte: null);
@@ -54,7 +49,6 @@ public partial class ActivoDigitalController
         return View("Buscar", model);
     }
 
-    /// <summary>Carga el activo con su inventario y dueño para decidir qué operaciones se muestran.</summary>
     private async Task<(ActivoDigital? activo, int? propietarioId, string? propietario)> CargarActivoConDuenoAsync(int id)
     {
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
@@ -64,7 +58,6 @@ public partial class ActivoDigitalController
         return (activo, usuario?.Id, usuario?.NombreUsuario);
     }
 
-    /// <summary>true si el usuario autenticado es el dueño del activo o un administrador.</summary>
     private async Task<bool> PuedeGestionarActivoAsync(int id)
     {
         if (User.EsAdministrador()) return true;
@@ -94,7 +87,6 @@ public partial class ActivoDigitalController
         });
     }
 
-    /// <summary>Ejecuta una operación y vuelve al panel con un mensaje de éxito o el error de negocio.</summary>
     private async Task<IActionResult> EjecutarYVolverAsync(int id, Func<Task> operacion, string mensajeExito)
     {
         try

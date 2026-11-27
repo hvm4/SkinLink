@@ -1,9 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): "Poner a la venta" para usuarios.
-// El alta genérica de Venta (solo administrador) pide comprador y transacciones; aquí el usuario
-// elige uno de sus activos y un precio, y se hace en dos pasos con las operaciones del modelo:
-// Venta.new (vendedor = usuario de la sesión, estado Disponible) y Venta.publicarVenta.
-// El modelo solo admite una venta por activo (relación 1 a 1): una venta cancelada del propio usuario
-// se reutiliza (sin volver a dar experiencia); un activo que ya se vendió no se puede volver a vender.
 using Microsoft.AspNetCore.Mvc;
 using ejemplo.Application.Exceptions;
 using ejemplo.Application.Services;
@@ -73,10 +67,6 @@ public partial class VentaController
             }
 
             // 2) Publicarla.
-            //    - Venta nueva: operación del modelo publicarVenta (comprueba propiedad, bloqueo e intercambios y da +10 XP).
-            //    - Venta cancelada reutilizada: ya se publicó una vez y dio su experiencia; solo se vuelve a bloquear
-            //      el activo para la venta (las comprobaciones las ha hecho MotivoNoVendible). Así publicar y
-            //      cancelar en bucle no sirve para acumular experiencia.
             await using (var unitOfWork = _formUnitOfWorkFactory.Create())
             {
                 if (ventaReutilizada is null)
@@ -98,7 +88,6 @@ public partial class VentaController
         }
     }
 
-    /// <summary>Motivo por el que el usuario no puede poner el activo a la venta ahora, o null si puede.</summary>
     private static string? MotivoNoVendible(ActivoDigital activo, int usuarioId)
     {
         if (activo.Inventario?.Usuario?.Id != usuarioId) return "Solo puedes vender activos de tu inventario.";
@@ -156,7 +145,6 @@ public partial class VentaController
         return model;
     }
 
-    /// <summary>Si la publicación falla, se deja todo como estaba (venta borrada o de nuevo cancelada).</summary>
     private async Task DeshacerVentaAsync(int? ventaCreada, int? ventaReutilizada, int activoId)
     {
         if (ventaCreada is null && ventaReutilizada is null) return;

@@ -28,7 +28,7 @@ public partial class ResenaVendedorController
     public async Task<IActionResult> ModerarResena(int p_oid, int p_admin_oid)
     {
     /*PROTECTED REGION ID(ResenaVendedorController_ModerarResena_POST_body) ENABLED START*/
-        // Miembro 4: el administrador que modera es siempre el de la sesión; p_admin_oid se ignora.
+        // El administrador que modera es siempre el de la sesión; p_admin_oid se ignora.
         if (Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User) is not int adminId) return Challenge();
         try
         {
@@ -50,7 +50,7 @@ public partial class ResenaVendedorController
     public async Task<IActionResult> OcultarResena(int p_oid)
     {
     /*PROTECTED REGION ID(ResenaVendedorController_OcultarResena_POST_body) ENABLED START*/
-        // Miembro 4: solo el vendedor reseñado (o un administrador) puede ocultar la reseña de su perfil.
+        // Solo el vendedor reseñado (o un administrador) puede ocultar la reseña de su perfil.
         return await OcultarResenaDeMiPerfilAsync(p_oid);
     /*PROTECTED REGION END*/
     }

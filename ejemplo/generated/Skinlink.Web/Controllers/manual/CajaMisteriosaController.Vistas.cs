@@ -1,6 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): vistas de los filtros y operaciones de CajaMisteriosa.
-// Las acciones generadas (FiltrarCajas..., SimularApertura, AbrirCajaSorpresa) delegan en estos
-// métodos desde sus regiones protegidas.
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +10,10 @@ namespace Skinlink.Web.Controllers;
 
 public partial class CajaMisteriosaController
 {
-    /// <summary>Listado de cajas con los filtros (activas / por precio). Visible sin iniciar sesión.</summary>
     [HttpGet]
     [AllowAnonymous]
     public IActionResult Buscar() => View("Buscar", new CajaBusquedaViewModel());
 
-    /// <summary>Página de una caja: probabilidades legibles (RF-20), simulación (RF-22) y apertura (RF-19).</summary>
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> Abrir(int id)
@@ -53,10 +48,6 @@ public partial class CajaMisteriosaController
         return View("Buscar", model);
     }
 
-    /// <summary>
-    /// Lee un número de la URL aceptando coma o punto decimal (los formularios GET envían el texto tal
-    /// cual y ASP.NET interpreta la query string con cultura invariante).
-    /// </summary>
     private double? LeerDecimalDeQuery(string clave)
     {
         var texto = Request.Query[clave].ToString().Trim();
@@ -106,10 +97,6 @@ public partial class CajaMisteriosaController
 
 public partial class CajaMisteriosaController
 {
-    /// <summary>
-    /// CU-19 / RF-25: al crear o editar una caja, la suma de los porcentajes de sus probabilidades
-    /// debe ser exactamente 100 % (con tolerancia de redondeo) y ninguno puede ser negativo o mayor que 100.
-    /// </summary>
     private void ValidarSumaProbabilidades(Skinlink.Web.ViewModels.CajaMisteriosaViewModel model)
     {
         var filas = model.Probabilidades ?? new();

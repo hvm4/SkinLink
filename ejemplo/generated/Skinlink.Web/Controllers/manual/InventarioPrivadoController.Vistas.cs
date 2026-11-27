@@ -1,4 +1,3 @@
-// Fichero manual (no lo genera HARIA Web) — Miembro 4: visibilidad del inventario (cambiarVisibilidadInventario).
 using Microsoft.AspNetCore.Mvc;
 using ejemplo.Domain.Entities;
 using Skinlink.Web.Utils.Security;
@@ -8,7 +7,6 @@ namespace Skinlink.Web.Controllers;
 
 public partial class InventarioPrivadoController
 {
-    /// <summary>Estado público/privado del inventario propio (y, para el administrador, de todos).</summary>
     [HttpGet]
     public async Task<IActionResult> Visibilidad()
     {

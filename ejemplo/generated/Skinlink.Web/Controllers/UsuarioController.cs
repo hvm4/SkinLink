@@ -15,8 +15,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(UsuarioController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class UsuarioController : Controller
@@ -73,7 +71,7 @@ public partial class UsuarioController : Controller
     {
     /*PROTECTED REGION ID(UsuarioController_Create_GET_body) ENABLED START*/
 
-        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
+        await Task.CompletedTask;
 
         // Alta administrativa: el monedero y el inventario se crean vacíos automáticamente.
         return View("Alta", new UsuarioViewModel
@@ -126,7 +124,7 @@ public partial class UsuarioController : Controller
     {
     /*PROTECTED REGION ID(UsuarioController_Register_GET_body) ENABLED START*/
 
-        await Task.CompletedTask; // la acción generada es async, pero este cuerpo no consulta nada (evita el aviso CS1998)
+        await Task.CompletedTask;
 
         if (User.Identity?.IsAuthenticated == true) return RedirectToAction(nameof(Perfil));
         return View("Registro", new UsuarioViewModel { FechaNacimiento = DateTime.Today.AddYears(-18), Idioma = "es" });
@@ -204,7 +202,7 @@ public partial class UsuarioController : Controller
     {
     /*PROTECTED REGION ID(UsuarioController_Edit_POST_body) ENABLED START*/
 
-        ModelState.Remove(nameof(model.FechaUltimaRecompensa)); // Campo fuera del contrato Edit de Application.
+        ModelState.Remove(nameof(model.FechaUltimaRecompensa));
         await using var unitOfWork = _formUnitOfWorkFactory.Create();
         var service = new UsuarioService(unitOfWork);
         var entity = await service.ReadOIDUsuarioDefaultAsync(id);

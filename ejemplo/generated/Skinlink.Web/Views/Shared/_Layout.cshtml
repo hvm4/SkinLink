@@ -21,7 +21,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacidad</a></li>
-                        @* Menú según el rol (Miembro 1). El menú solo muestra enlaces: el acceso lo controla [Authorize]. *@
+                        @* Menú según el rol. El menú solo muestra enlaces: el acceso lo controla [Authorize]. *@
                         <li class="nav-item"><a class="nav-link" asp-controller="ActivoDigital" asp-action="Buscar">Activos</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="CajaMisteriosa" asp-action="Buscar">Cajas</a></li>
                         @if (User.IsInRole(Roles.Usuario) || User.EsAdministrador())
@@ -41,7 +41,6 @@
                                     <li><a class="dropdown-item" asp-controller="Administrador" asp-action="Index">Administradores</a></li>
                                     <li><a class="dropdown-item" asp-controller="RegistroAuditoria" asp-action="Index">Registro de auditoría</a></li>
                                     <li><a class="dropdown-item" asp-controller="ArticuloCatalogo" asp-action="Descuento">Descuentos del catálogo</a></li>
-                                    @* Miembro 4 *@
                                     <li><a class="dropdown-item" asp-controller="ResenaVendedor" asp-action="Moderacion">Moderación de reseñas</a></li>
                                     <li><a class="dropdown-item" asp-controller="ConfiguracionSistema" asp-action="Comision">Comisión de mercado</a></li>
                                     <li><a class="dropdown-item" asp-controller="InventarioPrivado" asp-action="Visibilidad">Visibilidad de inventarios</a></li>
@@ -69,9 +68,6 @@
     </header>
 
     <main class="container flex-grow-1 py-4 py-lg-5">
-        @* Resultado de los borrados del CRUD genérico: las vistas Delete e Index las genera HARIA Web
-           sin región protegida, así que el aviso se muestra aquí (claves propias para no duplicar
-           los avisos de _MensajesOperacion). *@
         @if (TempData["ExitoBorrado"] is string exitoBorrado && !string.IsNullOrWhiteSpace(exitoBorrado))
         {
             <div class="alert alert-success" role="status">@exitoBorrado</div>

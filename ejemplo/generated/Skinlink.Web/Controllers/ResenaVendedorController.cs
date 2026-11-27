@@ -13,8 +13,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(ResenaVendedorController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class ResenaVendedorController : Controller
@@ -284,13 +282,12 @@ public partial class ResenaVendedorController : Controller
 
     [HttpGet]
     /*PROTECTED REGION ID(ResenaVendedorController_FiltrarResenasVisiblesPorVendedor_GET_attributes) ENABLED START*/
-    // La reputación de un vendedor es pública (Miembro 4).
+    // La reputación de un vendedor es pública.
     [AllowAnonymous]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> FiltrarResenasVisiblesPorVendedor(int p_vendedorId)
     {
     /*PROTECTED REGION ID(ResenaVendedorController_FiltrarResenasVisiblesPorVendedor_GET_body) ENABLED START*/
-        // Miembro 4: vista HTML en lugar de JSON (ver ResenaVendedorController.Vistas.cs).
         return await MostrarResenasVendedorAsync(p_vendedorId > 0 ? p_vendedorId : null);
     /*PROTECTED REGION END*/
     }

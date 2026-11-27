@@ -13,8 +13,6 @@ using ejemplo.Domain.ValueObjects;
 namespace Skinlink.Web.Controllers;
 
 /*PROTECTED REGION ID(MonederoController_class_attributes) ENABLED START*/
-// Seguridad (Miembro 1): cualquier cuenta activa; las cuentas suspendidas no tienen rol.
-// Las acciones con [AllowAnonymous] siguen siendo públicas.
 [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Todos)]
 /*PROTECTED REGION END*/
 public partial class MonederoController : Controller
@@ -35,7 +33,7 @@ public partial class MonederoController : Controller
     /*PROTECTED REGION END*/
     [HttpGet]
     /*PROTECTED REGION ID(MonederoController_Index_GET_attributes) ENABLED START*/
-    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)] // los listados completos son solo del administrador
+    [Authorize(Roles = Skinlink.Web.Utils.Security.Roles.Administrador)]
     /*PROTECTED REGION END*/
     public async Task<IActionResult> Index()
     {

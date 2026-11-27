@@ -3,9 +3,6 @@ using ejemplo.Domain.Entities;
 
 namespace ejemplo.Application.UseCases.Intercambio;
 
-// Métodos auxiliares compartidos por IniciarIntercambio y AceptarIntercambio.
-// Estaban en IntercambioUseCase_IniciarIntercambio.cs fuera de una región protegida,
-// y HARIA los movió a .haria/orphans al regenerar. En este archivo propio no se pierden.
 public sealed partial class IntercambioUseCase
 {
     internal static List<ActivoDigital> ResolverActivos(IReadOnlyList<ActivoDigital> todos, IEnumerable<int> ids)

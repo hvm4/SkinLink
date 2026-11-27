@@ -1,4 +1,3 @@
-// Fichero manual (no lo genera HARIA Web): vista de la operación actualizarDescuentoArticulo.
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Skinlink.Web.Assemblers;
@@ -9,7 +8,6 @@ namespace Skinlink.Web.Controllers;
 
 public partial class ArticuloCatalogoController
 {
-    /// <summary>Formulario de descuento temporal (solo administradores, RF-25).</summary>
     [HttpGet]
     [Authorize(Roles = Roles.Administrador)]
     public async Task<IActionResult> Descuento(int? id)

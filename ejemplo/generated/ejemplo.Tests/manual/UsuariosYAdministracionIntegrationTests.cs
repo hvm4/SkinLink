@@ -54,14 +54,16 @@ public sealed class UsuariosYAdministracionIntegrationTests
                 Assert.NotEqual("Jugador123!", usuario.Contrasena);
             }
 
-            // 2) Login de los dos (el administrador entra como Usuario: herencia).
+            // 2) Login por correo de los dos (el administrador entra como Usuario: herencia).
             await using (var db = new ejemploDbContext(options))
             await using (var uow = new UnitOfWork(db))
             {
                 var service = new UsuarioService(uow);
-                Assert.False(string.IsNullOrWhiteSpace(await service.LoginAsync(adminId, "Admin123!")));
-                Assert.False(string.IsNullOrWhiteSpace(await service.LoginAsync(usuarioId, "Jugador123!")));
-                Assert.Null(await service.LoginAsync(usuarioId, "contraseña-incorrecta"));
+                Assert.False(string.IsNullOrWhiteSpace(await service.LoginAsync("admin@skinlink.com", "Admin123!")));
+                Assert.False(string.IsNullOrWhiteSpace(await service.LoginAsync("jugador@test.com", "Jugador123!")));
+                Assert.Null(await service.LoginAsync("jugador@test.com", "contraseña-incorrecta"));
+                Assert.Null(await service.LoginAsync("noexiste@test.com", "Jugador123!"));
+                Assert.Null(await service.LoginAsync("", "Jugador123!"));
                 Assert.IsType<Administrador>(await service.ReadOIDAsync(adminId));
             }
 

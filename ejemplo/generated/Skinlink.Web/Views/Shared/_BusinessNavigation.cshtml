@@ -1,4 +1,4 @@
-@* HARIA-WEB NAVIGATION sha256:785f3835cd7992085bfe7027629f020b8d89e30aae33f5806308a367f69c26c9 *@
+@* HARIA-WEB NAVIGATION sha256:e02fd3d6a677809d2548b72566c3fbe51000836212b5da3f64dac2e90e99003d *@
 @* Enlaces calculados al generar. Authorize protege las acciones. *@
 <style>
     .haria-home { --haria-home-accent: var(--bs-primary, #0d6efd); color: var(--bs-body-color, #212529); }
@@ -45,67 +45,87 @@
     </header>
     <div class="haria-home-grid">
     <article class="haria-home-card" aria-labelledby="haria-home-entity-0">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-0" class="haria-home-card-title">ActivoDigital</h2>
         
         <a asp-controller="ActivoDigital" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de ActivoDigital">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="ActivoDigital" asp-action="Buscar" class="haria-home-page"><span>Buscar</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-1">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-1" class="haria-home-card-title">Administrador</h2>
         
         <a asp-controller="Administrador" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de Administrador">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="Administrador" asp-action="ActualizarEstadoKYC" class="haria-home-page"><span>ActualizarEstadoKYC</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-2">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-2" class="haria-home-card-title">ArticuloCatalogo</h2>
         
         <a asp-controller="ArticuloCatalogo" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de ArticuloCatalogo">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="ArticuloCatalogo" asp-action="Descuento" class="haria-home-page"><span>Descuento</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-3">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-3" class="haria-home-card-title">CajaMisteriosa</h2>
         
         <a asp-controller="CajaMisteriosa" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de CajaMisteriosa">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="CajaMisteriosa" asp-action="Buscar" class="haria-home-page"><span>Buscar</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-4">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-4" class="haria-home-card-title">ConfiguracionSistema</h2>
         
         <a asp-controller="ConfiguracionSistema" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de ConfiguracionSistema">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="ConfiguracionSistema" asp-action="Comision" class="haria-home-page"><span>Comision</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-5">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-5" class="haria-home-card-title">Favorito</h2>
         
         <a asp-controller="Favorito" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de Favorito">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="Favorito" asp-action="MisFavoritos" class="haria-home-page"><span>MisFavoritos</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-6">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">3 accesos</span></div>
         <h2 id="haria-home-entity-6" class="haria-home-card-title">Intercambio</h2>
         
         <a asp-controller="Intercambio" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de Intercambio">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="Intercambio" asp-action="MisIntercambios" class="haria-home-page"><span>MisIntercambios</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+            <li><a asp-controller="Intercambio" asp-action="Proponer" class="haria-home-page"><span>Proponer</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-7">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-7" class="haria-home-card-title">InventarioPrivado</h2>
         
         <a asp-controller="InventarioPrivado" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de InventarioPrivado">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="InventarioPrivado" asp-action="Visibilidad" class="haria-home-page"><span>Visibilidad</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-8">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">3 accesos</span></div>
         <h2 id="haria-home-entity-8" class="haria-home-card-title">Monedero</h2>
         
         <a asp-controller="Monedero" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de Monedero">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="Monedero" asp-action="DepositarFondos" class="haria-home-page"><span>DepositarFondos</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+            <li><a asp-controller="Monedero" asp-action="RetirarSaldoWallet" class="haria-home-page"><span>RetirarSaldoWallet</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-9">
         <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
@@ -122,11 +142,13 @@
         
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-11">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-11" class="haria-home-card-title">ResenaVendedor</h2>
         
         <a asp-controller="ResenaVendedor" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de ResenaVendedor">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="ResenaVendedor" asp-action="Moderacion" class="haria-home-page"><span>Moderacion</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-12">
         <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
@@ -136,18 +158,25 @@
         
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-13">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">2 accesos</span></div>
         <h2 id="haria-home-entity-13" class="haria-home-card-title">Usuario</h2>
         
         <a asp-controller="Usuario" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de Usuario">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="Usuario" asp-action="ReclamarRecompensaDiaria" class="haria-home-page"><span>ReclamarRecompensaDiaria</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
     <article class="haria-home-card" aria-labelledby="haria-home-entity-14">
-        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">1 acceso</span></div>
+        <div class="haria-home-card-top"><span class="haria-home-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="haria-home-count">5 accesos</span></div>
         <h2 id="haria-home-entity-14" class="haria-home-card-title">Venta</h2>
         
         <a asp-controller="Venta" asp-action="Index" class="haria-home-primary" aria-label="Ver listado de Venta">Ver listado <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        
+        <ul class="haria-home-pages">
+            <li><a asp-controller="Venta" asp-action="CancelarVenta" class="haria-home-page"><span>CancelarVenta</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+            <li><a asp-controller="Venta" asp-action="EditarPrecio" class="haria-home-page"><span>EditarPrecio</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+            <li><a asp-controller="Venta" asp-action="ProcesarCompraSkin" class="haria-home-page"><span>ProcesarCompraSkin</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+            <li><a asp-controller="Venta" asp-action="PublicarVenta" class="haria-home-page"><span>PublicarVenta</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></li>
+        </ul>
     </article>
 </div>
     

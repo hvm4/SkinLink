@@ -92,7 +92,8 @@ ConceptualModel SkinLink {
             public readAll::ReadAll () : List<Object -> Usuario>;
             
             // Login nativo de HARIA
-            public login::Login (p_oid : OID -> Usuario, p_password : Password) : String;
+            // Login por correo (CU-01/CU-02): implementación manual en su región protegida.
+            public login::Login customized (p_correo : String, p_password : Password) : String;
             
             // Operaciones Custom
             public sumarExperiencia::Custom (p_oid : OID -> Usuario, p_puntos : Integer) : Void;

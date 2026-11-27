@@ -306,8 +306,6 @@ public sealed class ModelGeneratedTests
 
             var usuarioService = new UsuarioService(unitOfWork);
             var sampleUsuario = await usuarioService.NewAsync("Sample Usuario NombreUsuario", "Sample Usuario Correo", "Password123!", new DateTime(2026, 1, 3), EstadoCuenta.Activo, 3, 3, new DateTime(2026, 1, 3), true, "Sample Usuario Idioma", true, new Monedero { SaldoDisponible = new Moneda { Valor = 5.5, Divisa = "Sample Moneda Divisa" }, SaldoPendiente = new Moneda { Valor = 5.5, Divisa = "Sample Moneda Divisa" } }, new InventarioPrivado { ValorEstimadoTotal = new Moneda { Valor = 7.5, Divisa = "Sample Moneda Divisa" }, EsPublico = true });
-            var sampleUsuarioLoginToken = await usuarioService.LoginAsync(sampleUsuario.Id, "Password123!");
-            Ensure(!string.IsNullOrWhiteSpace(sampleUsuarioLoginToken), "Usuario.login returns a login token for sampleUsuario.");
             var sampleMonedero = sampleUsuario.Monedero;
             var sampleInventarioPrivado = sampleUsuario.Inventario;
             Ensure(sampleUsuario.Monedero?.Equals(sampleMonedero) == true, "Usuario.new relates sampleUsuario and sampleMonedero.");

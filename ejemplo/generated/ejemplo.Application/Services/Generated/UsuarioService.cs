@@ -131,34 +131,6 @@ public sealed partial class UsuarioService : ServiceEntity<Usuario>
         return await _repository.ReadAllAsync();
     }
 
-    public async Task<string?> LoginAsync(int p_oid, string p_password)
-    {
-        try
-        {
-            Usuario? entity = await _repository.ReadAsync(p_oid);
-            if (entity is null)
-            {
-                return null;
-            }
-
-            if (!_passwordHasher.VerifyPassword(entity.Contrasena, p_password))
-            {
-                return null;
-            }
-
-            var tokenSubject = Convert.ToString(entity.Id, System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty;
-            var tokenClaims = new Dictionary<string, string?>(StringComparer.Ordinal)
-            {
-                ["id"] = Convert.ToString(entity.Id, System.Globalization.CultureInfo.InvariantCulture),
-            };
-            return _tokenGenerator.CreateToken(tokenSubject, tokenClaims);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
     public async Task<IReadOnlyList<Usuario>> FiltrarUsuariosPorEstadoAsync(EstadoCuenta p_estado)
     {
         return await _repository.FiltrarUsuariosPorEstadoAsync(p_estado);

@@ -25,6 +25,9 @@ public static partial class HariaWebAuthentication
     {
         if (serverEntity is ejemplo.Domain.Entities.Usuario cuenta)
         {
+            // Id numérico de la cuenta, tomado de la entidad del servidor. Con el login por correo,
+            // el identificador del login (ClaimTypes.Name) es el correo y no el Id.
+            claims.Add(new Claim(UsuarioClaimsExtensions.UsuarioIdClaim, cuenta.Id.ToString(CultureInfo.InvariantCulture)));
             claims.Add(new Claim(UsuarioClaimsExtensions.NombreUsuarioClaim, cuenta.NombreUsuario ?? string.Empty));
             claims.Add(new Claim(UsuarioClaimsExtensions.EstadoCuentaClaim, cuenta.Estado.ToString()));
 
@@ -45,6 +48,7 @@ public static partial class HariaWebAuthentication
 
 public static class UsuarioClaimsExtensions
 {
+    public const string UsuarioIdClaim = "SkinlinkUsuarioId";
     public const string NombreUsuarioClaim = "SkinlinkNombreUsuario";
     public const string EstadoCuentaClaim = "SkinlinkEstadoCuenta";
 
@@ -66,11 +70,15 @@ public static class UsuarioClaimsExtensions
 
     /// <summary>
     /// Id (OID) del Usuario autenticado, o null si no hay sesión.
-    /// HARIA Web guarda el id en ClaimTypes.Name y "Clase:id" en ClaimTypes.NameIdentifier.
+    /// Primero se usa el claim propio con el Id de la entidad (válido con login por correo);
+    /// como respaldo, el identificador del login si es numérico (ClaimTypes.Name / NameIdentifier).
     /// </summary>
     public static int? GetUsuarioId(this ClaimsPrincipal user)
     {
         if (user.Identity?.IsAuthenticated != true) return null;
+
+        var propio = user.FindFirst(UsuarioIdClaim)?.Value;
+        if (int.TryParse(propio, NumberStyles.Integer, CultureInfo.InvariantCulture, out var idPropio)) return idPropio;
 
         var name = user.FindFirst(ClaimTypes.Name)?.Value;
         if (int.TryParse(name, NumberStyles.Integer, CultureInfo.InvariantCulture, out var id)) return id;

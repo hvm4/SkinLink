@@ -1,6 +1,10 @@
 @* Fichero manual (no lo genera HARIA Web): tabla compartida por los filtros de ventas. *@
 @model List<Skinlink.Web.ViewModels.VentaViewModel>
 @using ejemplo.Domain.Enums
+@{
+    var yo = User.GetUsuarioId();
+    var esAdmin = User.EsAdministrador();
+}
 
 @if (ViewData["Buscado"] is true)
 {
@@ -12,7 +16,7 @@
     {
         <div class="table-responsive">
             <table class="table table-hover align-middle">
-                <thead>
+                <thead class="table-light">
                     <tr>
                         <th>#</th>
                         <th>Activo</th>
@@ -39,9 +43,17 @@
                                 <a asp-action="Details" asp-route-id="@v.Id" class="btn btn-sm btn-outline-primary">Detalles</a>
                                 @if (v.EstadoVenta == EstadoVenta.Disponible)
                                 {
-                                    <a asp-action="ProcesarCompraSkin" asp-route-p_oid="@v.Id" class="btn btn-sm btn-success">Comprar</a>
-                                    <a asp-action="EditarPrecio" asp-route-p_oid="@v.Id" class="btn btn-sm btn-outline-secondary">Editar precio</a>
-                                    <a asp-action="CancelarVenta" asp-route-p_oid="@v.Id" class="btn btn-sm btn-outline-danger">Cancelar</a>
+                                    // Comprar: solo las ventas de otros. Editar y cancelar: las propias (o cualquiera, el administrador).
+                                    var esMia = v.VendedorId == yo;
+                                    if (!esMia && (User.IsInRole(Roles.Usuario) || esAdmin))
+                                    {
+                                        <a asp-action="ProcesarCompraSkin" asp-route-p_oid="@v.Id" class="btn btn-sm btn-success">Comprar</a>
+                                    }
+                                    if (esMia || esAdmin)
+                                    {
+                                        <a asp-action="EditarPrecio" asp-route-p_oid="@v.Id" class="btn btn-sm btn-outline-secondary">Editar precio</a>
+                                        <a asp-action="CancelarVenta" asp-route-p_oid="@v.Id" class="btn btn-sm btn-outline-danger">Cancelar</a>
+                                    }
                                 }
                             </td>
                         </tr>

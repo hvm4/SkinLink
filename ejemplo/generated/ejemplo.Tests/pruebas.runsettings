@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fichero manual (no lo genera HARIA). La prueba generada lee ConnectionStrings:DbConnection también de
+     las variables de entorno: aquí se apunta a una base de datos solo para pruebas (en InitializeDB/),
+     que la propia prueba crea con EnsureCreated. Si cambia el modelo, basta con borrar ese fichero. -->
+<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <ConnectionStrings__DbConnection>Data Source=ejemploBDD.pruebas.db</ConnectionStrings__DbConnection>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

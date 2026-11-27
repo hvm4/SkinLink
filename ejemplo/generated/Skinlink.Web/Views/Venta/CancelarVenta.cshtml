@@ -35,7 +35,14 @@
         {
             <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
                 <button type="submit" class="btn btn-danger">Cancelar venta</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+                @if (User.EsAdministrador())
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+                }
+                else
+                {
+                    <a asp-action="PonerALaVenta" class="btn btn-outline-secondary">Volver a mis ventas</a>
+                }
             </div>
         }
     </form>

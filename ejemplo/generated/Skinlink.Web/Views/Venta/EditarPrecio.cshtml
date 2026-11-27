@@ -45,7 +45,14 @@
         {
             <div class="card-footer bg-body p-4 d-flex flex-column flex-sm-row gap-2">
                 <button type="submit" class="btn btn-primary">Guardar precio</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+                @if (User.EsAdministrador())
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary">Volver a ventas</a>
+                }
+                else
+                {
+                    <a asp-action="PonerALaVenta" class="btn btn-outline-secondary">Volver a mis ventas</a>
+                }
             </div>
         }
     </form>
@@ -58,11 +65,17 @@
         (function () {
             var select = document.getElementById('p_oid');
             var divisa = document.getElementById('p_nuevoPrecio_Divisa');
+            var precio = document.getElementById('p_nuevoPrecio_Valor');
             if (!select || !divisa) return;
-            select.addEventListener('change', function () {
+            // Propone el precio actual de la venta elegida (con el separador decimal de la cultura).
+            function rellenar() {
                 var option = select.options[select.selectedIndex];
-                if (option && option.dataset.divisa) divisa.value = option.dataset.divisa;
-            });
+                if (!option) return;
+                if (option.dataset.divisa) divisa.value = option.dataset.divisa;
+                if (precio && option.dataset.precio) precio.value = option.dataset.precio.replace('.', precio.dataset.hariaDecimal || ',');
+            }
+            select.addEventListener('change', rellenar);
+            if (select.value) rellenar();
         })();
     </script>
 }

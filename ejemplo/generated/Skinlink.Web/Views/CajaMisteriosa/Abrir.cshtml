@@ -82,7 +82,7 @@
         else if (puedeOperar)
         {
             <p class="text-body-secondary mb-0">
-                Tu saldo: @(Model.SaldoUsuario?.ToString("0.00") ?? "—") @Model.DivisaUsuario
+                Tu saldo: @(Model.SaldoUsuario?.ToString("N2") ?? "—") @Model.DivisaUsuario
             </p>
             @if (!puedePagar)
             {

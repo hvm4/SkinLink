@@ -40,7 +40,15 @@
                 Disponible: @Model.SaldoDisponible.ToString("N2") @Model.Divisa · Pendiente: @Model.SaldoPendiente.ToString("N2") @Model.Divisa
                 @if (u.MonederoId is int monederoId)
                 {
-                    <text> · </text><a asp-controller="Monedero" asp-action="Details" asp-route-id="@monederoId">ver monedero</a>
+                    if (esAdminActual)
+                    {
+                        <text> · </text><a asp-controller="Monedero" asp-action="Details" asp-route-id="@monederoId">ver monedero</a>
+                    }
+                    else
+                    {
+                        <text> · </text><a asp-controller="Transaccion" asp-action="FiltrarTransaccionesPorRangoFechas">ver mis movimientos</a>
+                        <text> · </text><a asp-controller="Monedero" asp-action="DepositarFondos">depositar</a>
+                    }
                 }
             </dd>
             <dt class="col-sm-3">Inventario</dt>
@@ -48,7 +56,15 @@
                 @(Model.InventarioPublico ? "Público" : "Privado")
                 @if (u.InventarioId is int inventarioId)
                 {
-                    <text> · </text><a asp-controller="InventarioPrivado" asp-action="Details" asp-route-id="@inventarioId">ver inventario</a>
+                    if (esAdminActual)
+                    {
+                        <text> · </text><a asp-controller="InventarioPrivado" asp-action="Details" asp-route-id="@inventarioId">ver inventario</a>
+                    }
+                    else
+                    {
+                        <text> · </text><a asp-controller="ActivoDigital" asp-action="FiltrarActivosEnVenta" asp-route-p_usuarioId="0" asp-route-p_enVenta="false">ver mis activos</a>
+                        <text> · </text><a asp-controller="InventarioPrivado" asp-action="Visibilidad">cambiar visibilidad</a>
+                    }
                 }
             </dd>
         </dl>

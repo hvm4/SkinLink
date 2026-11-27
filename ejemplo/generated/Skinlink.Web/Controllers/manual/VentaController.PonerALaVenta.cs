@@ -3,7 +3,7 @@
 // elige uno de sus activos y un precio, y se hace en dos pasos con las operaciones del modelo:
 // Venta.new (vendedor = usuario de la sesión, estado Disponible) y Venta.publicarVenta.
 // El modelo solo admite una venta por activo (relación 1 a 1): una venta cancelada del propio usuario
-// se reutiliza; un activo que ya se vendió no se puede volver a vender.
+// se reutiliza (sin volver a dar experiencia); un activo que ya se vendió no se puede volver a vender.
 using Microsoft.AspNetCore.Mvc;
 using ejemplo.Application.Exceptions;
 using ejemplo.Application.Services;
@@ -72,13 +72,22 @@ public partial class VentaController
                 }
             }
 
-            // 2) Publicarla con la operación del modelo (comprueba propiedad, bloqueo e intercambios y da +10 XP).
+            // 2) Publicarla.
+            //    - Venta nueva: operación del modelo publicarVenta (comprueba propiedad, bloqueo e intercambios y da +10 XP).
+            //    - Venta cancelada reutilizada: ya se publicó una vez y dio su experiencia; solo se vuelve a bloquear
+            //      el activo para la venta (las comprobaciones las ha hecho MotivoNoVendible). Así publicar y
+            //      cancelar en bucle no sirve para acumular experiencia.
             await using (var unitOfWork = _formUnitOfWorkFactory.Create())
             {
-                await new VentaService(unitOfWork).PublicarVentaAsync(ventaId, p_activo_oid);
+                if (ventaReutilizada is null)
+                    await new VentaService(unitOfWork).PublicarVentaAsync(ventaId, p_activo_oid);
+                else
+                    await new ActivoDigitalService(unitOfWork).BloquearParaVentaAsync(p_activo_oid);
             }
 
-            TempData["Exito"] = $"«{nombreActivo}» está a la venta por {p_precio.Valor:N2} {p_precio.Divisa} (venta #{ventaId}). Has ganado 10 puntos de experiencia.";
+            TempData["Exito"] = ventaReutilizada is null
+                ? $"«{nombreActivo}» está a la venta por {p_precio.Valor:N2} {p_precio.Divisa} (venta #{ventaId}). Has ganado 10 puntos de experiencia."
+                : $"«{nombreActivo}» vuelve a estar a la venta por {p_precio.Valor:N2} {p_precio.Divisa} (venta #{ventaId}). La experiencia por publicar solo se gana la primera vez.";
             return RedirectToAction(nameof(PonerALaVenta));
         }
         catch (Exception error) when (error is not OperationCanceledException)

@@ -1,0 +1,8 @@
+<!-- Fichero manual (no lo genera HARIA). Hace que "dotnet test" use pruebas.runsettings, para que la
+     prueba generada de base de datos trabaje sobre su propia copia (ejemploBDD.pruebas.db) y no deje
+     monederos e inventarios "Sample" sueltos en la base de datos de la demo (ejemploBDD.db). -->
+<Project>
+  <PropertyGroup>
+    <RunSettingsFilePath>$(MSBuildThisFileDirectory)pruebas.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+</Project>

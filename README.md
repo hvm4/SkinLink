@@ -46,13 +46,10 @@ cd ..
 # 2) Compilar y ejecutar todas las pruebas
 dotnet test ejemplo.sln
 
-# 3) Volver a crear la demo: la prueba generada Generated_Crud_And_Associations_Should_Work_Against_Database
-#    usa esta misma base de datos y deja monederos e inventarios "Sample" sueltos
-cd InitializeDB
-dotnet run
-cd ..
+# Las pruebas usan su propia base de datos (InitializeDB/ejemploBDD.pruebas.db, ver
+# ejemplo.Tests/pruebas.runsettings), así que ya no ensucian la demo. Si cambia el modelo, borra ese fichero.
 
-# 4) Arrancar la web (con HTTPS: la cookie de sesión es segura y no viaja por http)
+# 3) Arrancar la web (con HTTPS: la cookie de sesión es segura y no viaja por http)
 dotnet run --project Skinlink.Web --launch-profile https
 ```
 
@@ -160,7 +157,7 @@ Los roles se asignan al iniciar sesión en `Utils/Security/UsuarioClaims.cs` (pu
 - **CRUD genérico de HARIA (Crear, Editar, Eliminar)**: solo el administrador, en todas las entidades. La única alta genérica abierta a usuarios es la de `ResenaVendedor`, que para ellos se muestra como la pantalla propia "Valorar a un vendedor" (`Views/ResenaVendedor/Valorar.cshtml`). Los usuarios operan con sus pantallas: Poner a la venta, Editar precio, Cancelar venta, Proponer intercambio, ★ Favorito en Buscar activos, etc.
 - **Listados completos** de `Monedero`, `Transaccion` e `InventarioPrivado`: solo el administrador. En el detalle, un usuario solo ve su monedero, sus transacciones y su inventario (o un inventario público). Los listados genéricos de `ActivoDigital` y `ResenaVendedor` redirigen al usuario a Buscar activos y a la reputación pública.
 - `Utils/Security/AccionesSegunRolTagHelper.cs` (registrado en `Views/_ViewImports.cshtml`): oculta a quien no es administrador los enlaces Crear/Editar/Eliminar y los "Volver al listado" de listados reservados, también en las vistas generadas, sin modificarlas. Si una regeneración de HARIA Web rehace `_ViewImports.cshtml`, hay que volver a añadir `@addTagHelper *, Skinlink.Web`.
-- **Poner a la venta** (`/Venta/PonerALaVenta`, `Controllers/manual/VentaController.PonerALaVenta.cs`): el usuario elige un activo suyo y un precio; se crea la venta con `Venta.new` (vendedor = sesión) y se publica con `publicarVenta`. El modelo solo admite una venta por activo (relación 1 a 1 con clave única): una venta cancelada propia se reutiliza y un activo que ya se vendió no se puede volver a vender.
+- **Poner a la venta** (`/Venta/PonerALaVenta`, `Controllers/manual/VentaController.PonerALaVenta.cs`): el usuario elige un activo suyo y un precio; se crea la venta con `Venta.new` (vendedor = sesión) y se publica con `publicarVenta`. El modelo solo admite una venta por activo (relación 1 a 1 con clave única): una venta cancelada propia se reutiliza (sin volver a dar los +10 de experiencia, para que publicar y cancelar en bucle no sirva para acumularla) y un activo que ya se vendió no se puede volver a vender.
 - Las acciones con `[AllowAnonymous]` (búsqueda de activos y cajas) siguen siendo públicas.
 - En el código: `[Authorize(Roles = Roles.Administrador)]` o `Roles.Todos`; `User.GetUsuarioId()`, `User.EsAdministrador()`, `User.PuedeAccederAUsuario(id)`.
 - El login es con el **correo** y la contraseña (operación `login` del modelo con `p_correo`).
@@ -252,5 +249,5 @@ Todas las pantallas propias siguen la misma tarjeta que las vistas generadas por
 
 - Nunca se edita nada fuera de las regiones `/*PROTECTED REGION ID(...) ENABLED START*/ ... /*PROTECTED REGION END*/`: al regenerar se pierde.
 - La lógica propia va en `Services/manual` y `UseCases/manual`, un archivo por operación (`<Entidad>Service_<Operacion>.cs` o `<Entidad>UseCase_<Operacion>.cs`).
-- Tras cambiar `ejemplo.tdm`: regenerar con HARIA, ejecutar `InitializeDB` y lanzar `dotnet test` antes de subir los cambios. Después de `dotnet test`, ejecutar otra vez `InitializeDB` para dejar la demo limpia.
+- Tras cambiar `ejemplo.tdm`: regenerar con HARIA, ejecutar `InitializeDB` y lanzar `dotnet test` antes de subir los cambios. Las pruebas usan `InitializeDB/ejemploBDD.pruebas.db` (fichero ignorado por git); si el modelo cambia, se borra y la prueba lo vuelve a crear.
 - Si una región protegida desaparece del modelo, HARIA guarda su código en `generated/.haria/orphans`.

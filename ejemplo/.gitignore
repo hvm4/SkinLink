@@ -1,2 +1,6 @@
 # Logs de ejecucion de InitializeDB (se regeneran en cada ejecucion)
 generated/InitializeDB/logs/
+
+# Ficheros temporales de SQLite (se crean mientras la base de datos esta abierta)
+generated/InitializeDB/*.db-shm
+generated/InitializeDB/*.db-wal

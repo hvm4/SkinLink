@@ -173,6 +173,19 @@ En todas estas operaciones el usuario que actúa sale de la sesión, nunca del f
 
 `/Intercambio` y `/Favorito` (listados completos) redirigen a las páginas "Mis…" salvo para el administrador. La nota de una reseña se valida entre 1 y 5 y nadie puede valorarse a sí mismo (`ResenaVendedorViewModel`, región manual).
 
+## Mensajes al usuario (Skinlink.Web)
+
+Toda la web sigue el mismo estándar para avisar del resultado de una operación:
+
+| Dónde | Qué se usa |
+|---|---|
+| Controlador, operación correcta | `TempData["Exito"] = "...";` |
+| Controlador, operación fallida | `TempData["Error"] = this.MensajeDeError(ex);` dentro de `catch (Exception ex) when (ex is not OperationCanceledException)` |
+| Controlador, error en un formulario que se vuelve a mostrar | `ModelState.AddModelError(string.Empty, this.MensajeDeError(ex));` |
+| Vista | `<partial name="_MensajesOperacion" />` (recuadro verde o rojo y resumen de validación) |
+
+`MensajeDeError` está en `Utils/MensajesUsuario.cs`. Los errores de negocio (`ModelException` lanzadas por los servicios y casos de uso) se muestran tal cual; cualquier otro error es técnico: se registra en el log del servidor y el usuario ve "No se ha podido completar la operación. Inténtalo de nuevo más tarde.". Así nunca se enseñan errores internos (SQL, nulos, trazas) en pantalla. Los mensajes que deba ver el usuario se lanzan como `ModelException` y en castellano.
+
 ## Cobertura de requisitos de la propuesta
 
 | Requisito | Dónde está |

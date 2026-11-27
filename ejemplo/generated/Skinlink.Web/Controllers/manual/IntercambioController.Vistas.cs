@@ -98,9 +98,9 @@ public partial class IntercambioController
             TempData["Exito"] = $"Propuesta de intercambio #{intercambio.Id} enviada.";
             return RedirectToAction(nameof(MisIntercambios));
         }
-        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesError.Mensaje(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
             return RedirectToAction(nameof(Proponer), new { receptorId = receptorId > 0 ? receptorId : (int?)null });
         }
     }
@@ -124,9 +124,9 @@ public partial class IntercambioController
                 TempData["Exito"] = $"Intercambio #{intercambioId} cancelado.";
             }
         }
-        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesError.Mensaje(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
 
         return RedirectToAction(nameof(MisIntercambios));

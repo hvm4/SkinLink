@@ -34,9 +34,9 @@ public partial class ArticuloCatalogoController
             await _articuloCatalogoService.ActualizarDescuentoArticuloAsync(p_oid, p_porcentaje, p_fechaFin);
             TempData["Exito"] = $"Descuento del {p_porcentaje:0.##} % aplicado hasta el {p_fechaFin:dd/MM/yyyy}.";
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(Descuento), new { id = p_oid });
     /*PROTECTED REGION END*/

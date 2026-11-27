@@ -34,9 +34,9 @@ public partial class CajaMisteriosaController
             var result = await _cajaMisteriosaService.SimularAperturaAsync(p_oid);
             return await MostrarAperturaAsync(p_oid, result, esSimulacion: true);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
             return RedirectToAction(nameof(Abrir), new { id = p_oid });
         }
     /*PROTECTED REGION END*/
@@ -61,9 +61,9 @@ public partial class CajaMisteriosaController
             TempData["Exito"] = $"¡Has obtenido {result.Nombre} ({result.Atributos?.Rareza})! Ya está en tu inventario.";
             TempData["CajaActivoObtenidoId"] = result.Id;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(Abrir), new { id = p_oid });
     /*PROTECTED REGION END*/

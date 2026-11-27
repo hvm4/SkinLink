@@ -93,9 +93,9 @@ public partial class ResenaVendedorController
             await new ResenaVendedorService(uow).OcultarResenaAsync(resenaId);
             TempData["Exito"] = "La reseña ya no se muestra en el perfil.";
         }
-        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesError.Mensaje(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
 
         return RedirectToAction(nameof(FiltrarResenasVisiblesPorVendedor), new { p_vendedorId = vendedorId });

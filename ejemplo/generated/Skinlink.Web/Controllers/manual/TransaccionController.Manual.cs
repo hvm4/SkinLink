@@ -40,13 +40,13 @@ public partial class TransaccionController
             var cubre = await _transaccionService.ValidarSaldoMonederoAsync(p_oid, p_monedero_oid, p_montoRequerido);
             var importe = $"{p_montoRequerido.Valor:N2} {p_montoRequerido.Divisa}";
             if (cubre)
-                TempData["Ok"] = $"El monedero #{p_monedero_oid} tiene saldo suficiente para {importe}.";
+                TempData["Exito"] = $"El monedero #{p_monedero_oid} tiene saldo suficiente para {importe}.";
             else
                 TempData["Error"] = $"El monedero #{p_monedero_oid} NO tiene saldo suficiente (o en esa divisa) para {importe}.";
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = Skinlink.Web.Utils.CompraventaWebHelper.MensajeDeError(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(ValidarSaldoMonedero), new { p_monedero_oid });
     /*PROTECTED REGION END*/

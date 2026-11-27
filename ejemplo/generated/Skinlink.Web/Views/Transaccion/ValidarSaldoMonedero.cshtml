@@ -13,7 +13,7 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="p_oid" value="0" />
         <div class="card-body p-4">
-            <partial name="_AlertasOperacion" />
+            <partial name="_MensajesOperacion" />
 
             @if (!Model.Monederos.Any())
             {

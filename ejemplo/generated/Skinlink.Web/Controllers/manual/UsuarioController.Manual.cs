@@ -37,7 +37,7 @@ public partial class UsuarioController
         }
         catch (Exception error) when (error is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(error);
+            TempData["Error"] = this.MensajeDeError(error);
             return RedirectToAction(nameof(SumarExperiencia), new { id = p_oid });
         }
     /*PROTECTED REGION END*/
@@ -56,14 +56,14 @@ public partial class UsuarioController
         {
             // RF-29: la operación y su registro de auditoría van en una única transacción.
             var administradorId = Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User)
-                ?? throw new InvalidOperationException("La sesión no es válida: vuelve a iniciar sesión.");
+                ?? throw new global::ejemplo.Application.Exceptions.ModelException("La sesión no es válida: vuelve a iniciar sesión.");
             await using var unitOfWork = _formUnitOfWorkFactory.Create();
             await global::ejemplo.Application.Reglas.OperacionesAuditadas.SuspenderCuentaUsuarioAsync(unitOfWork, administradorId, p_oid);
             TempData["Exito"] = "La cuenta se ha suspendido. El usuario perderá el acceso la próxima vez que inicie sesión.";
         }
         catch (Exception error) when (error is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(error);
+            TempData["Error"] = this.MensajeDeError(error);
         }
         return RedirectToAction(nameof(Details), new { id = p_oid });
     /*PROTECTED REGION END*/
@@ -82,14 +82,14 @@ public partial class UsuarioController
         {
             // RF-29: la operación y su registro de auditoría van en una única transacción.
             var administradorId = Skinlink.Web.Utils.Security.UsuarioClaimsExtensions.GetUsuarioId(User)
-                ?? throw new InvalidOperationException("La sesión no es válida: vuelve a iniciar sesión.");
+                ?? throw new global::ejemplo.Application.Exceptions.ModelException("La sesión no es válida: vuelve a iniciar sesión.");
             await using var unitOfWork = _formUnitOfWorkFactory.Create();
             await global::ejemplo.Application.Reglas.OperacionesAuditadas.VerificarUsuarioAsync(unitOfWork, administradorId, p_oid);
             TempData["Exito"] = "La identidad del usuario se ha verificado.";
         }
         catch (Exception error) when (error is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(error);
+            TempData["Error"] = this.MensajeDeError(error);
         }
         return RedirectToAction(nameof(Details), new { id = p_oid });
     /*PROTECTED REGION END*/
@@ -120,7 +120,7 @@ public partial class UsuarioController
         }
         catch (Exception error) when (error is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(error);
+            TempData["Error"] = this.MensajeDeError(error);
             return RedirectToAction(nameof(ReclamarRecompensaDiaria));
         }
     /*PROTECTED REGION END*/

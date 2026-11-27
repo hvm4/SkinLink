@@ -11,7 +11,7 @@
         <p class="text-body-secondary mb-0">Corrección manual del saldo disponible de un monedero (administración). No genera movimiento en el historial: para operaciones de usuario usa Depositar o Retirar.</p>
     </div>
     <div class="card-body p-4">
-        <partial name="_AlertasOperacion" />
+        <partial name="_MensajesOperacion" />
 
         @if (!Model.Monederos.Any())
         {

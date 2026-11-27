@@ -35,9 +35,9 @@ public partial class ResenaVendedorController
             await _resenaVendedorService.ModerarResenaAsync(p_oid, adminId);
             TempData["Exito"] = $"Reseña #{p_oid} moderada. El cambio queda en el registro de auditoría.";
         }
-        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesError.Mensaje(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(Moderacion));
     /*PROTECTED REGION END*/

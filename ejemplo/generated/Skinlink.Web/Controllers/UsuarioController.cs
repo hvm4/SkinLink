@@ -110,7 +110,7 @@ public partial class UsuarioController : Controller
         catch (Exception error) when (error is not OperationCanceledException)
         {
             _logger.LogError(error, "No se ha podido crear el usuario.");
-            ModelState.AddModelError(string.Empty, MensajesOperacion.De(error));
+            ModelState.AddModelError(string.Empty, this.MensajeDeError(error));
             return View("Alta", model);
         }
     /*PROTECTED REGION END*/
@@ -156,7 +156,7 @@ public partial class UsuarioController : Controller
         catch (Exception error) when (error is not OperationCanceledException)
         {
             _logger.LogError(error, "No se ha podido registrar el usuario.");
-            ModelState.AddModelError(string.Empty, MensajesOperacion.De(error));
+            ModelState.AddModelError(string.Empty, this.MensajeDeError(error));
             return View("Registro", model);
         }
         try

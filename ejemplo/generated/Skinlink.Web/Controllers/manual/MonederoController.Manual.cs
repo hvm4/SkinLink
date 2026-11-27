@@ -41,11 +41,11 @@ public partial class MonederoController
         try
         {
             await _monederoService.IncrementarSaldoAsync(p_oid, p_montoAnadir);
-            TempData["Ok"] = $"Se han añadido {p_montoAnadir.Valor:N2} {p_montoAnadir.Divisa} al monedero #{p_oid}.";
+            TempData["Exito"] = $"Se han añadido {p_montoAnadir.Valor:N2} {p_montoAnadir.Divisa} al monedero #{p_oid}.";
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = CompraventaWebHelper.MensajeDeError(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(AjustarSaldo), new { p_oid });
     /*PROTECTED REGION END*/
@@ -70,11 +70,11 @@ public partial class MonederoController
         try
         {
             await _monederoService.DecrementarSaldoAsync(p_oid, p_montoRestar);
-            TempData["Ok"] = $"Se han restado {p_montoRestar.Valor:N2} {p_montoRestar.Divisa} del monedero #{p_oid}.";
+            TempData["Exito"] = $"Se han restado {p_montoRestar.Valor:N2} {p_montoRestar.Divisa} del monedero #{p_oid}.";
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = CompraventaWebHelper.MensajeDeError(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(AjustarSaldo), new { p_oid });
     /*PROTECTED REGION END*/
@@ -101,11 +101,11 @@ public partial class MonederoController
             await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
             var useCase = new ejemplo.Application.UseCases.Monedero.MonederoUseCase(unitOfWork);
             await useCase.DepositarFondosAsync(p_oid, p_monto, p_referenciaPago, p_pagoConfirmado);
-            TempData["Ok"] = $"Depósito realizado: {p_monto.Valor:N2} {p_monto.Divisa} (referencia {p_referenciaPago}).";
+            TempData["Exito"] = $"Depósito realizado: {p_monto.Valor:N2} {p_monto.Divisa} (referencia {p_referenciaPago}).";
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = CompraventaWebHelper.MensajeDeError(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(DepositarFondos), new { p_oid });
     /*PROTECTED REGION END*/
@@ -132,11 +132,11 @@ public partial class MonederoController
             await using var unitOfWork = _useCaseUnitOfWorkFactory.Create();
             var useCase = new ejemplo.Application.UseCases.Monedero.MonederoUseCase(unitOfWork);
             await useCase.RetirarSaldoWalletAsync(p_oid, p_monto, p_destino);
-            TempData["Ok"] = $"Retirada realizada: {p_monto.Valor:N2} {p_monto.Divisa} hacia {p_destino}.";
+            TempData["Exito"] = $"Retirada realizada: {p_monto.Valor:N2} {p_monto.Divisa} hacia {p_destino}.";
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = CompraventaWebHelper.MensajeDeError(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(RetirarSaldoWallet), new { p_oid });
     /*PROTECTED REGION END*/

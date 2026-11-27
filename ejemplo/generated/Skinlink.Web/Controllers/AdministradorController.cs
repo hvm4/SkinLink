@@ -105,7 +105,7 @@ public partial class AdministradorController : Controller
         catch (Exception error) when (error is not OperationCanceledException)
         {
             _logger.LogError(error, "No se ha podido crear el administrador.");
-            ModelState.AddModelError(string.Empty, MensajesOperacion.De(error));
+            ModelState.AddModelError(string.Empty, this.MensajeDeError(error));
             return View("Alta", model);
         }
     /*PROTECTED REGION END*/

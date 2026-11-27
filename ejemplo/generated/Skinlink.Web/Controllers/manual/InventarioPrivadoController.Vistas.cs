@@ -53,9 +53,9 @@ public partial class InventarioPrivadoController
                 ? "El inventario ahora es público: otros usuarios pueden verlo."
                 : "El inventario ahora es privado: solo lo ve su propietario.";
         }
-        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesError.Mensaje(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(Visibilidad));
     }

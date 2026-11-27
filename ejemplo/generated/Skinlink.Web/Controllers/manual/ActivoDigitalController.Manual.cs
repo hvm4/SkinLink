@@ -94,9 +94,9 @@ public partial class ActivoDigitalController
             var result = await _activoDigitalService.VerificarAutenticidadAsync(p_oid);
             return await MostrarOperacionesAsync(p_oid, autentico: result, reporte: null);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
             return RedirectToAction(nameof(Operaciones), new { id = p_oid });
         }
     /*PROTECTED REGION END*/
@@ -116,9 +116,9 @@ public partial class ActivoDigitalController
             var result = await _activoDigitalService.GenerarReporteActividadAsync(p_oid);
             return await MostrarOperacionesAsync(p_oid, autentico: null, reporte: result);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
             return RedirectToAction(nameof(Operaciones), new { id = p_oid });
         }
     /*PROTECTED REGION END*/

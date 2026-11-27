@@ -90,25 +90,10 @@ public partial class ActivoDigitalController
             await operacion();
             TempData["Exito"] = mensajeExito;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesOperacion.De(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
         return RedirectToAction(nameof(Operaciones), new { id });
-    }
-}
-
-/// <summary>Convierte las excepciones de Application en un texto legible para el usuario.</summary>
-public static class MensajesOperacion
-{
-    public static string De(Exception ex)
-    {
-        // Los casos de uso envuelven la causa real: se muestra el mensaje más interno de negocio.
-        var actual = ex;
-        while (actual.InnerException is not null && actual is ejemplo.Application.Exceptions.ModelException)
-            actual = actual.InnerException;
-        return actual is ejemplo.Application.Exceptions.ModelException or InvalidOperationException
-            ? actual.Message
-            : "No se ha podido completar la operación: " + actual.Message;
     }
 }

@@ -46,9 +46,9 @@ public partial class ConfiguracionSistemaController
             model.ImporteComision = comision;
             model.ImporteNeto = precio - comision;
         }
-        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            ModelState.AddModelError(nameof(model.Precio), MensajesError.Mensaje(ex));
+            ModelState.AddModelError(nameof(model.Precio), this.MensajeDeError(ex));
         }
 
         return View("Comision", model);

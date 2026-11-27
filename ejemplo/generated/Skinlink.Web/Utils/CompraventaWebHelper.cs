@@ -21,14 +21,6 @@ public enum ModoVentas
 
 public static class CompraventaWebHelper
 {
-    /// <summary>Los casos de uso envuelven el error real en InnerException: se devuelve el más interno.</summary>
-    public static string MensajeDeError(Exception ex)
-    {
-        var actual = ex;
-        while (actual.InnerException is not null && !string.IsNullOrWhiteSpace(actual.InnerException.Message))
-            actual = actual.InnerException;
-        return actual.Message;
-    }
 
     public static async Task<OperacionMonederoViewModel> CargarMonederosAsync(
         IUnitOfWorkFactory factory, ClaimsPrincipal user, int? seleccionado)

@@ -56,9 +56,9 @@ public partial class FavoritoController
             var ahoraEsFavorito = await new ActivoDigitalService(uow).MarcarComoFavoritoAsync(activoId, yo);
             TempData["Exito"] = ahoraEsFavorito ? "Añadido a tus favoritos." : "Quitado de tus favoritos.";
         }
-        catch (Exception ex) when (MensajesError.EsDeNegocio(ex))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            TempData["Error"] = MensajesError.Mensaje(ex);
+            TempData["Error"] = this.MensajeDeError(ex);
         }
 
         return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)
